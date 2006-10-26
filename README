@@ -1,0 +1,38 @@
+=Proj4rb
+This is the first release of Proj4rb, a simple ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems.
+
+==Operations
+The library can be loaded this way:
+	require 'proj4'
+The classes are in the Proj4 module:
+	include Proj4	
+Currently, the binding gives you 2 classes: <tt>UV</tt> and <tt>Projection</tt>. To create a projection, you would do the following:
+	proj = Projection.new(["proj=utm","zone=21","units=m"])
+This defines a UTM21 North projection in WGS84. Note that the <tt>proj.exe</tt> initialization arguments equivalent to the one above would be:
+	+proj=utm +zone=21 +units=m
+Then to use the projection, you have 2 operations: +forward+ and +inverse+. +forward+ transforms the UV in WGS84 lon/lat (in radians) to the coordinate system defined during the creation of the Projection object. +inverse+ does the opposite. For example:
+	projected_uv = proj.forward(lonlat_uv)
+	lonlat_uv = proj.inverse(projected_uv)
+A UV object has 2 properties: +u+ and +v+, which can be set and retrieved.
+
+You are also given 2 constants to convert between degrees and radians: +DEG_TO_RAD+ and +RAD_TO_DEG+
+ 
+For now that is all there is to the Proj4rb library. Feel free to suggest additionnal functionnalities.
+
+==Installation
+Currently the only distributed binary is for Win32. Feel free to build versions for other OS and I will distribute them.
+To install the latest version on Windows, just type :
+      gem install proj4rb-win32
+
+==TODO
+- Transformations between 2 CS
+- Transformations of a set of points at once.
+
+==Changes since the last version
+- First version
+
+==License
+Proj4rb is released under the MIT license.
+
+==Support
+Any questions, enhancement proposals, bug notifications or corrections can be sent to mailto:guilhem.vellut@gmail.com.
