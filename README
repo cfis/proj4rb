@@ -27,6 +27,7 @@ To install the latest version on Windows, just type :
 ==TODO
 - Transformations between 2 CS
 - Transformations of a set of points at once.
+- Completely cross-platform build system (mkrf?)
 
 ==Changes since the last version
 - First version
