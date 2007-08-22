@@ -4,7 +4,7 @@
 static VALUE mProjrb;
 static VALUE cUV;
 static VALUE cProjection;
-static VALUE cCs2Cs
+static VALUE cCs2Cs;
 
 static void uv_free(void *p) {
   free((projUV*)p);
