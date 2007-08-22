@@ -1,4 +1,5 @@
 #include "ruby.h"
+#include "projects.h"
 #include "proj_api.h"
  
 static VALUE mProjrb;
@@ -120,6 +121,22 @@ static VALUE proj_initialize(VALUE self, VALUE proj_params){
   return self;
 }
 
+/**Is this projection a latlong projection?
+ */
+static VALUE proj_is_latlong(VALUE self){
+  _wrap_pj* wpj;
+  Data_Get_Struct(self,_wrap_pj,wpj);
+  return pj_is_latlong(wpj->pj) ? Qtrue : Qfalse;
+}
+
+/**Is this projection a geocentric projection?
+ */
+static VALUE proj_is_geocent(VALUE self){
+  _wrap_pj* wpj;
+  Data_Get_Struct(self,_wrap_pj,wpj);
+  return pj_is_geocent(wpj->pj) ? Qtrue : Qfalse;
+}
+
 /**Transforms a point in WGS84 LonLat in radians to projected coordinates.
  */
 static VALUE proj_forward(VALUE self,VALUE uv){
@@ -149,6 +166,18 @@ static VALUE proj_inverse(VALUE self,VALUE uv){
   return Data_Wrap_Struct(cUV,0,uv_free,pResult);
 }
 
+/* class methods */
+#if PJ_VERSION >= 449
+static VALUE proj_list_units(VALUE self){
+  struct PJ_UNITS *unit;
+  VALUE units = rb_ary_new();
+  for (unit = pj_get_units_ref(); unit->id; unit++){
+    rb_ary_push(units, rb_str_new2(unit->id));
+  }
+  return units;
+}
+#endif
+
 void Init_projrb(void) {
   mProjrb = rb_define_module("Proj4");
 
@@ -160,7 +189,11 @@ void Init_projrb(void) {
      Degrees per radian
   */
   rb_define_const(mProjrb,"RAD_TO_DEG", rb_float_new(RAD_TO_DEG));
- 
+  /**
+     Version of libproj
+  */
+  rb_define_const(mProjrb,"LIBVERSION", rb_float_new(PJ_VERSION));
+
   cUV = rb_define_class_under(mProjrb,"UV",rb_cObject);
   rb_define_alloc_func(cUV,uv_alloc);
   rb_define_method(cUV,"initialize",uv_initialize,2);
@@ -173,9 +206,15 @@ void Init_projrb(void) {
   cProjection = rb_define_class_under(mProjrb,"Projection",rb_cObject);
   rb_define_alloc_func(cProjection,proj_alloc);
   rb_define_method(cProjection,"initialize",proj_initialize,1);
+  rb_define_method(cProjection,"isLatLong?",proj_is_latlong,0);
+  rb_define_method(cProjection,"isGeocent?",proj_is_geocent,0);
+  rb_define_alias(cProjection,"isGeocentric?","isGeocent?");
   rb_define_method(cProjection,"forward",proj_forward,1);
   rb_define_method(cProjection,"inverse",proj_inverse,1);
 
-  
+  /* class methods */
+  #if PJ_VERSION >= 449
+    rb_define_singleton_method(cProjection,"listUnits",proj_list_units,0);
+  #endif
 }
 
