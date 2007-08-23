@@ -3,6 +3,7 @@
 #include "proj_api.h"
  
 static VALUE mProjrb;
+static VALUE cUnit;
 static VALUE cUV;
 static VALUE cProjection;
 static VALUE cCs2Cs;
@@ -214,7 +215,9 @@ void Init_projrb(void) {
   rb_define_method(cProjection,"inverse",proj_inverse,1);
 
   #if PJ_VERSION >= 449
-    rb_define_singleton_method(cProjection,"listUnits",proj_list_units,0);
+    cUnit = rb_define_class_under(mProjrb,"Unit",rb_cObject);
+    rb_define_singleton_method(cUnit,"listUnits",proj_list_units,0);
   #endif
+
 }
 
