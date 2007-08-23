@@ -21,9 +21,9 @@ Rake::RDocTask::new do |rdoc|
 end
 
 spec = Gem::Specification::new do |s|
-  s.platform = Gem::Platform::RUBY
+  s.platform = Gem::Platform::CURRENT
 
-  s.name = 'proj4rb-mswin32'
+  s.name = 'proj4rb'
   s.version = "0.0.1"
   s.summary = "Simple Ruby bindings for the Proj.4 Carthographic Projection library"
   s.description = <<EOF
