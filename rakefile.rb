@@ -17,7 +17,7 @@ Rake::RDocTask::new do |rdoc|
   rdoc.title    = "Proj4rb Documentation"
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.rdoc_files.include('README')
-  rdoc.rdoc_files.include('src/**/*.c')
+  rdoc.rdoc_files.include('src/**/*.c', 'lib/proj4.rb')
 end
 
 spec = Gem::Specification::new do |s|

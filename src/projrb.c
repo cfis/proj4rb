@@ -166,8 +166,9 @@ static VALUE proj_inverse(VALUE self,VALUE uv){
   return Data_Wrap_Struct(cUV,0,uv_free,pResult);
 }
 
-/* class methods */
 #if PJ_VERSION >= 449
+/**Return list of all units the proj lib knows about.
+ */
 static VALUE proj_list_units(VALUE self){
   struct PJ_UNITS *unit;
   VALUE units = rb_ary_new();
@@ -212,7 +213,6 @@ void Init_projrb(void) {
   rb_define_method(cProjection,"forward",proj_forward,1);
   rb_define_method(cProjection,"inverse",proj_inverse,1);
 
-  /* class methods */
   #if PJ_VERSION >= 449
     rb_define_singleton_method(cProjection,"listUnits",proj_list_units,0);
   #endif

@@ -20,13 +20,6 @@ class SimpleProjectionTest < Test::Unit::TestCase
         deg * Proj4::DEG_TO_RAD
     end
 
-    def test_uv
-        uv = Proj4::UV.new(10.1, 20.2)
-        assert_kind_of Proj4::UV, uv
-        assert_equal 10.1, uv.u
-        assert_equal 20.2, uv.v
-    end
-
     # echo "8.4302123334 48.9906726079" | proj +init=epsg:31467 -
     def test_forward_gk
         result = @proj_gk.forward( Proj4::UV.new( deg2rad(@lon), deg2rad(@lat) ) ) 
