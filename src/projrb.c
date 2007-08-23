@@ -31,6 +31,9 @@ static VALUE uv_initialize(VALUE self, VALUE u, VALUE v){
   return self;
 }
 
+/**
+   Creates a new UV object as a copy of an old one (for dup and clone methods).
+*/
 static VALUE uv_init_copy(VALUE copy,VALUE orig){
   projUV* copy_uv;
   projUV* orig_uv;
@@ -168,7 +171,7 @@ static VALUE proj_inverse(VALUE self,VALUE uv){
 }
 
 #if PJ_VERSION >= 449
-/**Return list of all units the proj lib knows about.
+/**Return list of all units we know about.
  */
 static VALUE proj_list_units(VALUE self){
   struct PJ_UNITS *unit;
@@ -192,7 +195,7 @@ void Init_projrb(void) {
   */
   rb_define_const(mProjrb,"RAD_TO_DEG", rb_float_new(RAD_TO_DEG));
   /**
-     Version of libproj
+     Version of C libproj
   */
   rb_define_const(mProjrb,"LIBVERSION", rb_float_new(PJ_VERSION));
 
@@ -215,6 +218,7 @@ void Init_projrb(void) {
   rb_define_method(cProjection,"inverse",proj_inverse,1);
 
   #if PJ_VERSION >= 449
+    /* The Unit class holds information about the units (m, km, mi(les), ...) known to Proj4. */
     cUnit = rb_define_class_under(mProjrb,"Unit",rb_cObject);
     rb_define_singleton_method(cUnit,"listUnits",proj_list_units,0);
   #endif

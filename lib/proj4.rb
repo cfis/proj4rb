@@ -1,14 +1,20 @@
 ENV['PROJ_LIB'] = File.dirname(__FILE__) + '/../data'
 require 'projrb'
 
+# Ruby bindings for the Proj4 cartographic projection library.
 module Proj4
 
-    # The UV class holds one coordinate pair (either lon/lat or x/y depending on projection).
+    # The UV class holds one coordinate pair. Can be either lon/lat or x/y.
     class UV
 
         # Compare to UV instances, they are equal if both coordinates are equal, respectively.
         def ==(uv)
             self.u == uv.u && self.v == uv.v
+        end
+
+        # Create string in format 'x,y'.
+        def to_s
+            "#{u},#{v}"
         end
 
     end
