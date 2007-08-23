@@ -35,5 +35,29 @@ module Proj4
 
     end
 
+    class Unit
+
+        # Get the unit with given id.
+        def self.get(id)
+            self.listUnits.select{ |u| u.id == id }.first
+        end
+
+        # Compares units by comparing ids.
+        def <=>(other)
+            self.id <=> other.id
+        end
+
+        # Stringify unit.
+        def to_s
+            id
+        end
+
+        # Returns unit definition as string in format '#<Proj4::Unit id="...", to_meter="...", name="...">'.
+        def inspect
+            "#<Proj4::Unit id=\"#{id}\", to_meter=\"#{to_meter}\", name=\"#{name}\">"
+        end
+
+    end
+
 end
 

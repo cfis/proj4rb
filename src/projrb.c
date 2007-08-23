@@ -173,13 +173,34 @@ static VALUE proj_inverse(VALUE self,VALUE uv){
 #if PJ_VERSION >= 449
 /**Return list of all units we know about.
  */
-static VALUE proj_list_units(VALUE self){
+static VALUE unit_list_units(VALUE self){
   struct PJ_UNITS *unit;
   VALUE units = rb_ary_new();
   for (unit = pj_get_units_ref(); unit->id; unit++){
-    rb_ary_push(units, rb_str_new2(unit->id));
+    rb_ary_push(units, Data_Wrap_Struct(cUnit, 0, 0, unit));
   }
   return units;
+}
+/**Get ID of a unit.
+ */
+static VALUE unit_get_id(VALUE self){
+  struct PJ_UNITS *unit;
+  Data_Get_Struct(self,struct PJ_UNITS,unit);
+  return rb_str_new2(unit->id);
+}
+/**Get conversion factor of this unit to a meter. Note that this is a string, it can either contain a floating point number or it can be in the form numerator/denominator.
+ */
+static VALUE unit_get_to_meter(VALUE self){
+  struct PJ_UNITS *unit;
+  Data_Get_Struct(self,struct PJ_UNITS,unit);
+  return rb_str_new2(unit->to_meter);
+}
+/**Get name (description) of a unit.
+ */
+static VALUE unit_get_name(VALUE self){
+  struct PJ_UNITS *unit;
+  Data_Get_Struct(self,struct PJ_UNITS,unit);
+  return rb_str_new2(unit->name);
 }
 #endif
 
@@ -220,7 +241,10 @@ void Init_projrb(void) {
   #if PJ_VERSION >= 449
     /* The Unit class holds information about the units (m, km, mi(les), ...) known to Proj4. */
     cUnit = rb_define_class_under(mProjrb,"Unit",rb_cObject);
-    rb_define_singleton_method(cUnit,"listUnits",proj_list_units,0);
+    rb_define_singleton_method(cUnit,"listUnits",unit_list_units,0);
+    rb_define_method(cUnit,"id",unit_get_id,0);
+    rb_define_method(cUnit,"to_meter",unit_get_to_meter,0);
+    rb_define_method(cUnit,"name",unit_get_name,0);
   #endif
 
 }
