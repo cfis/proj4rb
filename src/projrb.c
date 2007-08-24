@@ -3,11 +3,14 @@
 #include "proj_api.h"
  
 static VALUE mProjrb;
+
 static VALUE cDef;
-static VALUE cUnit;
-static VALUE cEllipsoid;
 static VALUE cDatum;
+static VALUE cEllipsoid;
 static VALUE cPrimeMeridian;
+static VALUE cProjectionType;
+static VALUE cUnit;
+
 static VALUE cUV;
 static VALUE cProjection;
 static VALUE cCs2Cs;
@@ -336,6 +339,40 @@ static VALUE prime_meridian_get_defn(VALUE self){
   return rb_str_new2(prime_meridian->defn);
 }
 
+/**Return list of all projection types we know about.
+
+   call-seq: list -> Array of Proj4::ProjectionType
+
+ */
+static VALUE projection_type_list(VALUE self){
+  struct PJ_LIST *pt;
+  VALUE list = rb_ary_new();
+  for (pt = pj_get_list_ref(); pt->id; pt++){
+    rb_ary_push(list, Data_Wrap_Struct(cProjectionType, 0, 0, pt));
+  }
+  return list;
+}
+/**Get ID of this projection type.
+
+   call-seq: id -> String
+
+ */
+static VALUE projection_type_get_id(VALUE self){
+  struct PJ_LIST *pt;
+  Data_Get_Struct(self,struct PJ_LIST,pt);
+  return rb_str_new2(pt->id);
+}
+/**Get description of this projection type as a multiline string.
+
+   call-seq: descr -> String
+
+ */
+static VALUE projection_type_get_descr(VALUE self){
+  struct PJ_LIST *pt;
+  Data_Get_Struct(self,struct PJ_LIST,pt);
+  return rb_str_new2(*(pt->descr));
+}
+
 /**Return list of all units we know about.
 
    call-seq: list -> Array of Proj4::Unit
@@ -440,6 +477,12 @@ void Init_projrb(void) {
     rb_define_singleton_method(cPrimeMeridian,"list",prime_meridian_list,0);
     rb_define_method(cPrimeMeridian,"id",prime_meridian_get_id,0);
     rb_define_method(cPrimeMeridian,"defn",prime_meridian_get_defn,0);
+
+    /* The ProjectionType class holds information about projections types ('merc', 'aea', ...) known to Proj.4. */
+    cProjectionType = rb_define_class_under(mProjrb,"ProjectionType",cDef);
+    rb_define_singleton_method(cProjectionType,"list",projection_type_list,0);
+    rb_define_method(cProjectionType,"id",projection_type_get_id,0);
+    rb_define_method(cProjectionType,"descr",projection_type_get_descr,0);
 
     /* The Unit class holds information about the units ('m', 'km', 'mi', ...) known to Proj.4. */
     cUnit = rb_define_class_under(mProjrb,"Unit",cDef);

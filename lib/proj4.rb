@@ -41,7 +41,7 @@ module Proj4
 
     end
 
-    # Abstract base class for several types of definitions: Proj4::Datum, Proj4::Ellipsoid, Proj4::PrimeMeridian, Proj4::Unit.
+    # Abstract base class for several types of definitions: Proj4::Datum, Proj4::Ellipsoid, Proj4::PrimeMeridian, Proj4::ProjectionType, Proj4::Unit.
     class Def
 
         # Initialize function raises error. Definitions are always defined by the underlying Proj.4 library, you can't create them yourself.
@@ -112,6 +112,26 @@ module Proj4
         #
         def inspect
             "#<Proj4::PrimeMeridian id=\"#{id}\", defn=\"#{defn}\">"
+        end
+
+    end
+
+    class ProjectionType < Def
+
+        # Returns a projection type as string in format '#<Proj4::PrimeMeridian id="...", name="...">'.
+        #
+        # call-seq: inspect -> String
+        #
+        def inspect
+            "#<Proj4::ProjectionType id=\"#{id}\", name=\"#{name}\">"
+        end
+
+        # Gets name of this projection type.
+        #
+        # call-seq: name -> String
+        #
+        def name
+            descr.sub(/\n.*/m, '')
         end
 
     end
