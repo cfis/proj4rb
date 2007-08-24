@@ -1,8 +1,12 @@
 ENV['PROJ_LIB'] = File.dirname(__FILE__) + '/../data'
 require 'projrb'
 
-# Ruby bindings for the Proj4 cartographic projection library.
+# Ruby bindings for the Proj.4 cartographic projection library.
 module Proj4
+
+    # Some Exception.
+    class Error < StandardError
+    end
 
     # The UV class holds one coordinate pair. Can be either lon/lat or x/y.
     class UV
@@ -39,6 +43,25 @@ module Proj4
             Proj4::UV.new( uvd.u * Proj4::RAD_TO_DEG, uvd.v * Proj4::RAD_TO_DEG)
         end
 
+    end
+
+    # This class represents a point in space in either lon/lat or projected coordinates.
+    class Point
+
+        # x coordinate or longitude
+        attr_accessor :x
+
+        # y coordinate or latitude
+        attr_accessor :y
+
+        # z coordinate
+        attr_accessor :z
+
+        def initialize(x, y, z=0)
+            @x = x
+            @y = y
+            @z = z
+        end
     end
 
     # Abstract base class for several types of definitions: Proj4::Datum, Proj4::Ellipsoid, Proj4::PrimeMeridian, Proj4::ProjectionType, Proj4::Unit.

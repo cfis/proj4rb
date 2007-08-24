@@ -196,6 +196,38 @@ static VALUE proj_inverse(VALUE self,VALUE uv){
   return Data_Wrap_Struct(cUV,0,uv_free,pResult);
 }
 
+/**Transforms a point from one projection to another.
+
+   call-seq: transform(dstproj, point) -> Proj4::Point
+
+ */
+static VALUE proj_transform(VALUE self, VALUE dst, VALUE point){
+  _wrap_pj* wpjsrc;
+  _wrap_pj* wpjdst;
+  double array_x[1];
+  double array_y[1];
+  double array_z[1];
+  int result;
+  VALUE coordinates[3];
+
+  Data_Get_Struct(self,_wrap_pj,wpjsrc);
+  Data_Get_Struct(dst,_wrap_pj,wpjdst);
+
+  array_x[0] = NUM2DBL( rb_ivar_get(point, rb_intern("@x")) );
+  array_y[0] = NUM2DBL( rb_ivar_get(point, rb_intern("@y")) );
+  array_z[0] = NUM2DBL( rb_ivar_get(point, rb_intern("@z")) );
+
+  result = pj_transform(wpjsrc->pj, wpjdst->pj, 1, 1, array_x, array_y, array_z);
+  if (! result) {
+    coordinates[0] = rb_float_new(array_x[0]);
+    coordinates[1] = rb_float_new(array_y[0]);
+    coordinates[2] = rb_float_new(array_z[0]);
+    return rb_class_new_instance(3, coordinates, rb_path2class("Proj4::Point"));
+  } else {
+    rb_raise(rb_path2class("Proj4::Error"), pj_strerrno(result) );
+  }
+}
+
 #if PJ_VERSION >= 449
 /**Return list of all datums we know about.
 
@@ -452,6 +484,7 @@ void Init_projrb(void) {
   rb_define_alias(cProjection,"isGeocentric?","isGeocent?");
   rb_define_method(cProjection,"forward",proj_forward,1);
   rb_define_method(cProjection,"inverse",proj_inverse,1);
+  rb_define_method(cProjection,"transform",proj_transform,2);
 
   #if PJ_VERSION >= 449
     cDef = rb_define_class_under(mProjrb,"Def",rb_cObject);
