@@ -194,48 +194,58 @@ static VALUE proj_inverse(VALUE self,VALUE uv){
 }
 
 #if PJ_VERSION >= 449
-/**Return list of all units we know about.
+/**Return list of all datums we know about.
 
-   call-seq: list -> Array of Proj4::Unit
+   call-seq: list -> Array of Proj4::Datum
 
  */
-static VALUE unit_list(VALUE self){
-  struct PJ_UNITS *unit;
+static VALUE datum_list(VALUE self){
+  struct PJ_DATUMS *datum;
   VALUE list = rb_ary_new();
-  for (unit = pj_get_units_ref(); unit->id; unit++){
-    rb_ary_push(list, Data_Wrap_Struct(cUnit, 0, 0, unit));
+  for (datum = pj_get_datums_ref(); datum->id; datum++){
+    rb_ary_push(list, Data_Wrap_Struct(cDatum, 0, 0, datum));
   }
   return list;
 }
-/**Get ID of the unit.
+/**Get ID of the datum.
 
    call-seq: id -> String
 
  */
-static VALUE unit_get_id(VALUE self){
-  struct PJ_UNITS *unit;
-  Data_Get_Struct(self,struct PJ_UNITS,unit);
-  return rb_str_new2(unit->id);
+static VALUE datum_get_id(VALUE self){
+  struct PJ_DATUMS *datum;
+  Data_Get_Struct(self,struct PJ_DATUMS,datum);
+  return rb_str_new2(datum->id);
 }
-/**Get conversion factor of this unit to a meter. Note that this is a string, it can either contain a floating point number or it can be in the form numerator/denominator.
+/**Get ID of the ellipse used by the datum.
 
-   call-seq: to_meter -> String
+   call-seq: ellipse_id -> String
 
  */
-static VALUE unit_get_to_meter(VALUE self){
-  struct PJ_UNITS *unit;
-  Data_Get_Struct(self,struct PJ_UNITS,unit);
-  return rb_str_new2(unit->to_meter);
+static VALUE datum_get_ellipse_id(VALUE self){
+  struct PJ_DATUMS *datum;
+  Data_Get_Struct(self,struct PJ_DATUMS,datum);
+  return rb_str_new2(datum->ellipse_id);
 }
-/**Get name (description) of the unit.
+/**Get definition of the datum.
 
-   call-seq: name -> String
+   call-seq: defn -> String
 
  */
-static VALUE unit_get_name(VALUE self){
-  struct PJ_UNITS *unit;
-  Data_Get_Struct(self,struct PJ_UNITS,unit);
-  return rb_str_new2(unit->name);
+static VALUE datum_get_defn(VALUE self){
+  struct PJ_DATUMS *datum;
+  Data_Get_Struct(self,struct PJ_DATUMS,datum);
+  return rb_str_new2(datum->defn);
+}
+/**Get comments about the datum.
+
+   call-seq: comments -> String
+
+ */
+static VALUE datum_get_comments(VALUE self){
+  struct PJ_DATUMS *datum;
+  Data_Get_Struct(self,struct PJ_DATUMS,datum);
+  return rb_str_new2(datum->comments);
 }
 
 /**Return list of all reference ellipsoids we know about.
@@ -292,60 +302,6 @@ static VALUE ellipsoid_get_name(VALUE self){
   return rb_str_new2(el->name);
 }
 
-/**Return list of all datums we know about.
-
-   call-seq: list -> Array of Proj4::Datum
-
- */
-static VALUE datum_list(VALUE self){
-  struct PJ_DATUMS *datum;
-  VALUE list = rb_ary_new();
-  for (datum = pj_get_datums_ref(); datum->id; datum++){
-    rb_ary_push(list, Data_Wrap_Struct(cDatum, 0, 0, datum));
-  }
-  return list;
-}
-/**Get ID of the datum.
-
-   call-seq: id -> String
-
- */
-static VALUE datum_get_id(VALUE self){
-  struct PJ_DATUMS *datum;
-  Data_Get_Struct(self,struct PJ_DATUMS,datum);
-  return rb_str_new2(datum->id);
-}
-/**Get ID of the ellipse used by the datum.
-
-   call-seq: ellipse_id -> String
-
- */
-static VALUE datum_get_ellipse_id(VALUE self){
-  struct PJ_DATUMS *datum;
-  Data_Get_Struct(self,struct PJ_DATUMS,datum);
-  return rb_str_new2(datum->ellipse_id);
-}
-/**Get definition of the datum.
-
-   call-seq: defn -> String
-
- */
-static VALUE datum_get_defn(VALUE self){
-  struct PJ_DATUMS *datum;
-  Data_Get_Struct(self,struct PJ_DATUMS,datum);
-  return rb_str_new2(datum->defn);
-}
-/**Get comments about the datum.
-
-   call-seq: comments -> String
-
- */
-static VALUE datum_get_comments(VALUE self){
-  struct PJ_DATUMS *datum;
-  Data_Get_Struct(self,struct PJ_DATUMS,datum);
-  return rb_str_new2(datum->comments);
-}
-
 /**Return list of all prime meridians we know about.
 
    call-seq: list -> Array of Proj4::PrimeMeridian
@@ -379,6 +335,51 @@ static VALUE prime_meridian_get_defn(VALUE self){
   Data_Get_Struct(self,struct PJ_PRIME_MERIDIANS,prime_meridian);
   return rb_str_new2(prime_meridian->defn);
 }
+
+/**Return list of all units we know about.
+
+   call-seq: list -> Array of Proj4::Unit
+
+ */
+static VALUE unit_list(VALUE self){
+  struct PJ_UNITS *unit;
+  VALUE list = rb_ary_new();
+  for (unit = pj_get_units_ref(); unit->id; unit++){
+    rb_ary_push(list, Data_Wrap_Struct(cUnit, 0, 0, unit));
+  }
+  return list;
+}
+/**Get ID of the unit.
+
+   call-seq: id -> String
+
+ */
+static VALUE unit_get_id(VALUE self){
+  struct PJ_UNITS *unit;
+  Data_Get_Struct(self,struct PJ_UNITS,unit);
+  return rb_str_new2(unit->id);
+}
+/**Get conversion factor of this unit to a meter. Note that this is a string, it can either contain a floating point number or it can be in the form numerator/denominator.
+
+   call-seq: to_meter -> String
+
+ */
+static VALUE unit_get_to_meter(VALUE self){
+  struct PJ_UNITS *unit;
+  Data_Get_Struct(self,struct PJ_UNITS,unit);
+  return rb_str_new2(unit->to_meter);
+}
+/**Get name (description) of the unit.
+
+   call-seq: name -> String
+
+ */
+static VALUE unit_get_name(VALUE self){
+  struct PJ_UNITS *unit;
+  Data_Get_Struct(self,struct PJ_UNITS,unit);
+  return rb_str_new2(unit->name);
+}
+
 #endif
 
 void Init_projrb(void) {
@@ -418,12 +419,13 @@ void Init_projrb(void) {
   #if PJ_VERSION >= 449
     cDef = rb_define_class_under(mProjrb,"Def",rb_cObject);
 
-    /* The Unit class holds information about the units ('m', 'km', 'mi', ...) known to Proj.4. */
-    cUnit = rb_define_class_under(mProjrb,"Unit",cDef);
-    rb_define_singleton_method(cUnit,"list",unit_list,0);
-    rb_define_method(cUnit,"id",unit_get_id,0);
-    rb_define_method(cUnit,"to_meter",unit_get_to_meter,0);
-    rb_define_method(cUnit,"name",unit_get_name,0);
+    /* The Datum class holds information about datums ('WGS84', 'potsdam', ...) known to Proj.4. */
+    cDatum = rb_define_class_under(mProjrb,"Datum",cDef);
+    rb_define_singleton_method(cDatum,"list",datum_list,0);
+    rb_define_method(cDatum,"id",datum_get_id,0);
+    rb_define_method(cDatum,"ellipse_id",datum_get_ellipse_id,0);
+    rb_define_method(cDatum,"defn",datum_get_defn,0);
+    rb_define_method(cDatum,"comments",datum_get_comments,0);
 
     /* The Ellipsoid class holds information about ellipsoids ('WGS84', 'bessel', ...) known to Proj.4. */
     cEllipsoid = rb_define_class_under(mProjrb,"Ellipsoid",cDef);
@@ -433,19 +435,19 @@ void Init_projrb(void) {
     rb_define_method(cEllipsoid,"ell",ellipsoid_get_ell,0);
     rb_define_method(cEllipsoid,"name",ellipsoid_get_name,0);
 
-    /* The Datum class holds information about datums ('WGS84', 'potsdam', ...) known to Proj.4. */
-    cDatum = rb_define_class_under(mProjrb,"Datum",cDef);
-    rb_define_singleton_method(cDatum,"list",datum_list,0);
-    rb_define_method(cDatum,"id",datum_get_id,0);
-    rb_define_method(cDatum,"ellipse_id",datum_get_ellipse_id,0);
-    rb_define_method(cDatum,"defn",datum_get_defn,0);
-    rb_define_method(cDatum,"comments",datum_get_comments,0);
-
     /* The PrimeMeridian class holds information about prime meridians ('greenwich', 'lisbon', ...) known to Proj.4. */
     cPrimeMeridian = rb_define_class_under(mProjrb,"PrimeMeridian",cDef);
     rb_define_singleton_method(cPrimeMeridian,"list",prime_meridian_list,0);
     rb_define_method(cPrimeMeridian,"id",prime_meridian_get_id,0);
     rb_define_method(cPrimeMeridian,"defn",prime_meridian_get_defn,0);
+
+    /* The Unit class holds information about the units ('m', 'km', 'mi', ...) known to Proj.4. */
+    cUnit = rb_define_class_under(mProjrb,"Unit",cDef);
+    rb_define_singleton_method(cUnit,"list",unit_list,0);
+    rb_define_method(cUnit,"id",unit_get_id,0);
+    rb_define_method(cUnit,"to_meter",unit_get_to_meter,0);
+    rb_define_method(cUnit,"name",unit_get_name,0);
+
   #endif
 
 }
