@@ -3,6 +3,7 @@
 #include "proj_api.h"
  
 static VALUE mProjrb;
+static VALUE cDef;
 static VALUE cUnit;
 static VALUE cEllipsoid;
 static VALUE cDatum;
@@ -345,15 +346,17 @@ void Init_projrb(void) {
   rb_define_method(cProjection,"inverse",proj_inverse,1);
 
   #if PJ_VERSION >= 449
+    cDef = rb_define_class_under(mProjrb,"Def",rb_cObject);
+
     /* The Unit class holds information about the units (m, km, mi(les), ...) known to Proj.4. */
-    cUnit = rb_define_class_under(mProjrb,"Unit",rb_cObject);
+    cUnit = rb_define_class_under(mProjrb,"Unit",cDef);
     rb_define_singleton_method(cUnit,"list",unit_list,0);
     rb_define_method(cUnit,"id",unit_get_id,0);
     rb_define_method(cUnit,"to_meter",unit_get_to_meter,0);
     rb_define_method(cUnit,"name",unit_get_name,0);
 
     /* The Ellipsoid class holds information about ellipsoids (WGS84, Bessel, ...) known to Proj.4. */
-    cEllipsoid = rb_define_class_under(mProjrb,"Ellipsoid",rb_cObject);
+    cEllipsoid = rb_define_class_under(mProjrb,"Ellipsoid",cDef);
     rb_define_singleton_method(cEllipsoid,"list",ellipsoid_list,0);
     rb_define_method(cEllipsoid,"id",ellipsoid_get_id,0);
     rb_define_method(cEllipsoid,"major",ellipsoid_get_major,0);
@@ -361,7 +364,7 @@ void Init_projrb(void) {
     rb_define_method(cEllipsoid,"name",ellipsoid_get_name,0);
 
     /* The Datum class holds information about datums (WGS84, potsdam, ...) known to Proj.4. */
-    cDatum = rb_define_class_under(mProjrb,"Datum",rb_cObject);
+    cDatum = rb_define_class_under(mProjrb,"Datum",cDef);
     rb_define_singleton_method(cDatum,"list",datum_list,0);
     rb_define_method(cDatum,"id",datum_get_id,0);
     rb_define_method(cDatum,"ellipse_id",datum_get_ellipse_id,0);
@@ -369,7 +372,7 @@ void Init_projrb(void) {
     rb_define_method(cDatum,"comments",datum_get_comments,0);
 
     /* The PrimeMeridian class holds information about prime meridians (greenwich, lisbon, ...) known to Proj.4. */
-    cPrimeMeridian = rb_define_class_under(mProjrb,"PrimeMeridian",rb_cObject);
+    cPrimeMeridian = rb_define_class_under(mProjrb,"PrimeMeridian",cDef);
     rb_define_singleton_method(cPrimeMeridian,"list",prime_meridian_list,0);
     rb_define_method(cPrimeMeridian,"id",prime_meridian_get_id,0);
     rb_define_method(cPrimeMeridian,"defn",prime_meridian_get_defn,0);

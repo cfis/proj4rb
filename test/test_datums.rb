@@ -33,4 +33,10 @@ class DatumsTest < Test::Unit::TestCase
         assert_nil datum
     end
 
+    def test_new
+        assert_raise TypeError do
+            Proj4::Datum.new
+        end
+    end
+
 end

@@ -33,4 +33,10 @@ class EllipsoidsTest < Test::Unit::TestCase
         assert_nil ellipsoid
     end
 
+    def test_new
+        assert_raise TypeError do
+            Proj4::Ellipsoid.new
+        end
+    end
+
 end

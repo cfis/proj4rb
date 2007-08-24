@@ -33,4 +33,10 @@ class UnitsTest < Test::Unit::TestCase
         assert_nil unit
     end
 
+    def test_new
+        assert_raise TypeError do
+            Proj4::Unit.new
+        end
+    end
+
 end

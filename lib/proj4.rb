@@ -35,27 +35,37 @@ module Proj4
 
     end
 
-    class Unit
+    # Abstract base class for several types of definitions: Proj4::Datum, Proj4::Ellipsoid, Proj4::PrimeMeridian, Proj4::Unit.
+    class Def
 
-        # Get the unit with given id.
+        # Initialize function raises error. Definitions are always defined by the underlying Proj.4 library, you can't create them yourself.
+        def initialize # :nodoc:
+            raise TypeError, "You can't created objects of this type yourself."
+        end
+
+        # Get the definition with given id.
         def self.get(id)
             self.list.select{ |u| u.id == id }.first
         end
 
-        # Compares units by comparing ids.
+        # Compares definitions by comparing ids.
         def ==(other)
             self.id == other.id
         end
 
-        # Compares units by comparing ids.
+        # Compares definitions by comparing ids.
         def <=>(other)
             self.id <=> other.id
         end
 
-        # Stringify unit.
+        # Stringify definition. Returns ID of this definition.
         def to_s
             id
         end
+
+    end
+
+    class Unit < Def
 
         # Returns unit definition as string in format '#<Proj4::Unit id="...", to_meter="...", name="...">'.
         def inspect
@@ -64,27 +74,7 @@ module Proj4
 
     end
 
-    class Ellipsoid
-
-        # Get the ellipsoid with given id.
-        def self.get(id)
-            self.list.select{ |u| u.id == id }.first
-        end
-
-        # Compares ellipsoids by comparing ids.
-        def ==(other)
-            self.id == other.id
-        end
-
-        # Compares ellipsoids by comparing ids.
-        def <=>(other)
-            self.id <=> other.id
-        end
-
-        # Stringify ellipsoid.
-        def to_s
-            id
-        end
+    class Ellipsoid < Def
 
         # Returns ellipsoid definition as string in format '#<Proj4::Ellipsoid id="...", major="...", ell="...", name="...">'.
         def inspect
@@ -93,27 +83,7 @@ module Proj4
 
     end
 
-    class Datum
-
-        # Get the datum with given id.
-        def self.get(id)
-            self.list.select{ |u| u.id == id }.first
-        end
-
-        # Compares datums by comparing ids.
-        def ==(other)
-            self.id == other.id
-        end
-
-        # Compares datums by comparing ids.
-        def <=>(other)
-            self.id <=> other.id
-        end
-
-        # Stringify datum.
-        def to_s
-            id
-        end
+    class Datum < Def
 
         # Returns datum definition as string in format '#<Proj4::Datum id="...", ellipse_id="...", defn="...", comments="...">'.
         def inspect
@@ -122,27 +92,7 @@ module Proj4
 
     end
 
-    class PrimeMeridian
-
-        # Get the prime meridian with given id.
-        def self.get(id)
-            self.list.select{ |u| u.id == id }.first
-        end
-
-        # Compares prime meridians by comparing ids.
-        def ==(other)
-            self.id == other.id
-        end
-
-        # Compares prime meridians by comparing ids.
-        def <=>(other)
-            self.id <=> other.id
-        end
-
-        # Stringify a prime meridian.
-        def to_s
-            id
-        end
+    class PrimeMeridian < Def
 
         # Returns a prime meridian definition as string in format '#<Proj4::PrimeMeridian id="...", defn="...">'.
         def inspect

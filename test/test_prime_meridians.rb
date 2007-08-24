@@ -32,4 +32,10 @@ class PrimeMeridiansTest < Test::Unit::TestCase
         assert_nil prime_meridian
     end
 
+    def test_new
+        assert_raise TypeError do
+            Proj4::PrimeMeridian.new
+        end
+    end
+
 end
