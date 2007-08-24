@@ -25,7 +25,10 @@ static VALUE uv_alloc(VALUE klass) {
 }
 
 /**
-   Creates a new UV object. Can contain both lat/lon and projected points.
+   Creates a new UV object. Parameters u, v can either be lon, lat or projected coordinates x, y.
+
+   call-seq:new(u, v)
+
 */
 static VALUE uv_initialize(VALUE self, VALUE u, VALUE v){
   projUV* uv;
@@ -36,7 +39,11 @@ static VALUE uv_initialize(VALUE self, VALUE u, VALUE v){
 }
 
 /**
-   :nodoc: Creates a new UV object as a copy of an old one (for dup and clone methods).
+   Creates a new UV object as a copy of an existing one.
+
+   call-seq:clone -> Proj4:UV
+    dup -> Proj4::UV
+
 */
 static VALUE uv_init_copy(VALUE copy,VALUE orig){
   projUV* copy_uv;
@@ -56,6 +63,9 @@ static VALUE uv_init_copy(VALUE copy,VALUE orig){
 
 /**
    Gives the +u+ dimension of the UV object.
+
+   call-seq:u -> Float
+
 */
 static VALUE uv_get_u(VALUE self){
   projUV* uv;
@@ -65,6 +75,9 @@ static VALUE uv_get_u(VALUE self){
 
 /**
    Gives the +v+ dimension of the UV object.
+
+   call-seq:v -> Float
+
 */
 static VALUE uv_get_v(VALUE self){
   projUV* uv;
@@ -74,6 +87,9 @@ static VALUE uv_get_v(VALUE self){
 
 /**
    Sets the +u+ dimension of the UV object.
+
+   call-seq: uv.u = u -> Float
+
 */
 static VALUE uv_set_u(VALUE self, VALUE u){
   projUV* uv;
@@ -85,6 +101,9 @@ static VALUE uv_set_u(VALUE self, VALUE u){
 
 /**
    Sets the +v+ dimension of the UV object.
+
+   call-seq: uv.v = v -> Float
+
 */
 static VALUE uv_set_v(VALUE self, VALUE v){
   projUV* uv;
@@ -176,6 +195,9 @@ static VALUE proj_inverse(VALUE self,VALUE uv){
 
 #if PJ_VERSION >= 449
 /**Return list of all units we know about.
+
+   call-seq: list -> Array of Proj4::Unit
+
  */
 static VALUE unit_list(VALUE self){
   struct PJ_UNITS *unit;
@@ -186,6 +208,9 @@ static VALUE unit_list(VALUE self){
   return list;
 }
 /**Get ID of the unit.
+
+   call-seq: id -> String
+
  */
 static VALUE unit_get_id(VALUE self){
   struct PJ_UNITS *unit;
@@ -193,6 +218,9 @@ static VALUE unit_get_id(VALUE self){
   return rb_str_new2(unit->id);
 }
 /**Get conversion factor of this unit to a meter. Note that this is a string, it can either contain a floating point number or it can be in the form numerator/denominator.
+
+   call-seq: to_meter -> String
+
  */
 static VALUE unit_get_to_meter(VALUE self){
   struct PJ_UNITS *unit;
@@ -200,6 +228,9 @@ static VALUE unit_get_to_meter(VALUE self){
   return rb_str_new2(unit->to_meter);
 }
 /**Get name (description) of the unit.
+
+   call-seq: name -> String
+
  */
 static VALUE unit_get_name(VALUE self){
   struct PJ_UNITS *unit;
@@ -208,6 +239,9 @@ static VALUE unit_get_name(VALUE self){
 }
 
 /**Return list of all reference ellipsoids we know about.
+
+   call-seq: list -> Array of Proj4::Ellipsoid
+
  */
 static VALUE ellipsoid_list(VALUE self){
   struct PJ_ELLPS *el;
@@ -218,6 +252,9 @@ static VALUE ellipsoid_list(VALUE self){
   return list;
 }
 /**Get ID of the reference ellipsoid.
+
+   call-seq: id -> String
+
  */
 static VALUE ellipsoid_get_id(VALUE self){
   struct PJ_ELLPS *el;
@@ -225,6 +262,9 @@ static VALUE ellipsoid_get_id(VALUE self){
   return rb_str_new2(el->id);
 }
 /**Get equatorial radius (semi-major axis, a value) of the reference ellipsoid.
+
+   call-seq: major -> String
+
  */
 static VALUE ellipsoid_get_major(VALUE self){
   struct PJ_ELLPS *el;
@@ -232,6 +272,9 @@ static VALUE ellipsoid_get_major(VALUE self){
   return rb_str_new2(el->major);
 }
 /**Get elliptical parameter of the reference ellipsoid. This is either the polar radius (semi-minor axis, b value) or the inverse flattening (1/f, rf).
+
+   call-seq: ell -> String
+
  */
 static VALUE ellipsoid_get_ell(VALUE self){
   struct PJ_ELLPS *el;
@@ -239,6 +282,9 @@ static VALUE ellipsoid_get_ell(VALUE self){
   return rb_str_new2(el->ell);
 }
 /**Get name of the reference ellipsoid.
+
+   call-seq: name -> String
+
  */
 static VALUE ellipsoid_get_name(VALUE self){
   struct PJ_ELLPS *el;
@@ -247,6 +293,9 @@ static VALUE ellipsoid_get_name(VALUE self){
 }
 
 /**Return list of all datums we know about.
+
+   call-seq: list -> Array of Proj4::Datum
+
  */
 static VALUE datum_list(VALUE self){
   struct PJ_DATUMS *datum;
@@ -257,6 +306,9 @@ static VALUE datum_list(VALUE self){
   return list;
 }
 /**Get ID of the datum.
+
+   call-seq: id -> String
+
  */
 static VALUE datum_get_id(VALUE self){
   struct PJ_DATUMS *datum;
@@ -264,6 +316,9 @@ static VALUE datum_get_id(VALUE self){
   return rb_str_new2(datum->id);
 }
 /**Get ID of the ellipse used by the datum.
+
+   call-seq: ellipse_id -> String
+
  */
 static VALUE datum_get_ellipse_id(VALUE self){
   struct PJ_DATUMS *datum;
@@ -271,6 +326,9 @@ static VALUE datum_get_ellipse_id(VALUE self){
   return rb_str_new2(datum->ellipse_id);
 }
 /**Get definition of the datum.
+
+   call-seq: defn -> String
+
  */
 static VALUE datum_get_defn(VALUE self){
   struct PJ_DATUMS *datum;
@@ -278,6 +336,9 @@ static VALUE datum_get_defn(VALUE self){
   return rb_str_new2(datum->defn);
 }
 /**Get comments about the datum.
+
+   call-seq: comments -> String
+
  */
 static VALUE datum_get_comments(VALUE self){
   struct PJ_DATUMS *datum;
@@ -286,6 +347,9 @@ static VALUE datum_get_comments(VALUE self){
 }
 
 /**Return list of all prime meridians we know about.
+
+   call-seq: list -> Array of Proj4::PrimeMeridian
+
  */
 static VALUE prime_meridian_list(VALUE self){
   struct PJ_PRIME_MERIDIANS *prime_meridian;
@@ -296,6 +360,9 @@ static VALUE prime_meridian_list(VALUE self){
   return list;
 }
 /**Get ID of this prime_meridian.
+
+   call-seq: id -> String
+
  */
 static VALUE prime_meridian_get_id(VALUE self){
   struct PJ_PRIME_MERIDIANS *prime_meridian;
@@ -303,6 +370,9 @@ static VALUE prime_meridian_get_id(VALUE self){
   return rb_str_new2(prime_meridian->id);
 }
 /**Get definition of this prime_meridian.
+
+   call-seq: defn -> String
+
  */
 static VALUE prime_meridian_get_defn(VALUE self){
   struct PJ_PRIME_MERIDIANS *prime_meridian;
@@ -348,14 +418,14 @@ void Init_projrb(void) {
   #if PJ_VERSION >= 449
     cDef = rb_define_class_under(mProjrb,"Def",rb_cObject);
 
-    /* The Unit class holds information about the units (m, km, mi(les), ...) known to Proj.4. */
+    /* The Unit class holds information about the units ('m', 'km', 'mi', ...) known to Proj.4. */
     cUnit = rb_define_class_under(mProjrb,"Unit",cDef);
     rb_define_singleton_method(cUnit,"list",unit_list,0);
     rb_define_method(cUnit,"id",unit_get_id,0);
     rb_define_method(cUnit,"to_meter",unit_get_to_meter,0);
     rb_define_method(cUnit,"name",unit_get_name,0);
 
-    /* The Ellipsoid class holds information about ellipsoids (WGS84, Bessel, ...) known to Proj.4. */
+    /* The Ellipsoid class holds information about ellipsoids ('WGS84', 'bessel', ...) known to Proj.4. */
     cEllipsoid = rb_define_class_under(mProjrb,"Ellipsoid",cDef);
     rb_define_singleton_method(cEllipsoid,"list",ellipsoid_list,0);
     rb_define_method(cEllipsoid,"id",ellipsoid_get_id,0);
@@ -363,7 +433,7 @@ void Init_projrb(void) {
     rb_define_method(cEllipsoid,"ell",ellipsoid_get_ell,0);
     rb_define_method(cEllipsoid,"name",ellipsoid_get_name,0);
 
-    /* The Datum class holds information about datums (WGS84, potsdam, ...) known to Proj.4. */
+    /* The Datum class holds information about datums ('WGS84', 'potsdam', ...) known to Proj.4. */
     cDatum = rb_define_class_under(mProjrb,"Datum",cDef);
     rb_define_singleton_method(cDatum,"list",datum_list,0);
     rb_define_method(cDatum,"id",datum_get_id,0);
@@ -371,7 +441,7 @@ void Init_projrb(void) {
     rb_define_method(cDatum,"defn",datum_get_defn,0);
     rb_define_method(cDatum,"comments",datum_get_comments,0);
 
-    /* The PrimeMeridian class holds information about prime meridians (greenwich, lisbon, ...) known to Proj.4. */
+    /* The PrimeMeridian class holds information about prime meridians ('greenwich', 'lisbon', ...) known to Proj.4. */
     cPrimeMeridian = rb_define_class_under(mProjrb,"PrimeMeridian",cDef);
     rb_define_singleton_method(cPrimeMeridian,"list",prime_meridian_list,0);
     rb_define_method(cPrimeMeridian,"id",prime_meridian_get_id,0);

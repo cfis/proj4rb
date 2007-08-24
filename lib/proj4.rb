@@ -8,11 +8,17 @@ module Proj4
     class UV
 
         # Compare to UV instances, they are equal if both coordinates are equal, respectively.
+        #
+        # call-seq: uv == other -> true or false
+        #
         def ==(uv)
             self.u == uv.u && self.v == uv.v
         end
 
         # Create string in format 'x,y'.
+        #
+        # call-seq: to_s -> String
+        #
         def to_s
             "#{u},#{v}"
         end
@@ -49,36 +55,27 @@ module Proj4
         end
 
         # Compares definitions by comparing ids.
+        #
+        # call-seq: one == other -> true or false
+        #
         def ==(other)
             self.id == other.id
         end
 
         # Compares definitions by comparing ids.
+        #
+        # call-seq: one <=> other -> -1, 0, 1
+        #
         def <=>(other)
             self.id <=> other.id
         end
 
         # Stringify definition. Returns ID of this definition.
+        #
+        # call-seq: to_s -> String
+        #
         def to_s
             id
-        end
-
-    end
-
-    class Unit < Def
-
-        # Returns unit definition as string in format '#<Proj4::Unit id="...", to_meter="...", name="...">'.
-        def inspect
-            "#<Proj4::Unit id=\"#{id}\", to_meter=\"#{to_meter}\", name=\"#{name}\">"
-        end
-
-    end
-
-    class Ellipsoid < Def
-
-        # Returns ellipsoid definition as string in format '#<Proj4::Ellipsoid id="...", major="...", ell="...", name="...">'.
-        def inspect
-            "#<Proj4::Ellipsoid id=\"#{id}\", major=\"#{major}\", ell=\"#{ell}\", name=\"#{name}\">"
         end
 
     end
@@ -86,8 +83,23 @@ module Proj4
     class Datum < Def
 
         # Returns datum definition as string in format '#<Proj4::Datum id="...", ellipse_id="...", defn="...", comments="...">'.
+        #
+        # call-seq: inspect -> String
+        #
         def inspect
             "#<Proj4::Datum id=\"#{id}\", ellipse_id=\"#{ellipse_id}\", defn=\"#{defn}\", comments=\"#{comments}\">"
+        end
+
+    end
+
+    class Ellipsoid < Def
+
+        # Returns ellipsoid definition as string in format '#<Proj4::Ellipsoid id="...", major="...", ell="...", name="...">'.
+        #
+        # call-seq: inspect -> String
+        #
+        def inspect
+            "#<Proj4::Ellipsoid id=\"#{id}\", major=\"#{major}\", ell=\"#{ell}\", name=\"#{name}\">"
         end
 
     end
@@ -95,8 +107,23 @@ module Proj4
     class PrimeMeridian < Def
 
         # Returns a prime meridian definition as string in format '#<Proj4::PrimeMeridian id="...", defn="...">'.
+        #
+        # call-seq: inspect -> String
+        #
         def inspect
             "#<Proj4::PrimeMeridian id=\"#{id}\", defn=\"#{defn}\">"
+        end
+
+    end
+
+    class Unit < Def
+
+        # Returns unit definition as string in format '#<Proj4::Unit id="...", to_meter="...", name="...">'.
+        #
+        # call-seq: inspect -> String
+        #
+        def inspect
+            "#<Proj4::Unit id=\"#{id}\", to_meter=\"#{to_meter}\", name=\"#{name}\">"
         end
 
     end
