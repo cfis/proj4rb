@@ -39,7 +39,12 @@ module Proj4
 
         # Get the unit with given id.
         def self.get(id)
-            self.listUnits.select{ |u| u.id == id }.first
+            self.list.select{ |u| u.id == id }.first
+        end
+
+        # Compares units by comparing ids.
+        def ==(other)
+            self.id == other.id
         end
 
         # Compares units by comparing ids.
@@ -55,6 +60,93 @@ module Proj4
         # Returns unit definition as string in format '#<Proj4::Unit id="...", to_meter="...", name="...">'.
         def inspect
             "#<Proj4::Unit id=\"#{id}\", to_meter=\"#{to_meter}\", name=\"#{name}\">"
+        end
+
+    end
+
+    class Ellipsoid
+
+        # Get the ellipsoid with given id.
+        def self.get(id)
+            self.list.select{ |u| u.id == id }.first
+        end
+
+        # Compares ellipsoids by comparing ids.
+        def ==(other)
+            self.id == other.id
+        end
+
+        # Compares ellipsoids by comparing ids.
+        def <=>(other)
+            self.id <=> other.id
+        end
+
+        # Stringify ellipsoid.
+        def to_s
+            id
+        end
+
+        # Returns ellipsoid definition as string in format '#<Proj4::Ellipsoid id="...", major="...", ell="...", name="...">'.
+        def inspect
+            "#<Proj4::Ellipsoid id=\"#{id}\", major=\"#{major}\", ell=\"#{ell}\", name=\"#{name}\">"
+        end
+
+    end
+
+    class Datum
+
+        # Get the datum with given id.
+        def self.get(id)
+            self.list.select{ |u| u.id == id }.first
+        end
+
+        # Compares datums by comparing ids.
+        def ==(other)
+            self.id == other.id
+        end
+
+        # Compares datums by comparing ids.
+        def <=>(other)
+            self.id <=> other.id
+        end
+
+        # Stringify datum.
+        def to_s
+            id
+        end
+
+        # Returns datum definition as string in format '#<Proj4::Datum id="...", ellipse_id="...", defn="...", comments="...">'.
+        def inspect
+            "#<Proj4::Datum id=\"#{id}\", ellipse_id=\"#{ellipse_id}\", defn=\"#{defn}\", comments=\"#{comments}\">"
+        end
+
+    end
+
+    class PrimeMeridian
+
+        # Get the prime meridian with given id.
+        def self.get(id)
+            self.list.select{ |u| u.id == id }.first
+        end
+
+        # Compares prime meridians by comparing ids.
+        def ==(other)
+            self.id == other.id
+        end
+
+        # Compares prime meridians by comparing ids.
+        def <=>(other)
+            self.id <=> other.id
+        end
+
+        # Stringify a prime meridian.
+        def to_s
+            id
+        end
+
+        # Returns a prime meridian definition as string in format '#<Proj4::PrimeMeridian id="...", defn="...">'.
+        def inspect
+            "#<Proj4::PrimeMeridian id=\"#{id}\", defn=\"#{defn}\">"
         end
 
     end

@@ -5,9 +5,11 @@ require 'test/unit'
 class UnitsTest < Test::Unit::TestCase
 
     def test_get_all
-        all_units = %w{km m dm cm mm kmi in ft yd mi fath ch link us-in us-ft us-yd us-ch us-mi ind-yd ind-ft ind-ch}.sort
-        units = Proj4::Unit.listUnits.sort
-        assert_equal all_units, units.collect{ |u| u.id }
+        units = Proj4::Unit.list.sort.collect{ |u| u.id }
+        assert units.index('km')
+        assert units.index('m')
+        assert units.index('yd')
+        assert units.index('us-mi')
     end
 
     def test_one
@@ -18,6 +20,12 @@ class UnitsTest < Test::Unit::TestCase
         assert_equal '1000.', unit.to_meter
         assert_equal 'Kilometer', unit.name
         assert_equal '#<Proj4::Unit id="km", to_meter="1000.", name="Kilometer">', unit.inspect
+    end
+
+    def test_compare
+        u1 = Proj4::Unit.get('km')
+        u2 = Proj4::Unit.get('km')
+        assert u1 == u2
     end
 
     def test_failed_get

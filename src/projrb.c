@@ -4,6 +4,9 @@
  
 static VALUE mProjrb;
 static VALUE cUnit;
+static VALUE cEllipsoid;
+static VALUE cDatum;
+static VALUE cPrimeMeridian;
 static VALUE cUV;
 static VALUE cProjection;
 static VALUE cCs2Cs;
@@ -32,7 +35,7 @@ static VALUE uv_initialize(VALUE self, VALUE u, VALUE v){
 }
 
 /**
-   Creates a new UV object as a copy of an old one (for dup and clone methods).
+   :nodoc: Creates a new UV object as a copy of an old one (for dup and clone methods).
 */
 static VALUE uv_init_copy(VALUE copy,VALUE orig){
   projUV* copy_uv;
@@ -107,7 +110,7 @@ static VALUE proj_alloc(VALUE klass){
   return obj;
 }
 
-/** Creates a new projection. Takes an array of strings corresponding to a list of usual <tt>proj.exe</tt> initialization parameters.
+/** Creates a new projection object. Takes an array of strings corresponding to a list of usual <tt>proj.exe</tt> initialization parameters.
  */
 static VALUE proj_initialize(VALUE self, VALUE proj_params){
   _wrap_pj* wpj;
@@ -173,15 +176,15 @@ static VALUE proj_inverse(VALUE self,VALUE uv){
 #if PJ_VERSION >= 449
 /**Return list of all units we know about.
  */
-static VALUE unit_list_units(VALUE self){
+static VALUE unit_list(VALUE self){
   struct PJ_UNITS *unit;
-  VALUE units = rb_ary_new();
+  VALUE list = rb_ary_new();
   for (unit = pj_get_units_ref(); unit->id; unit++){
-    rb_ary_push(units, Data_Wrap_Struct(cUnit, 0, 0, unit));
+    rb_ary_push(list, Data_Wrap_Struct(cUnit, 0, 0, unit));
   }
-  return units;
+  return list;
 }
-/**Get ID of a unit.
+/**Get ID of the unit.
  */
 static VALUE unit_get_id(VALUE self){
   struct PJ_UNITS *unit;
@@ -195,12 +198,115 @@ static VALUE unit_get_to_meter(VALUE self){
   Data_Get_Struct(self,struct PJ_UNITS,unit);
   return rb_str_new2(unit->to_meter);
 }
-/**Get name (description) of a unit.
+/**Get name (description) of the unit.
  */
 static VALUE unit_get_name(VALUE self){
   struct PJ_UNITS *unit;
   Data_Get_Struct(self,struct PJ_UNITS,unit);
   return rb_str_new2(unit->name);
+}
+
+/**Return list of all reference ellipsoids we know about.
+ */
+static VALUE ellipsoid_list(VALUE self){
+  struct PJ_ELLPS *el;
+  VALUE list = rb_ary_new();
+  for (el = pj_get_ellps_ref(); el->id; el++){
+    rb_ary_push(list, Data_Wrap_Struct(cEllipsoid, 0, 0, el));
+  }
+  return list;
+}
+/**Get ID of the reference ellipsoid.
+ */
+static VALUE ellipsoid_get_id(VALUE self){
+  struct PJ_ELLPS *el;
+  Data_Get_Struct(self,struct PJ_ELLPS,el);
+  return rb_str_new2(el->id);
+}
+/**Get equatorial radius (semi-major axis, a value) of the reference ellipsoid.
+ */
+static VALUE ellipsoid_get_major(VALUE self){
+  struct PJ_ELLPS *el;
+  Data_Get_Struct(self,struct PJ_ELLPS,el);
+  return rb_str_new2(el->major);
+}
+/**Get elliptical parameter of the reference ellipsoid. This is either the polar radius (semi-minor axis, b value) or the inverse flattening (1/f, rf).
+ */
+static VALUE ellipsoid_get_ell(VALUE self){
+  struct PJ_ELLPS *el;
+  Data_Get_Struct(self,struct PJ_ELLPS,el);
+  return rb_str_new2(el->ell);
+}
+/**Get name of the reference ellipsoid.
+ */
+static VALUE ellipsoid_get_name(VALUE self){
+  struct PJ_ELLPS *el;
+  Data_Get_Struct(self,struct PJ_ELLPS,el);
+  return rb_str_new2(el->name);
+}
+
+/**Return list of all datums we know about.
+ */
+static VALUE datum_list(VALUE self){
+  struct PJ_DATUMS *datum;
+  VALUE list = rb_ary_new();
+  for (datum = pj_get_datums_ref(); datum->id; datum++){
+    rb_ary_push(list, Data_Wrap_Struct(cDatum, 0, 0, datum));
+  }
+  return list;
+}
+/**Get ID of the datum.
+ */
+static VALUE datum_get_id(VALUE self){
+  struct PJ_DATUMS *datum;
+  Data_Get_Struct(self,struct PJ_DATUMS,datum);
+  return rb_str_new2(datum->id);
+}
+/**Get ID of the ellipse used by the datum.
+ */
+static VALUE datum_get_ellipse_id(VALUE self){
+  struct PJ_DATUMS *datum;
+  Data_Get_Struct(self,struct PJ_DATUMS,datum);
+  return rb_str_new2(datum->ellipse_id);
+}
+/**Get definition of the datum.
+ */
+static VALUE datum_get_defn(VALUE self){
+  struct PJ_DATUMS *datum;
+  Data_Get_Struct(self,struct PJ_DATUMS,datum);
+  return rb_str_new2(datum->defn);
+}
+/**Get comments about the datum.
+ */
+static VALUE datum_get_comments(VALUE self){
+  struct PJ_DATUMS *datum;
+  Data_Get_Struct(self,struct PJ_DATUMS,datum);
+  return rb_str_new2(datum->comments);
+}
+
+/**Return list of all prime meridians we know about.
+ */
+static VALUE prime_meridian_list(VALUE self){
+  struct PJ_PRIME_MERIDIANS *prime_meridian;
+  VALUE list = rb_ary_new();
+  for (prime_meridian = pj_get_prime_meridians_ref(); prime_meridian->id; prime_meridian++){
+    rb_ary_push(list, Data_Wrap_Struct(cPrimeMeridian, 0, 0, prime_meridian));
+  }
+  return list;
+}
+/**Get ID of this prime_meridian.
+ */
+static VALUE prime_meridian_get_id(VALUE self){
+  struct PJ_PRIME_MERIDIANS *prime_meridian;
+  Data_Get_Struct(self,struct PJ_PRIME_MERIDIANS,prime_meridian);
+  return rb_str_new2(prime_meridian->id);
+}
+/**Get definition of this prime_meridian.
+ */
+static VALUE prime_meridian_get_defn(VALUE self){
+  struct PJ_PRIME_MERIDIANS *prime_meridian;
+  Data_Get_Struct(self,struct PJ_PRIME_MERIDIANS,prime_meridian);
+  return rb_str_new2(prime_meridian->defn);
 }
 #endif
 
@@ -239,12 +345,34 @@ void Init_projrb(void) {
   rb_define_method(cProjection,"inverse",proj_inverse,1);
 
   #if PJ_VERSION >= 449
-    /* The Unit class holds information about the units (m, km, mi(les), ...) known to Proj4. */
+    /* The Unit class holds information about the units (m, km, mi(les), ...) known to Proj.4. */
     cUnit = rb_define_class_under(mProjrb,"Unit",rb_cObject);
-    rb_define_singleton_method(cUnit,"listUnits",unit_list_units,0);
+    rb_define_singleton_method(cUnit,"list",unit_list,0);
     rb_define_method(cUnit,"id",unit_get_id,0);
     rb_define_method(cUnit,"to_meter",unit_get_to_meter,0);
     rb_define_method(cUnit,"name",unit_get_name,0);
+
+    /* The Ellipsoid class holds information about ellipsoids (WGS84, Bessel, ...) known to Proj.4. */
+    cEllipsoid = rb_define_class_under(mProjrb,"Ellipsoid",rb_cObject);
+    rb_define_singleton_method(cEllipsoid,"list",ellipsoid_list,0);
+    rb_define_method(cEllipsoid,"id",ellipsoid_get_id,0);
+    rb_define_method(cEllipsoid,"major",ellipsoid_get_major,0);
+    rb_define_method(cEllipsoid,"ell",ellipsoid_get_ell,0);
+    rb_define_method(cEllipsoid,"name",ellipsoid_get_name,0);
+
+    /* The Datum class holds information about datums (WGS84, potsdam, ...) known to Proj.4. */
+    cDatum = rb_define_class_under(mProjrb,"Datum",rb_cObject);
+    rb_define_singleton_method(cDatum,"list",datum_list,0);
+    rb_define_method(cDatum,"id",datum_get_id,0);
+    rb_define_method(cDatum,"ellipse_id",datum_get_ellipse_id,0);
+    rb_define_method(cDatum,"defn",datum_get_defn,0);
+    rb_define_method(cDatum,"comments",datum_get_comments,0);
+
+    /* The PrimeMeridian class holds information about prime meridians (greenwich, lisbon, ...) known to Proj.4. */
+    cPrimeMeridian = rb_define_class_under(mProjrb,"PrimeMeridian",rb_cObject);
+    rb_define_singleton_method(cPrimeMeridian,"list",prime_meridian_list,0);
+    rb_define_method(cPrimeMeridian,"id",prime_meridian_get_id,0);
+    rb_define_method(cPrimeMeridian,"defn",prime_meridian_get_defn,0);
   #endif
 
 }
