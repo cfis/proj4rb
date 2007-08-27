@@ -151,7 +151,21 @@ static VALUE proj_initialize(VALUE self, VALUE proj_params){
   return self;
 }
 
+/**Does this projection has an inverse?
+
+   call-seq: hasInverse? -> true or false
+
+ */
+static VALUE proj_has_inverse(VALUE self){
+  _wrap_pj* wpj;
+  Data_Get_Struct(self,_wrap_pj,wpj);
+  return wpj->pj->inv ? Qtrue : Qfalse;
+}
+
 /**Is this projection a latlong projection?
+
+   call-seq: isLatLong? -> true or false
+
  */
 static VALUE proj_is_latlong(VALUE self){
   _wrap_pj* wpj;
@@ -160,11 +174,25 @@ static VALUE proj_is_latlong(VALUE self){
 }
 
 /**Is this projection a geocentric projection?
+
+   call-seq: isGeocentric? -> true or false
+
  */
 static VALUE proj_is_geocent(VALUE self){
   _wrap_pj* wpj;
   Data_Get_Struct(self,_wrap_pj,wpj);
   return pj_is_geocent(wpj->pj) ? Qtrue : Qfalse;
+}
+
+/**Get the expanded definition of this projection as a string.
+
+   call-seq: getDef -> String
+
+ */
+static VALUE proj_get_def(VALUE self){
+  _wrap_pj* wpj;
+  Data_Get_Struct(self,_wrap_pj,wpj);
+  return rb_str_new2(pj_get_def(wpj->pj, 0));
 }
 
 /**Transforms a point in WGS84 LonLat in radians to projected coordinates.
@@ -479,9 +507,11 @@ void Init_projrb(void) {
   cProjection = rb_define_class_under(mProjrb,"Projection",rb_cObject);
   rb_define_alloc_func(cProjection,proj_alloc);
   rb_define_method(cProjection,"initialize",proj_initialize,1);
+  rb_define_method(cProjection,"hasInverse?",proj_has_inverse,0);
   rb_define_method(cProjection,"isLatLong?",proj_is_latlong,0);
   rb_define_method(cProjection,"isGeocent?",proj_is_geocent,0);
   rb_define_alias(cProjection,"isGeocentric?","isGeocent?");
+  rb_define_method(cProjection,"getDef",proj_get_def,0);
   rb_define_method(cProjection,"forward",proj_forward,1);
   rb_define_method(cProjection,"inverse",proj_inverse,1);
   rb_define_method(cProjection,"transform",proj_transform,2);

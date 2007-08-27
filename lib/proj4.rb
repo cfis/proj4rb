@@ -43,6 +43,30 @@ module Proj4
             Proj4::UV.new( uvd.u * Proj4::RAD_TO_DEG, uvd.v * Proj4::RAD_TO_DEG)
         end
 
+        # Get the ID of this projection.
+        #
+        # call-seq: projection -> String
+        #
+        def projection
+            getDef =~ /\+proj=(.+?) / ?  $1 : nil
+        end
+
+        # Get the ID of the datum used in this projection.
+        #
+        # call-seq: datum -> String
+        #
+        def datum
+            getDef =~ /\+datum=(.+?) / ? $1 : nil
+        end
+
+        # Get definition of projection in typical inspect format (#<Proj4::Projection +init=... +proj=... ...>).
+        #
+        # call-seq: to_s -> String
+        #
+        def to_s
+            "#<Proj4::Projection#{ getDef }>"
+        end
+
     end
 
     # This class represents a point in space in either lon/lat or projected coordinates.
