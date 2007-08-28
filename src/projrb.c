@@ -11,9 +11,9 @@ static VALUE cPrimeMeridian;
 static VALUE cProjectionType;
 static VALUE cUnit;
 
+static VALUE cError;
 static VALUE cUV;
 static VALUE cProjection;
-static VALUE cCs2Cs;
 
 static void uv_free(void *p) {
   free((projUV*)p);
@@ -256,6 +256,15 @@ static VALUE proj_transform(VALUE self, VALUE dst, VALUE point){
   }
 }
 
+static VALUE projerr_strerrno(VALUE self, VALUE errno){
+    char *errmsg = pj_strerrno(NUM2INT(errno));
+    if (errmsg) {
+        return rb_str_new2(errmsg);
+    } else {
+        return rb_str_new2("unknown error");
+    }
+}
+
 #if PJ_VERSION >= 449
 /**Return list of all datums we know about.
 
@@ -494,6 +503,9 @@ void Init_projrb(void) {
      Version of C libproj
   */
   rb_define_const(mProjrb,"LIBVERSION", rb_float_new(PJ_VERSION));
+
+  cError = rb_define_class_under(mProjrb,"Error",rb_path2class("StandardError"));
+  rb_define_singleton_method(cError,"strerrno",projerr_strerrno,1);
 
   cUV = rb_define_class_under(mProjrb,"UV",rb_cObject);
   rb_define_alloc_func(cUV,uv_alloc);

@@ -4,8 +4,49 @@ require 'projrb'
 # Ruby bindings for the Proj.4 cartographic projection library.
 module Proj4
 
-    # Some Exception.
+    # Base class for all Proj.4 exceptions. Subclasses with the name <errorname>Error are available for each exception.
     class Error < StandardError
+
+        # List of all Proj.4 errors.
+        #--
+        # (This list is created from the one in pj_strerrno.c in the Proj.4 distribution.)
+        #++
+        ERRORS = %w{Unknown NoArgsInInitList NoOptionsInInitFile NoColonInInitString ProjectionNotNamed UnknownProjectionId EffectiveEccentricityEq1 UnknownUnitConversionId InvalidBooleanParamArgument UnknownEllipticalParameterName ReciprocalFlatteningIsZero RadiusReferenceLatitudeGt90 SquaredEccentricityLessThanZero MajorAxisOrRadiusIsZeroOrNotGiven LatitudeOrLongitudeExceededLimits InvalidXOrY ImproperlyFormedDMSValue NonConvergentInverseMeridinalDist NonConvergentInversePhi2 AcosOrAsinArgTooBig ToleranceConditionError ConicLat1EqMinusLat2 Lat1GreaterThan90 Lat1IsZero LatTsGreater90 NoDistanceBetweenControlPoints ProjectionNotSelectedToBeRotated WSmallerZeroOrMSmallerZero LsatNotInRange PathNotInRange HSmallerZero KSmallerZero Lat0IsZeroOr90OrAlphaIsZero Lat1EqLat2OrLat1IsZeroOrLat2Is90 EllipticalUsageRequired InvalidUTMZoneNumber ArgsOutOfRangeForTchebyEval NoProjectionToBeRotated FailedToLoadNAD2783CorrectionFile BothNAndMMustBeSpecdAndGreaterZero NSmallerZeroOrNGreaterOneOrNotSpecified Lat1OrLat2NotSpecified AbsoluteLat1EqLat2 Lat0IsHalfPiFromMeanLat UnparseableCoordinateSystemDefinition GeocentricTransformationMissingZOrEllps UnknownPrimeMeridianConversionId}
+
+        # Return list of all errors.
+        #
+        # call-seq: list -> Array
+        #
+        def self.list
+            ERRORS
+        end
+
+        # Return name of error with given number.
+        #
+        # call-seq: error(errnum) -> String
+        #
+        def self.error(errnum)
+            ERRORS[errnum.abs] || 'Unknown'
+        end
+
+        # Raise an error with error number +errnum+.
+        def self.raise_error(errnum)
+            raise eval("#{error(errnum)}Error"), strerrno(-errnum), caller[0..-1]
+        end
+
+        # Return error number of this error.
+        def errnum
+            self.class.errnum
+        end
+
+    end
+
+    Error.list.each_with_index do |err, index|
+        eval "class #{err}Error < Error;
+                 def self.errnum;
+                     #{index};
+                 end;
+              end"
     end
 
     # The UV class holds one coordinate pair. Can be either lon/lat or x/y.
