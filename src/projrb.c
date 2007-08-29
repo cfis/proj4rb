@@ -12,7 +12,6 @@ static VALUE cProjectionType;
 static VALUE cUnit;
 
 static VALUE cError;
-static VALUE cUV;
 static VALUE cProjection;
 
 static ID idRaise;
@@ -22,106 +21,6 @@ static ID idGetY;
 static ID idSetY;
 static ID idGetZ;
 static ID idSetZ;
-
-static void uv_free(void *p) {
-  free((projUV*)p);
-}
-
-static VALUE uv_alloc(VALUE klass) {
-  projUV *uv;
-  VALUE obj;
-  uv = (projUV*) malloc(sizeof(projUV));
-  obj = Data_Wrap_Struct(klass, 0, uv_free, uv);
-  return obj;
-}
-
-/**
-   Creates a new UV object. Parameters u, v can either be lon, lat or projected coordinates x, y.
-
-   call-seq:new(u, v)
-
-*/
-static VALUE uv_initialize(VALUE self, VALUE u, VALUE v){
-  projUV* uv;
-  Data_Get_Struct(self,projUV,uv);
-  uv->u = NUM2DBL(u);
-  uv->v = NUM2DBL(v);
-  return self;
-}
-
-/**
-   Creates a new UV object as a copy of an existing one.
-
-   call-seq:clone -> Proj4:UV
-    dup -> Proj4::UV
-
-*/
-static VALUE uv_init_copy(VALUE copy,VALUE orig){
-  projUV* copy_uv;
-  projUV* orig_uv;
-  if(copy == orig)
-    return copy;
-  if (TYPE(orig) != T_DATA ||
-      RDATA(orig)->dfree != (RUBY_DATA_FUNC)uv_free) {
-    rb_raise(rb_eTypeError, "wrong argument type");
-  }
-
-  Data_Get_Struct(orig, projUV, orig_uv);
-  Data_Get_Struct(copy, projUV, copy_uv);
-  MEMCPY(copy_uv, orig_uv, projUV, 1);
-  return copy;
-}
-
-/**
-   Gives the +u+ dimension of the UV object.
-
-   call-seq:u -> Float
-
-*/
-static VALUE uv_get_u(VALUE self){
-  projUV* uv;
-  Data_Get_Struct(self,projUV,uv);
-  return rb_float_new(uv->u);
-}
-
-/**
-   Gives the +v+ dimension of the UV object.
-
-   call-seq:v -> Float
-
-*/
-static VALUE uv_get_v(VALUE self){
-  projUV* uv;
-  Data_Get_Struct(self,projUV,uv);
-  return rb_float_new(uv->v);
-}
-
-/**
-   Sets the +u+ dimension of the UV object.
-
-   call-seq: uv.u = u -> Float
-
-*/
-static VALUE uv_set_u(VALUE self, VALUE u){
-  projUV* uv;
-  
-  Data_Get_Struct(self,projUV,uv);
-  uv->u = NUM2DBL(u);
-  return u;
-}
-
-/**
-   Sets the +v+ dimension of the UV object.
-
-   call-seq: uv.v = v -> Float
-
-*/
-static VALUE uv_set_v(VALUE self, VALUE v){
-  projUV* uv;
-  Data_Get_Struct(self,projUV,uv);
-  uv->v = NUM2DBL(v);
-  return v;
-}
 
 typedef struct {projPJ pj;} _wrap_pj;
 
@@ -203,33 +102,49 @@ static VALUE proj_get_def(VALUE self){
   return rb_str_new2(pj_get_def(wpj->pj, 0));
 }
 
-/**Transforms a point in WGS84 LonLat in radians to projected coordinates.
+/**Transforms a point in WGS84 LonLat in radians to projected coordinates. Will raise an exception if an error occurred.
  */
-static VALUE proj_forward(VALUE self,VALUE uv){
+static VALUE proj_forward(VALUE self,VALUE point){
   _wrap_pj* wpj;
-  projUV* c_uv;
-  projUV* pResult;
+  projUV* pResult = (projUV*) malloc(sizeof(projUV));
   Data_Get_Struct(self,_wrap_pj,wpj);
-  Data_Get_Struct(uv,projUV,c_uv);
-  pResult = (projUV*) malloc(sizeof(projUV));
-  pResult->u = c_uv->u;
-  pResult->v = c_uv->v;
-  //Pass a pResult equal to uv in Rad as entry to the forward procedure
+
+  pResult->u = NUM2DBL( rb_funcall(point, idGetX, 0) );
+  pResult->v = NUM2DBL( rb_funcall(point, idGetY, 0) );
   *pResult = pj_fwd(*pResult,wpj->pj);
-  return Data_Wrap_Struct(cUV,0,uv_free,pResult);
+
+  if (pj_errno == 0) {
+    rb_funcall(point, idSetX, 1, rb_float_new(pResult->u) );
+    rb_funcall(point, idSetY, 1, rb_float_new(pResult->v) );
+    return point;
+  } else if (pj_errno > 0) {
+    rb_raise(rb_eSystemCallError, "Unknown system call error");
+  } else {
+    rb_funcall(cError, idRaise, 1, INT2FIX(pj_errno) );
+  }
 }
 
 /**Transforms a point in the coordinate system defined at initialization of the Projection object to WGS84 LonLat in radians.
+   Will raise an exception if an error occurred.
  */
-static VALUE proj_inverse(VALUE self,VALUE uv){
+static VALUE proj_inverse(VALUE self,VALUE point){
   _wrap_pj* wpj;
-  projUV* c_uv;
-  projUV* pResult;
+  projUV* pResult = (projUV*) malloc(sizeof(projUV));
   Data_Get_Struct(self,_wrap_pj,wpj);
-  Data_Get_Struct(uv,projUV,c_uv);
-  pResult = (projUV*) malloc(sizeof(projUV));
-  *pResult = pj_inv(*c_uv,wpj->pj);
-  return Data_Wrap_Struct(cUV,0,uv_free,pResult);
+
+  pResult->u = NUM2DBL( rb_funcall(point, idGetX, 0) );
+  pResult->v = NUM2DBL( rb_funcall(point, idGetY, 0) );
+  *pResult = pj_inv(*pResult,wpj->pj);
+
+  if (pj_errno == 0) {
+    rb_funcall(point, idSetX, 1, rb_float_new(pResult->u) );
+    rb_funcall(point, idSetY, 1, rb_float_new(pResult->v) );
+    return point;
+  } else if (pj_errno > 0) {
+    rb_raise(rb_eSystemCallError, "Unknown system call error");
+  } else {
+    rb_funcall(cError, idRaise, 1, INT2FIX(pj_errno) );
+  }
 }
 
 /**Transforms a point from one projection to another. The second parameter is
@@ -541,15 +456,6 @@ void Init_projrb(void) {
   cError = rb_define_class_under(mProjrb,"Error",rb_path2class("StandardError"));
   rb_define_singleton_method(cError,"strerrno",projerr_strerrno,1);
 
-  cUV = rb_define_class_under(mProjrb,"UV",rb_cObject);
-  rb_define_alloc_func(cUV,uv_alloc);
-  rb_define_method(cUV,"initialize",uv_initialize,2);
-  rb_define_method(cUV,"initialize_copy",uv_init_copy,1);
-  rb_define_method(cUV,"u",uv_get_u,0);
-  rb_define_method(cUV,"v",uv_get_v,0);
-  rb_define_method(cUV,"u=",uv_set_u,1);
-  rb_define_method(cUV,"v=",uv_set_v,1);
- 
   cProjection = rb_define_class_under(mProjrb,"Projection",rb_cObject);
   rb_define_alloc_func(cProjection,proj_alloc);
   rb_define_method(cProjection,"initialize",proj_initialize,1);
@@ -558,8 +464,8 @@ void Init_projrb(void) {
   rb_define_method(cProjection,"isGeocent?",proj_is_geocent,0);
   rb_define_alias(cProjection,"isGeocentric?","isGeocent?");
   rb_define_method(cProjection,"getDef",proj_get_def,0);
-  rb_define_method(cProjection,"forward",proj_forward,1);
-  rb_define_method(cProjection,"inverse",proj_inverse,1);
+  rb_define_method(cProjection,"forward!",proj_forward,1);
+  rb_define_method(cProjection,"inverse!",proj_inverse,1);
   rb_define_method(cProjection,"transform!",proj_transform,2);
 
   #if PJ_VERSION >= 449

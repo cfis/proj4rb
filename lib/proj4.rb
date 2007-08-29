@@ -49,40 +49,8 @@ module Proj4
               end"
     end
 
-    # The UV class holds one coordinate pair. Can be either lon/lat or x/y.
-    class UV
-
-        # Compare to UV instances, they are equal if both coordinates are equal, respectively.
-        #
-        # call-seq: uv == other -> true or false
-        #
-        def ==(uv)
-            self.u == uv.u && self.v == uv.v
-        end
-
-        # Create string in format 'x,y'.
-        #
-        # call-seq: to_s -> String
-        #
-        def to_s
-            "#{u},#{v}"
-        end
-
-    end
-
     # The Projection class represents a geographical projection.
     class Projection
-
-        # Convenience function for calculating a forward projection with degrees instead of radians.
-        def forwardDeg(uv)
-            forward(Proj4::UV.new( uv.u * Proj4::DEG_TO_RAD, uv.v * Proj4::DEG_TO_RAD))
-        end
-
-        # Convenience function for calculating an inverse projection with the result in degrees instead of radians.
-        def inverseDeg(uv)
-            uvd = inverse(uv)
-            Proj4::UV.new( uvd.u * Proj4::RAD_TO_DEG, uvd.v * Proj4::RAD_TO_DEG)
-        end
 
         # Get the ID of this projection.
         #
@@ -106,6 +74,43 @@ module Proj4
         #
         def to_s
             "#<Proj4::Projection#{ getDef }>"
+        end
+
+        # Forward projection of a point. Returns a copy of the point object with coordinates projected.
+        def forward(point)
+            forward!(point.dup)
+        end
+
+        # Convenience function for calculating a forward projection with degrees instead of radians.
+        def forwardDeg(point)
+            forwardDeg!(point.dup)
+        end
+
+        # Convenience function for calculating a forward projection with degrees instead of radians.
+        # This version works in-place, i.e. the point objects content is overwritten.
+        def forwardDeg!(point)
+            point.x *= Proj4::DEG_TO_RAD
+            point.y *= Proj4::DEG_TO_RAD
+            forward!(point)
+        end
+
+        # Inverse projection of a point. Returns a copy of the point object with coordinates projected.
+        def inverse(point)
+            inverse!(point.dup)
+        end
+
+        # Convenience function for calculating an inverse projection with the result in degrees instead of radians.
+        def inverseDeg(point)
+            inverseDeg!(point.dup)
+        end
+
+        # Convenience function for calculating an inverse projection with the result in degrees instead of radians.
+        # This version works in-place, i.e. the point objects content is overwritten.
+        def inverseDeg!(point)
+            inverse!(point)
+            point.x *= Proj4::RAD_TO_DEG
+            point.y *= Proj4::RAD_TO_DEG
+            point
         end
 
         # Transforms a point from one projection to another. The second
@@ -267,6 +272,60 @@ module Proj4
         #
         def inspect
             "#<Proj4::Unit id=\"#{id}\", to_meter=\"#{to_meter}\", name=\"#{name}\">"
+        end
+
+    end
+
+    # The UV class holds one coordinate pair. Can be either lon/lat or x/y.
+    # This class is deprecated and it will disappear in a later version of this
+    # library. Use Proj4::Point instead (or any other class supporting x, y read and
+    # write accessor method.
+    class UV
+
+        attr_accessor :x, :y
+
+        def initialize(x, y)
+            if ! x.kind_of?(Float) or ! y.kind_of?(Float)
+                raise TypeError
+            end
+            @x = x
+            @y = y
+        end
+
+        # get u(x) coordinate
+        def u
+            x
+        end
+
+        # get v(y) coordinate
+        def v
+            y
+        end
+
+        # set u(x) coordinate
+        def u=(u)
+            @x = u
+        end
+
+        # set v(y) coordinate
+        def v=(v)
+            @y = v
+        end
+
+        # Compare to UV instances, they are equal if both coordinates are equal, respectively.
+        #
+        # call-seq: uv == other -> true or false
+        #
+        def ==(uv)
+            self.u == uv.u && self.v == uv.v
+        end
+
+        # Create string in format 'x,y'.
+        #
+        # call-seq: to_s -> String
+        #
+        def to_s
+            "#{u},#{v}"
         end
 
     end

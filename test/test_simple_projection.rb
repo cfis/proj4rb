@@ -22,12 +22,19 @@ class SimpleProjectionTest < Test::Unit::TestCase
 
     # echo "8.4302123334 48.9906726079" | proj +init=epsg:31467 -
     def test_forward_gk
-        result = @proj_gk.forward( Proj4::UV.new( deg2rad(@lon), deg2rad(@lat) ) ) 
-        assert_in_delta @rw, result.u, 0.1
-        assert_in_delta @hw, result.v, 0.1
+        result = @proj_gk.forward( Proj4::Point.new( deg2rad(@lon), deg2rad(@lat) ) ) 
+        assert_in_delta @rw, result.x, 0.1
+        assert_in_delta @hw, result.y, 0.1
     end
 
     def test_forward_gk_degrees
+        result = @proj_gk.forwardDeg( Proj4::Point.new( @lon, @lat ) ) 
+        assert_in_delta @rw, result.x, 0.1
+        assert_in_delta @hw, result.y, 0.1
+    end
+
+    # for backwards compatibility
+    def test_forward_gk_degrees_UV
         result = @proj_gk.forwardDeg( Proj4::UV.new( @lon, @lat ) ) 
         assert_in_delta @rw, result.u, 0.1
         assert_in_delta @hw, result.v, 0.1
@@ -35,22 +42,22 @@ class SimpleProjectionTest < Test::Unit::TestCase
 
     # echo "3458305 5428192" | invproj -f '%.10f' +init=epsg:31467 -
     def test_inverse_gk
-        result = @proj_gk.inverse( Proj4::UV.new(@rw, @hw) ) 
-        assert_in_delta @lon, rad2deg(result.u), 0.000000001
-        assert_in_delta @lat, rad2deg(result.v), 0.000000001
+        result = @proj_gk.inverse( Proj4::Point.new(@rw, @hw) ) 
+        assert_in_delta @lon, rad2deg(result.x), 0.000000001
+        assert_in_delta @lat, rad2deg(result.y), 0.000000001
     end
 
     def test_inverse_gk_degrees
-        result = @proj_gk.inverseDeg( Proj4::UV.new(@rw, @hw) ) 
-        assert_in_delta @lon, result.u, 0.000000001
-        assert_in_delta @lat, result.v, 0.000000001
+        result = @proj_gk.inverseDeg( Proj4::Point.new(@rw, @hw) ) 
+        assert_in_delta @lon, result.x, 0.000000001
+        assert_in_delta @lat, result.y, 0.000000001
     end
 
     # echo "190 92" | proj +init=epsg:31467 -
     def test_out_of_bounds
-        result = @proj_gk.forward( Proj4::UV.new( deg2rad(190), deg2rad(92) ) ) 
-        assert_equal 'Infinity', result.u.to_s
-        assert_equal 'Infinity', result.v.to_s
+        assert_raise Proj4::LatitudeOrLongitudeExceededLimitsError do
+            @proj_gk.forward( Proj4::Point.new( deg2rad(190), deg2rad(92) ) ) 
+        end
     end
 
 end
