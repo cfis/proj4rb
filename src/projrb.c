@@ -15,6 +15,14 @@ static VALUE cError;
 static VALUE cUV;
 static VALUE cProjection;
 
+static ID idRaise;
+static ID idGetX;
+static ID idSetX;
+static ID idGetY;
+static ID idSetY;
+static ID idGetZ;
+static ID idSetZ;
+
 static void uv_free(void *p) {
   free((projUV*)p);
 }
@@ -224,9 +232,14 @@ static VALUE proj_inverse(VALUE self,VALUE uv){
   return Data_Wrap_Struct(cUV,0,uv_free,pResult);
 }
 
-/**Transforms a point from one projection to another.
+/**Transforms a point from one projection to another. The second parameter is
+   either a Proj4::Point object or you can use any object which
+   responds to the x, y, z read and write accessor methods. (In fact you
+   don't even need the z accessor methods, 0 is assumed if they don't exist).
+   This is the destructive variant of the method, i.e. it will overwrite your
+   existing point coordinates but otherwise leave the point object alone.
 
-   call-seq: transform(dstproj, point) -> Proj4::Point
+   call-seq: transform!(destinationProjection, point) -> point
 
  */
 static VALUE proj_transform(VALUE self, VALUE dst, VALUE point){
@@ -236,23 +249,35 @@ static VALUE proj_transform(VALUE self, VALUE dst, VALUE point){
   double array_y[1];
   double array_z[1];
   int result;
-  VALUE coordinates[3];
 
   Data_Get_Struct(self,_wrap_pj,wpjsrc);
   Data_Get_Struct(dst,_wrap_pj,wpjdst);
 
-  array_x[0] = NUM2DBL( rb_ivar_get(point, rb_intern("@x")) );
-  array_y[0] = NUM2DBL( rb_ivar_get(point, rb_intern("@y")) );
-  array_z[0] = NUM2DBL( rb_ivar_get(point, rb_intern("@z")) );
+  array_x[0] = NUM2DBL( rb_funcall(point, idGetX, 0) );
+  array_y[0] = NUM2DBL( rb_funcall(point, idGetY, 0) );
+
+  /* if point objects has a method 'z' we get the z coordinate, otherwise we just assume 0 */
+  if ( rb_respond_to(point, idGetZ) ) {
+    array_z[0] = NUM2DBL( rb_funcall(point, idGetZ, 0) );
+  } else {
+    array_z[0] = 0.0;
+  }
 
   result = pj_transform(wpjsrc->pj, wpjdst->pj, 1, 1, array_x, array_y, array_z);
   if (! result) {
-    coordinates[0] = rb_float_new(array_x[0]);
-    coordinates[1] = rb_float_new(array_y[0]);
-    coordinates[2] = rb_float_new(array_z[0]);
-    return rb_class_new_instance(3, coordinates, rb_path2class("Proj4::Point"));
+    rb_funcall(point, idSetX, 1, rb_float_new(array_x[0]) );
+    rb_funcall(point, idSetY, 1, rb_float_new(array_y[0]) );
+    /* if point objects has a method 'z=' we set the z coordinate, otherwise we ignore it  */
+    if ( rb_respond_to(point, idSetZ) ) {
+        rb_funcall(point, idSetZ, 1, rb_float_new(array_z[0]) );
+    }
+    return point;
   } else {
-    rb_raise(rb_path2class("Proj4::Error"), pj_strerrno(result) );
+    if (result > 0) {
+        rb_raise(rb_eSystemCallError, "Unknown system call error");
+    } else {
+        rb_funcall(cError, idRaise, 1, INT2FIX(result) );
+    }
   }
 }
 
@@ -489,6 +514,15 @@ static VALUE unit_get_name(VALUE self){
 #endif
 
 void Init_projrb(void) {
+
+  idRaise = rb_intern("raise_error");
+  idGetX = rb_intern("x");
+  idSetX = rb_intern("x=");
+  idGetY = rb_intern("y");
+  idSetY = rb_intern("y=");
+  idGetZ = rb_intern("z");
+  idSetZ = rb_intern("z=");
+
   mProjrb = rb_define_module("Proj4");
 
   /**
@@ -526,7 +560,7 @@ void Init_projrb(void) {
   rb_define_method(cProjection,"getDef",proj_get_def,0);
   rb_define_method(cProjection,"forward",proj_forward,1);
   rb_define_method(cProjection,"inverse",proj_inverse,1);
-  rb_define_method(cProjection,"transform",proj_transform,2);
+  rb_define_method(cProjection,"transform!",proj_transform,2);
 
   #if PJ_VERSION >= 449
     cDef = rb_define_class_under(mProjrb,"Def",rb_cObject);

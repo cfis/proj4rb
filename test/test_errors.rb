@@ -13,6 +13,7 @@ class ErrorsTest < Test::Unit::TestCase
 
     def test_parenting
         assert_kind_of Proj4::Error,  Proj4::UnknownError.new
+        assert_kind_of Proj4::Error,  Proj4::ToleranceConditionError.new
         assert_kind_of StandardError, Proj4::UnknownError.new
     end
 
@@ -43,25 +44,25 @@ class ErrorsTest < Test::Unit::TestCase
         assert_equal 'invalid projection system error (-2000)', Proj4::Error.strerrno(-2000)
     end
 
-    def test_raise0
+    def test_raise_err0
         begin
             Proj4::Error.raise_error(0)
         rescue => exception
             assert_equal Proj4::UnknownError, exception.class
             assert_equal "unknown error", exception.message
             assert_equal 0, exception.errnum
-            assert_match %r{/test/test_errors.rb:[0-9]+:in .test_raise0.$} , exception.backtrace[0]
+            assert_match %r{/test/test_errors.rb:[0-9]+:in .test_raise_err0.$} , exception.backtrace[0]
         end
     end
 
-    def test_raise1
+    def test_raise_err1
         begin
             Proj4::Error.raise_error(1)
         rescue => exception
             assert_equal Proj4::NoArgsInInitListError, exception.class
             assert_equal 'no arguments in initialization list', exception.message
             assert_equal 1, exception.errnum
-            assert_match %r{/test/test_errors.rb:[0-9]+:in .test_raise1.$} , exception.backtrace[0]
+            assert_match %r{/test/test_errors.rb:[0-9]+:in .test_raise_err1.$} , exception.backtrace[0]
         end
     end
 

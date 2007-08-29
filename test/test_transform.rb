@@ -17,10 +17,21 @@ class TransformTest < Test::Unit::TestCase
 
     # echo "3458305 5428192" | cs2cs -f '%.10f' +init=epsg:31467 +to +init=epsg:4326 -
     def test_gk_to_wgs84
-        point = @proj_gk.transform(@proj_wgs84, Proj4::Point.new(@rw, @hw, @zw))
-        assert_in_delta @lon, point.x * Proj4::RAD_TO_DEG, 0.1 ** 9
-        assert_in_delta @lat, point.y * Proj4::RAD_TO_DEG, 0.1 ** 9
-        assert_in_delta 0, point.z, 0.1 ** 9
+        from = Proj4::Point.new(@rw, @hw, @zw)
+        to = @proj_gk.transform(@proj_wgs84, from)
+        assert_not_equal from.object_id, to.object_id
+        assert_in_delta @lon, to.x * Proj4::RAD_TO_DEG, 0.1 ** 9
+        assert_in_delta @lat, to.y * Proj4::RAD_TO_DEG, 0.1 ** 9
+        assert_in_delta 0, to.z, 0.1 ** 9
+    end
+
+    def test_gk_to_wgs84_inplace
+        from = Proj4::Point.new(@rw, @hw, @zw)
+        to = @proj_gk.transform!(@proj_wgs84, from)
+        assert_equal from.object_id, to.object_id
+        assert_in_delta @lon, to.x * Proj4::RAD_TO_DEG, 0.1 ** 9
+        assert_in_delta @lat, to.y * Proj4::RAD_TO_DEG, 0.1 ** 9
+        assert_in_delta 0, to.z, 0.1 ** 9
     end
 
     # echo "8.4293092923 48.9896114523" | cs2cs -f '%.10f' +init=epsg:4326 +to +init=epsg:31467 -
@@ -43,10 +54,59 @@ class TransformTest < Test::Unit::TestCase
         end
     end
 
-    def test_mercator_at_pole
-        assert_raise Proj4::Error do
+    def test_mercator_at_pole_raise
+        assert_raise Proj4::ToleranceConditionError do
             point = @proj_wgs84.transform(@proj_merc, Proj4::Point.new(0, 90 * Proj4::DEG_TO_RAD, 0))
         end
     end
+
+    def test_mercator_at_pole_rescue
+        begin
+            point = @proj_wgs84.transform(@proj_merc, Proj4::Point.new(0, 90 * Proj4::DEG_TO_RAD, 0))
+        rescue => exception
+            assert_kind_of Proj4::ToleranceConditionError, exception
+            assert_equal 'tolerance condition error', exception.message
+            assert_equal 20, exception.errnum
+        end
+    end
+
+    class XYPoint
+        attr_accessor :x, :y, :extra
+        def initialize(x, y, extra)
+            @x = x
+            @y = y
+            @extra = extra
+        end
+    end
+    def test_no_z
+        point = @proj_gk.transform(@proj_wgs84, XYPoint.new(@rw, @hw, 'foo') )
+        assert_kind_of XYPoint, point
+        assert_equal 'foo', point.extra
+        assert_in_delta @lon, point.x * Proj4::RAD_TO_DEG, 0.1 ** 9
+        assert_in_delta @lat, point.y * Proj4::RAD_TO_DEG, 0.1 ** 9
+    end
+
+    def test_no_float
+        assert_raise TypeError do
+            @proj_gk.transform(@proj_wgs84, XYPoint.new('x', 'y', 'foo') )
+        end
+    end
+
+    def test_syscallerr
+        # we need a test here that checks whether transform() properly returns a SystemCallError exception
+    end
+
+    def test_collection
+        from0 = Proj4::Point.new(@rw, @hw, @zw)
+        from1 = Proj4::Point.new(0, 0, 0)
+        collection = @proj_gk.transform_all!(@proj_wgs84, [from0, from1])
+        to0 = collection[0]
+        to1 = collection[1]
+        assert_equal from1.object_id, to1.object_id
+        assert_in_delta @lon, to0.x * Proj4::RAD_TO_DEG, 0.1 ** 9
+        assert_in_delta @lat, to0.y * Proj4::RAD_TO_DEG, 0.1 ** 9
+        assert_in_delta 0, to0.z, 0.1 ** 9
+    end
+
 end
 

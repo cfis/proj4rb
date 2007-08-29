@@ -11,7 +11,7 @@ module Proj4
         #--
         # (This list is created from the one in pj_strerrno.c in the Proj.4 distribution.)
         #++
-        ERRORS = %w{Unknown NoArgsInInitList NoOptionsInInitFile NoColonInInitString ProjectionNotNamed UnknownProjectionId EffectiveEccentricityEq1 UnknownUnitConversionId InvalidBooleanParamArgument UnknownEllipticalParameterName ReciprocalFlatteningIsZero RadiusReferenceLatitudeGt90 SquaredEccentricityLessThanZero MajorAxisOrRadiusIsZeroOrNotGiven LatitudeOrLongitudeExceededLimits InvalidXOrY ImproperlyFormedDMSValue NonConvergentInverseMeridinalDist NonConvergentInversePhi2 AcosOrAsinArgTooBig ToleranceConditionError ConicLat1EqMinusLat2 Lat1GreaterThan90 Lat1IsZero LatTsGreater90 NoDistanceBetweenControlPoints ProjectionNotSelectedToBeRotated WSmallerZeroOrMSmallerZero LsatNotInRange PathNotInRange HSmallerZero KSmallerZero Lat0IsZeroOr90OrAlphaIsZero Lat1EqLat2OrLat1IsZeroOrLat2Is90 EllipticalUsageRequired InvalidUTMZoneNumber ArgsOutOfRangeForTchebyEval NoProjectionToBeRotated FailedToLoadNAD2783CorrectionFile BothNAndMMustBeSpecdAndGreaterZero NSmallerZeroOrNGreaterOneOrNotSpecified Lat1OrLat2NotSpecified AbsoluteLat1EqLat2 Lat0IsHalfPiFromMeanLat UnparseableCoordinateSystemDefinition GeocentricTransformationMissingZOrEllps UnknownPrimeMeridianConversionId}
+        ERRORS = %w{Unknown NoArgsInInitList NoOptionsInInitFile NoColonInInitString ProjectionNotNamed UnknownProjectionId EffectiveEccentricityEq1 UnknownUnitConversionId InvalidBooleanParamArgument UnknownEllipticalParameterName ReciprocalFlatteningIsZero RadiusReferenceLatitudeGt90 SquaredEccentricityLessThanZero MajorAxisOrRadiusIsZeroOrNotGiven LatitudeOrLongitudeExceededLimits InvalidXOrY ImproperlyFormedDMSValue NonConvergentInverseMeridinalDist NonConvergentInversePhi2 AcosOrAsinArgTooBig ToleranceCondition ConicLat1EqMinusLat2 Lat1GreaterThan90 Lat1IsZero LatTsGreater90 NoDistanceBetweenControlPoints ProjectionNotSelectedToBeRotated WSmallerZeroOrMSmallerZero LsatNotInRange PathNotInRange HSmallerZero KSmallerZero Lat0IsZeroOr90OrAlphaIsZero Lat1EqLat2OrLat1IsZeroOrLat2Is90 EllipticalUsageRequired InvalidUTMZoneNumber ArgsOutOfRangeForTchebyEval NoProjectionToBeRotated FailedToLoadNAD2783CorrectionFile BothNAndMMustBeSpecdAndGreaterZero NSmallerZeroOrNGreaterOneOrNotSpecified Lat1OrLat2NotSpecified AbsoluteLat1EqLat2 Lat0IsHalfPiFromMeanLat UnparseableCoordinateSystemDefinition GeocentricTransformationMissingZOrEllps UnknownPrimeMeridianConversionId}
 
         # Return list of all errors.
         #
@@ -31,7 +31,7 @@ module Proj4
 
         # Raise an error with error number +errnum+.
         def self.raise_error(errnum)
-            raise eval("#{error(errnum)}Error"), strerrno(-errnum), caller[0..-1]
+            raise eval("#{error(errnum.abs)}Error"), strerrno(-(errnum.abs)), caller[0..-1]
         end
 
         # Return error number of this error.
@@ -108,6 +108,41 @@ module Proj4
             "#<Proj4::Projection#{ getDef }>"
         end
 
+        # Transforms a point from one projection to another. The second
+        # parameter is either a Proj4::Point object or you can use any
+        # object which responds to the x, y, z read and write accessor
+        # methods. (In fact you don't even need the z accessor methods,
+        # 0 is assumed if they don't exist).  This is the non-destructive
+        # variant of the method, i.e. it will first create a copy of
+        # your point object by calling its +dup+ method.
+        #
+        # call-seq: transform(destinationProjection, point) -> point
+        #
+        def transform(otherProjection, point)
+            transform!(otherProjection, point.dup)
+        end
+
+        # Transforms all points in a collection 'in place' from one projection
+        # to another. The +collection+ object must implement the +each+
+        # method for this to work.
+        def transform_all!(otherProjection, collection)
+            collection.each do |point|
+                transform!(otherProjection, point)
+            end
+            collection
+        end
+
+        # Transforms all points in a collection from one projection to
+        # another. The +collection+ object must implement the +each+,
+        # +clear+, and << methods (just like an Array) for this to work.
+        def transform_all(otherProjection, collection)
+            newcollection = collection.dup.clear
+            collection.each do |point|
+                newcollection << transform(otherProjection, point)
+            end
+            newcollection
+        end
+
     end
 
     # This class represents a point in space in either lon/lat or projected coordinates.
@@ -119,7 +154,7 @@ module Proj4
         # y coordinate or latitude
         attr_accessor :y
 
-        # z coordinate
+        # z coordinate (height)
         attr_accessor :z
 
         def initialize(x, y, z=0)
