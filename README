@@ -1,5 +1,6 @@
 =Proj4rb
-This is the first release of Proj4rb, a simple ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems.
+
+This is a ruby binding for the Proj.4 Carthographic Projection library (http://proj.maptools.org), that supports conversions between a very large number of geographic coordinate systems and datums.
 
 ==Operations
 The library can be loaded this way:
@@ -19,21 +20,26 @@ You are also given 2 constants to convert between degrees and radians: +DEG_TO_R
  
 For now that is all there is to the Proj4rb library. Feel free to suggest additionnal functionnalities.
 
-==Installation
-Currently the only distributed binary is for Win32. Feel free to build versions for other OS and I will distribute them.
+==Installation (Windows)
 To install the latest version on Windows, just type :
       gem install proj4rb-win32
 
+==Installation (Linux)
+
+
 ==TODO
-- Transformations between 2 CS
-- Transformations of a set of points at once.
 - Completely cross-platform build system (mkrf?)
 
 ==Changes since the last version
-- First version
+- Added most functions supported by C library and many tests.
+- Added support for Linux builds.
 
 ==License
 Proj4rb is released under the MIT license.
 
 ==Support
 Any questions, enhancement proposals, bug notifications or corrections can be sent to mailto:guilhem.vellut@gmail.com.
+
+==Authors
+The proj4rb Ruby bindings were created by Guilhelm Vellut with many additions by Jochen Topf.
+

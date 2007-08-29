@@ -1,16 +1,18 @@
+#!/usr/bin/ruby -w
+
 $:.unshift(File.dirname(__FILE__) + '/../lib/')
 
 require 'proj4'
 include Proj4
 
-proj = Projection.new(["proj=utm","zone=21","units=m","no.defs"])
+# create projection object
+proj = Projection.new(["proj=utm", "zone=21", "units=m", "no.defs"])
 
-uv = UV.new(45000,2700000)
+# create the point you want to project
+point = Point.new(45000,2700000)
 
-res = proj.inverse(uv)
+# do the projection
+res = proj.inverse(point)
 
-puts res.u ,res.v
-
-
-
+puts "x=#{point.x}, y=#{point.y} ==> lon=#{res.lon}, lat=#{res.lat}"
 

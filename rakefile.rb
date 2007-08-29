@@ -24,10 +24,10 @@ spec = Gem::Specification::new do |s|
   s.platform = Gem::Platform::CURRENT
 
   s.name = 'proj4rb'
-  s.version = "0.0.1"
-  s.summary = "Simple Ruby bindings for the Proj.4 Carthographic Projection library"
+  s.version = "0.2.0"
+  s.summary = "Ruby bindings for the Proj.4 Carthographic Projection library"
   s.description = <<EOF
-Proj4rb is a simple ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems.
+Proj4rb is a ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems and datums.
 EOF
   s.author = 'Guilhem Vellut'
   s.email = 'guilhem.vellut@gmail.com'
