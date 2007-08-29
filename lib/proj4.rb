@@ -52,6 +52,27 @@ module Proj4
     # The Projection class represents a geographical projection.
     class Projection
 
+        private
+
+        def self._parse_init_parameters(args)
+            case args
+                when Array
+                    args.collect{ |a| a.sub(/^\+/, '') }
+                when String
+                    args.strip.split(' ').collect{ |a| a.sub(/^\+/, '')}
+                when Hash
+                    array = []
+                    args.each_pair{ | key, value | array << (value.nil? ? key.to_s : "#{key}=#{value}") }
+                    array
+                when Proj4::Projection
+                    args.getDef.strip.split(' ').collect{ |a| a.sub(/^\+/, '')}
+                else
+                    raise ArgumentError, "Unknown type #{args.class} for projection definition"
+            end
+        end
+
+        public
+
         # Get the ID of this projection.
         #
         # call-seq: projection -> String
@@ -307,6 +328,7 @@ module Proj4
         attr_accessor :x, :y
 
         def initialize(x, y)
+            warn 'Use of class Proj4::UV is deprecated. Please use Proj4::Point instead. See documentation for details.'
             if ! x.kind_of?(Float) or ! y.kind_of?(Float)
                 raise TypeError
             end

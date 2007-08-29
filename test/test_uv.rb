@@ -2,6 +2,9 @@ $: << 'lib'
 require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
 require 'test/unit'
 
+# this is needed to get rid of the "UV is deprecated" warnings
+$VERBOSE = nil
+
 class UVTest < Test::Unit::TestCase
 
     def test_create_set_get

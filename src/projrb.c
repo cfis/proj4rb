@@ -21,6 +21,7 @@ static ID idGetY;
 static ID idSetY;
 static ID idGetZ;
 static ID idSetZ;
+static ID idParseInitParameters;
 
 typedef struct {projPJ pj;} _wrap_pj;
 
@@ -42,8 +43,9 @@ static VALUE proj_alloc(VALUE klass){
 
 /** Creates a new projection object. Takes an array of strings corresponding to a list of usual <tt>proj.exe</tt> initialization parameters.
  */
-static VALUE proj_initialize(VALUE self, VALUE proj_params){
+static VALUE proj_initialize(VALUE self, VALUE params){
   _wrap_pj* wpj;
+  VALUE proj_params = rb_funcall(cProjection, idParseInitParameters, 1, params);
   int size = RARRAY(proj_params)->len; 
   char** c_params = (char **) malloc(size*sizeof(char *));
   VALUE *ptr = RARRAY(proj_params)->ptr; 
@@ -437,6 +439,7 @@ void Init_projrb(void) {
   idSetY = rb_intern("y=");
   idGetZ = rb_intern("z");
   idSetZ = rb_intern("z=");
+  idParseInitParameters = rb_intern("_parse_init_parameters");
 
   mProjrb = rb_define_module("Proj4");
 
