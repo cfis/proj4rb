@@ -96,10 +96,10 @@ class InitProjectionTest < Test::Unit::TestCase
     end
 
     def test_init_arg_fail
-        assert_raise ArgumentError do
+        assert_raise Proj4::UnknownProjectionIdError do
             Proj4::Projection.new( :proj => 'xxxx' )
         end
-        assert_raise ArgumentError do
+        assert_raise Proj4::ProjectionNotNamedError do
             Proj4::Projection.new( :foo => 'xxxx' )
         end
     end

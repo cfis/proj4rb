@@ -41,7 +41,29 @@ static VALUE proj_alloc(VALUE klass){
   return obj;
 }
 
-/** Creates a new projection object. Takes an array of strings corresponding to a list of usual <tt>proj.exe</tt> initialization parameters.
+/**Creates a new projection object. There are several ways of supplying the parameters:
+
+  [String] A string with the parameters in '[+]key=value' format concatenated together. This is the
+           format used by the <tt>proj</tt> / <tt>proj.exe</tt> command line tool.
+
+           Example: Projection.new "proj=utm zone=21 units=m"
+
+  [Array]  An array with each parameter as a member in the array in '[+]key=value' format.
+
+           Example: Projection.new [ "proj=utm", "zone=21", "units=m" ]
+
+  [Hash]   A hash with strings or symbols as keys.
+
+           Example: Projection.new( "proj" => "utm", "zone" => "21", "units" => "m" )
+
+           Example: Projection.new( :proj => "utm", :zone => "21", :units => "m" )
+
+  The plus sign in front of the keys is optional.
+
+   call-seq: new(String) -> Proj4::Projection
+             new(Array) -> Proj4::Projection
+             new(Hash) -> Proj4::Projection
+
  */
 static VALUE proj_initialize(VALUE self, VALUE params){
   _wrap_pj* wpj;
@@ -54,13 +76,18 @@ static VALUE proj_initialize(VALUE self, VALUE params){
     c_params[i]= STR2CSTR(*ptr); 
   Data_Get_Struct(self,_wrap_pj,wpj);
   wpj->pj = pj_init(size,c_params);
-  if(wpj->pj == 0)
-    rb_raise(rb_eArgError,"invalid initialization parameters");
   free(c_params);
+  if(wpj->pj == 0) {
+    if (pj_errno > 0) {
+        rb_raise(rb_eSystemCallError, "Unknown system call error");
+    } else {
+        rb_funcall(cError, idRaise, 1, INT2FIX(pj_errno) );
+    }
+  }
   return self;
 }
 
-/**Does this projection has an inverse?
+/**Has this projection an inverse?
 
    call-seq: hasInverse? -> true or false
 
@@ -104,7 +131,11 @@ static VALUE proj_get_def(VALUE self){
   return rb_str_new2(pj_get_def(wpj->pj, 0));
 }
 
-/**Transforms a point in WGS84 LonLat in radians to projected coordinates. Will raise an exception if an error occurred.
+/**Transforms a point in WGS84 LonLat in radians to projected coordinates.
+   This version of the method changes the point in-place.
+
+   call-seq: forward!(point) -> point
+
  */
 static VALUE proj_forward(VALUE self,VALUE point){
   _wrap_pj* wpj;
@@ -127,7 +158,10 @@ static VALUE proj_forward(VALUE self,VALUE point){
 }
 
 /**Transforms a point in the coordinate system defined at initialization of the Projection object to WGS84 LonLat in radians.
-   Will raise an exception if an error occurred.
+   This version of the method changes the point in-place.
+
+   call-seq: inverse!(point) -> point
+
  */
 static VALUE proj_inverse(VALUE self,VALUE point){
   _wrap_pj* wpj;

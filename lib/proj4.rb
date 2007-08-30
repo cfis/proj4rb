@@ -98,17 +98,26 @@ module Proj4
         end
 
         # Forward projection of a point. Returns a copy of the point object with coordinates projected.
+        #
+        # call-seq: forward(point) -> point
+        #
         def forward(point)
             forward!(point.dup)
         end
 
         # Convenience function for calculating a forward projection with degrees instead of radians.
+        #
+        # call-seq: forwardDeg(point) -> point
+        #
         def forwardDeg(point)
             forwardDeg!(point.dup)
         end
 
         # Convenience function for calculating a forward projection with degrees instead of radians.
         # This version works in-place, i.e. the point objects content is overwritten.
+        #
+        # call-seq: forwardDeg!(point) -> point
+        #
         def forwardDeg!(point)
             point.x *= Proj4::DEG_TO_RAD
             point.y *= Proj4::DEG_TO_RAD
@@ -116,17 +125,26 @@ module Proj4
         end
 
         # Inverse projection of a point. Returns a copy of the point object with coordinates projected.
+        #
+        # call-seq: inverse(point) -> point
+        #
         def inverse(point)
             inverse!(point.dup)
         end
 
         # Convenience function for calculating an inverse projection with the result in degrees instead of radians.
+        #
+        # call-seq: inverseDeg(point) -> point
+        #
         def inverseDeg(point)
             inverseDeg!(point.dup)
         end
 
         # Convenience function for calculating an inverse projection with the result in degrees instead of radians.
         # This version works in-place, i.e. the point objects content is overwritten.
+        #
+        # call-seq: inverseDeg!(point) -> point
+        #
         def inverseDeg!(point)
             inverse!(point)
             point.x *= Proj4::RAD_TO_DEG
@@ -151,6 +169,9 @@ module Proj4
         # Transforms all points in a collection 'in place' from one projection
         # to another. The +collection+ object must implement the +each+
         # method for this to work.
+        #
+        # call-seq: transform_all!(destinationProjection, collection) -> collection
+        #
         def transform_all!(otherProjection, collection)
             collection.each do |point|
                 transform!(otherProjection, point)
@@ -161,6 +182,9 @@ module Proj4
         # Transforms all points in a collection from one projection to
         # another. The +collection+ object must implement the +each+,
         # +clear+, and << methods (just like an Array) for this to work.
+        #
+        # call-seq: transform_all(destinationProjection, collection) -> collection
+        #
         def transform_all(otherProjection, collection)
             newcollection = collection.dup.clear
             collection.each do |point|
