@@ -51,7 +51,7 @@ class ErrorsTest < Test::Unit::TestCase
             assert_equal Proj4::UnknownError, exception.class
             assert_equal "unknown error", exception.message
             assert_equal 0, exception.errnum
-            assert_match %r{/test/test_errors.rb:[0-9]+:in .test_raise_err0.$} , exception.backtrace[0]
+            assert_match %r{test/test_errors.rb:[0-9]+:in .test_raise_err0.$} , exception.backtrace[0]
         end
     end
 
@@ -62,7 +62,7 @@ class ErrorsTest < Test::Unit::TestCase
             assert_equal Proj4::NoArgsInInitListError, exception.class
             assert_equal 'no arguments in initialization list', exception.message
             assert_equal 1, exception.errnum
-            assert_match %r{/test/test_errors.rb:[0-9]+:in .test_raise_err1.$} , exception.backtrace[0]
+            assert_match %r{test/test_errors.rb:[0-9]+:in .test_raise_err1.$} , exception.backtrace[0]
         end
     end
 
