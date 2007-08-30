@@ -50,6 +50,71 @@ module Proj4
     end
 
     # The Projection class represents a geographical projection.
+    #
+    # = Creating a new projection object
+    #
+    # Projection objects are created through the new method as usual. Depending on the kind of projection, many
+    # different parameters are needed. Please consult the documentation of the Proj.4 C library at http://proj.maptools.org 
+    # for details.
+    #
+    # There are several ways of specifying the parameters:
+    #
+    # [<b>as a String:</b>] A string with the parameters in '[+]key=value' format concatenated together. This is the format used by the <tt>proj</tt> and <tt>cs2cs</tt> command line tool.
+    #
+    #          proj = Projection.new "+proj=utm +zone=21 +units=m"
+    #
+    # [<b>as an Array:</b>] An array with each parameter as a member in the array in '[+]key=value' format.
+    #
+    #          proj = Projection.new [ "proj=utm", "zone=21", "units=m" ]
+    #
+    # [<b>as a Hash:</b>] A hash with strings or symbols as keys.
+    #
+    #          proj = Projection.new( "proj" => "utm", "zone" => "21", "units" => "m" )
+    #          proj = Projection.new( :proj => "utm", :zone => "21", :units => "m" )
+    #
+    # With all variants the plus sign in front of the keys is optional.
+    #
+    # = Using a projection object to project points
+    #
+    # There are two ways a projection can be used: Through the +forward+ and +inverse+ methods (with all their variants)
+    # you can do projection from longitudes and latitudes into the coordinate system used by the projection and back.
+    # These projections are always 2D, i.e. you need and get lon/lat or x/y coordinates.
+    #
+    # The alternative is the +transform+ method (with all its variants) which is used to transform 3D points from one
+    # projection and datum to another. In addition to the x/y coordinates the transform method also reads and returns
+    # a z coordinate.
+    #
+    # = Versions of the projection methods
+    #
+    # All three projection methods (+forward+, +inverse+, and +transform+) work on points. Every method has an in-place
+    # version (with a name ending in !) which changes the given point and a normal version which first creates a copy of
+    # the point object and changes and returns that. All methods use radians when reading or returning points. For
+    # convenience there are also +forwardDeg+ and +inverseDeg+ methods (and in-place versions <tt>forwardDeg!</tt>
+    # and <tt>inverseDeg!</tt>) that will work with degrees.
+    #
+    # = Points
+    #
+    # All projection method project points to other points. You can use objects of the Proj4::Point class for this or
+    # any other object which supports the x, y, z read and write accessor methods. (In fact you don't even need the
+    # z accessor methods, 0 is assumed if they don't exist.)
+    #
+    # Some projection methods act on the given point in-place, other return a copy of the point object. But in any case
+    # all other attributes of the point object are retained.
+    #
+    # = Projection collections
+    #
+    # The methods forward_all, inverse_all, and transform_all (and their in-place versions forward_all!,
+    # inverse_all!, and transform_all! work just like their simple counterparts, but instead of a single
+    # point they convert a collection of points in one go.
+    #
+    # These methods all take an array as an argument or any object responding to the +each+ method (for the in-place versions)
+    # or +each+, +clear+, and <tt><<</tt> methods (for the normal version).
+    #
+    # Some projection methods act on the given collection in-place, i.e. the collection is not touched and all points
+    # in the collection will be projected in-place. The other methods act on a copy of the collection and on copies
+    # of each point in the collection. So you'll get back a brand new copy of the collection with new copies of the
+    # points with the projected coordinates. In any case all other attributes of the collection and points are retained.
+    #
     class Projection
 
         private
@@ -124,6 +189,33 @@ module Proj4
             forward!(point)
         end
 
+        # Project all points in a collection 'in place'.
+        # The +collection+ object must implement the +each+
+        # method for this to work.
+        #
+        # call-seq: forward_all!(collection) -> collection
+        #
+        def forward_all!(collection)
+            collection.each do |point|
+                forward!(point)
+            end
+            collection
+        end
+
+        # Projects all points in a collection.
+        # The +collection+ object must implement the +each+,
+        # +clear+, and << methods (just like an Array) for this to work.
+        #
+        # call-seq: forward_all(collection) -> collection
+        #
+        def forward_all(collection)
+            newcollection = collection.dup.clear
+            collection.each do |point|
+                newcollection << forward(point)
+            end
+            newcollection
+        end
+
         # Inverse projection of a point. Returns a copy of the point object with coordinates projected.
         #
         # call-seq: inverse(point) -> point
@@ -152,13 +244,34 @@ module Proj4
             point
         end
 
-        # Transforms a point from one projection to another. The second
-        # parameter is either a Proj4::Point object or you can use any
-        # object which responds to the x, y, z read and write accessor
-        # methods. (In fact you don't even need the z accessor methods,
-        # 0 is assumed if they don't exist).  This is the non-destructive
-        # variant of the method, i.e. it will first create a copy of
-        # your point object by calling its +dup+ method.
+        # Project all points in a collection 'in place'.
+        # The +collection+ object must implement the +each+
+        # method for this to work.
+        #
+        # call-seq: inverse_all!(collection) -> collection
+        #
+        def inverse_all!(collection)
+            collection.each do |point|
+                inverse!(point)
+            end
+            collection
+        end
+
+        # Projects all points in a collection.
+        # The +collection+ object must implement the +each+,
+        # +clear+, and << methods (just like an Array) for this to work.
+        #
+        # call-seq: inverse_all(collection) -> collection
+        #
+        def inverse_all(collection)
+            newcollection = collection.dup.clear
+            collection.each do |point|
+                newcollection << inverse(point)
+            end
+            newcollection
+        end
+
+        # Transforms a point from one projection to another.
         #
         # call-seq: transform(destinationProjection, point) -> point
         #
@@ -237,6 +350,8 @@ module Proj4
     end
 
     # Abstract base class for several types of definitions: Proj4::Datum, Proj4::Ellipsoid, Proj4::PrimeMeridian, Proj4::ProjectionType, Proj4::Unit.
+    #
+    # Note that these classes only work if the version of the Proj.4 C library used is at least 449.
     class Def
 
         # Initialize function raises error. Definitions are always defined by the underlying Proj.4 library, you can't create them yourself.
@@ -344,6 +459,7 @@ module Proj4
     end
 
     # The UV class holds one coordinate pair. Can be either lon/lat or x/y.
+    #
     # This class is deprecated and it will disappear in a later version of this
     # library. Use Proj4::Point instead (or any other class supporting x, y read and
     # write accessor method.

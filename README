@@ -1,31 +1,134 @@
 =Proj4rb
 
-This is a ruby binding for the Proj.4 Carthographic Projection library (http://proj.maptools.org), that supports conversions between a very large number of geographic coordinate systems and datums.
+This is a Ruby binding for the Proj.4 Carthographic Projection library
+(http://proj.maptools.org), that supports conversions between a very large
+number of geographic coordinate systems and datums.
+
+Most functions of the C library are implemented in the Ruby binding. Where
+there is a direct equivalent between C and Ruby, identifiers (like names of
+functions and constants) are the same. But the usage has been changed to
+take advantage of Rubys object-oriented features.
 
 ==Operations
 The library can be loaded this way:
-	require 'proj4'
+    require 'proj4'
 The classes are in the Proj4 module:
-	include Proj4	
-Currently, the binding gives you 2 classes: <tt>UV</tt> and <tt>Projection</tt>. To create a projection, you would do the following:
-	proj = Projection.new(["proj=utm","zone=21","units=m"])
-This defines a UTM21 North projection in WGS84. Note that the <tt>proj.exe</tt> initialization arguments equivalent to the one above would be:
-	+proj=utm +zone=21 +units=m
-Then to use the projection, you have 2 operations: +forward+ and +inverse+. +forward+ transforms the UV in WGS84 lon/lat (in radians) to the coordinate system defined during the creation of the Projection object. +inverse+ does the opposite. For example:
-	projected_uv = proj.forward(lonlat_uv)
-	lonlat_uv = proj.inverse(projected_uv)
-A UV object has 2 properties: +u+ and +v+, which can be set and retrieved.
+    include Proj4
+First you have to create a projection like this:
+    proj = Projection.new( :proj => "utm", :zone => "21", :units => "m" )
+(There are several alternative ways of specifying the arguments, see
+the documentation for Proj4::Projection.new for details.)
 
-You are also given 2 constants to convert between degrees and radians: +DEG_TO_RAD+ and +RAD_TO_DEG+
+This defines a UTM21 North projection in WGS84. Note that the <tt>proj</tt> /
+<tt>proj.exe</tt> initialization arguments equivalent to the one above would
+be:
+    +proj=utm +zone=21 +units=m
+
+To use the projection, you have 2 operations: +forward+ and +inverse+.
++forward+ transforms the point in WGS84 lon/lat (in radians) to the coordinate
+system defined during the creation of the Projection object. +inverse+ does the
+opposite. For example:
+
+    projected_point = proj.forward(lonlat_point)
+    lonlat_point = proj.inverse(projected_point)
+
+There is also a +transform+ function which can transform between any two
+projections including datum conversions:
+
+    point_in_projB = projA.transform(projB, point_in_projA)
+
+The +forward+, +inverse+, and +transform+ methods all have an in-place
+equivalent: <tt>forward!</tt>, <tt>inverse!</tt>, and <tt>transform!</tt>
+which projects the given point in place. There are also +forwardDeg+
+and +inverseDeg+ methods which work with longitudes and latitudes in
+degrees rather than radians.
+
+For the points you can use an object of the Proj4::Point class. It has 
+properties: +x+, +y+, and +z+, which can be set and retrieved. Aliases
++lon+ and +lat+ for +x+ and +y+, respectively, are available.
+(For backwards compatibility there is also an UV class, but this will go away
+in future versions.) Instead of the Proj4::Point object you can use any other
+objects which responds to the methods +x+ and +y+ (and +z+ for 3D datum
+transformations with the +transform+ method).
+
+The methods +forward_all+, +inverse_all+, and +transform_all+ (and their
+in-place versions <tt>forward_all!</tt>, <tt>inverse_all!</tt>, and
+<tt>transform_all!</tt> work just like their simple counterparts, but
+instead of a single point they convert a collection of points in one go.
+They take an array as an argument or any object responding to the
++each+ method (for the in-place versions) or +each+, +clear+, and
+<tt><<</tt> methods (for the normal version).
+
+You are also given 2 constants to convert between degrees and radians:
++DEG_TO_RAD+ and +RAD_TO_DEG+
  
-For now that is all there is to the Proj4rb library. Feel free to suggest additionnal functionnalities.
+==Error handling
+The projection initialization (Proj4::Projection.new) and all projection
+functions (Proj4::Projection#forward/inverse/transform) in their different
+versions throw an exception when there is a problem. There is a catch-all
+exception Proj4::Error and many subclasses of it for all the different errors
+that the Proj.4 C library can return. See Proj4::Error for more information or
+use the <tt>list-errors.rb</tt> program from the examples for a list.
 
-==Installation (Windows)
-To install the latest version on Windows, just type :
-      gem install proj4rb-win32
+==Definition lists
+Proj.4 knows about many different datums, ellipsoids, prime meridians,
+projection types and length units. The Proj4::Datum, Proj4::Ellipsoid,
+Proj4::PrimeMeridian, Proj4::ProjectionType, and Proj4::Unit classes
+can be used to access those lists and get details about each definition.
+See the <i>list-*</i> files in the <i>example</i> directory for some code
+examples.
 
-==Installation (Linux)
+Note that these lists are only available since the version 449 of the
+Proj.4 C library.
 
+==Installation
+Just install the gem with
+    gem install proj4rb
+
+==Compiling
+===Linux
+To compile the proj4rb Ruby bindings from source you'll need the
+Proj.4 C library installed. Enter the <i>src</i> directory and create
+a Makefile:
+    cd src
+    ruby extconf.rb
+If there are any problems consult the <i>mkmf.log</i> log file.
+Then compile with
+    make
+The result is the file <i>projrb.so</i> which you need to copy into
+the <i>lib</i> directory:
+    cp projrb.so ../lib/
+
+If you want to, you can now create a gem with
+    rake gem
+
+This will create a file <tt>proj4rb-<i>version</i>-i486-linux.gem</tt>
+or similar in the <i>pkg</i> directory.
+
+===Mac OS X
+To compile the proj4rb Ruby bindings from source you'll need the
+Proj.4 C library installed. Enter the <i>src</i> directory and create
+a Makefile:
+    cd src
+    ruby extconf.rb
+If there are any problems consult the <i>mkmf.log</i> log file.
+Then compile with
+    make
+The result is the file <i>projrb.bundle</i> which you need to copy into
+the <i>lib</i> directory:
+    cp projrb.bundle ../lib/
+
+If you want to, you can now create a gem with
+    rake gem
+
+This will create a file <tt>proj4rb-<i>version</i>-universal-darwin8.0.gem</tt>
+or similar in the <i>pkg</i> directory.
+
+
+===Windows
+The result is the file <i>proj.dll</i> which you need to copy into
+the <i>lib</i> directory:
+    cp proj.dll ../lib/
 
 ==TODO
 - Completely cross-platform build system (mkrf?)
@@ -33,13 +136,16 @@ To install the latest version on Windows, just type :
 ==Changes since the last version
 - Added most functions supported by C library and many tests.
 - Added support for Linux builds.
+- Improved error handling. On error the methods throw exceptions now.
 
 ==License
 Proj4rb is released under the MIT license.
 
 ==Support
-Any questions, enhancement proposals, bug notifications or corrections can be sent to mailto:guilhem.vellut@gmail.com.
+Any questions, enhancement proposals, bug notifications or corrections can be
+sent to mailto:guilhem.vellut@gmail.com or mailto:jochen@topf.org.
 
 ==Authors
-The proj4rb Ruby bindings were created by Guilhelm Vellut with many additions by Jochen Topf.
+The proj4rb Ruby bindings were created by Guilhelm Vellut with many additions
+by Jochen Topf.
 

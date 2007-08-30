@@ -41,24 +41,7 @@ static VALUE proj_alloc(VALUE klass){
   return obj;
 }
 
-/**Creates a new projection object. There are several ways of supplying the parameters:
-
-  [String] A string with the parameters in '[+]key=value' format concatenated together. This is the
-           format used by the <tt>proj</tt> / <tt>proj.exe</tt> command line tool.
-
-           Example: Projection.new "proj=utm zone=21 units=m"
-
-  [Array]  An array with each parameter as a member in the array in '[+]key=value' format.
-
-           Example: Projection.new [ "proj=utm", "zone=21", "units=m" ]
-
-  [Hash]   A hash with strings or symbols as keys.
-
-           Example: Projection.new( "proj" => "utm", "zone" => "21", "units" => "m" )
-
-           Example: Projection.new( :proj => "utm", :zone => "21", :units => "m" )
-
-  The plus sign in front of the keys is optional.
+/**Creates a new projection object. See the intro for details.
 
    call-seq: new(String) -> Proj4::Projection
              new(Array) -> Proj4::Projection
