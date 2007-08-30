@@ -4,6 +4,8 @@ require 'test/unit'
 
 class TransformTest < Test::Unit::TestCase
 
+    PRECISION = 0.1 ** 8
+
     def setup
         @proj_wgs84 = Proj4::Projection.new(["init=epsg:4326"])
         @proj_gk    = Proj4::Projection.new(["init=epsg:31467"])
@@ -20,18 +22,18 @@ class TransformTest < Test::Unit::TestCase
         from = Proj4::Point.new(@rw, @hw, @zw)
         to = @proj_gk.transform(@proj_wgs84, from)
         assert_not_equal from.object_id, to.object_id
-        assert_in_delta @lon, to.x * Proj4::RAD_TO_DEG, 0.1 ** 9
-        assert_in_delta @lat, to.y * Proj4::RAD_TO_DEG, 0.1 ** 9
-        assert_in_delta 0, to.z, 0.1 ** 9
+        assert_in_delta @lon, to.x * Proj4::RAD_TO_DEG, PRECISION
+        assert_in_delta @lat, to.y * Proj4::RAD_TO_DEG, PRECISION
+        assert_in_delta 0, to.z, PRECISION
     end
 
     def test_gk_to_wgs84_inplace
         from = Proj4::Point.new(@rw, @hw, @zw)
         to = @proj_gk.transform!(@proj_wgs84, from)
         assert_equal from.object_id, to.object_id
-        assert_in_delta @lon, to.x * Proj4::RAD_TO_DEG, 0.1 ** 9
-        assert_in_delta @lat, to.y * Proj4::RAD_TO_DEG, 0.1 ** 9
-        assert_in_delta 0, to.z, 0.1 ** 9
+        assert_in_delta @lon, to.x * Proj4::RAD_TO_DEG, PRECISION
+        assert_in_delta @lat, to.y * Proj4::RAD_TO_DEG, PRECISION
+        assert_in_delta 0, to.z, PRECISION
     end
 
     # echo "8.4293092923 48.9896114523" | cs2cs -f '%.10f' +init=epsg:4326 +to +init=epsg:31467 -
@@ -39,7 +41,7 @@ class TransformTest < Test::Unit::TestCase
         point = @proj_wgs84.transform(@proj_gk, Proj4::Point.new(@lon * Proj4::DEG_TO_RAD, @lat * Proj4::DEG_TO_RAD, 0))
         assert_equal @rw, point.x.round
         assert_equal @hw, point.y.round
-        assert_in_delta @zw, point.z, 0.1 ** 9
+        assert_in_delta @zw, point.z, PRECISION
     end
 
     def test_no_dst_proj
@@ -82,8 +84,8 @@ class TransformTest < Test::Unit::TestCase
         point = @proj_gk.transform(@proj_wgs84, XYPoint.new(@rw, @hw, 'foo') )
         assert_kind_of XYPoint, point
         assert_equal 'foo', point.extra
-        assert_in_delta @lon, point.x * Proj4::RAD_TO_DEG, 0.1 ** 9
-        assert_in_delta @lat, point.y * Proj4::RAD_TO_DEG, 0.1 ** 9
+        assert_in_delta @lon, point.x * Proj4::RAD_TO_DEG, PRECISION
+        assert_in_delta @lat, point.y * Proj4::RAD_TO_DEG, PRECISION
     end
 
     def test_no_float
@@ -103,9 +105,9 @@ class TransformTest < Test::Unit::TestCase
         to0 = collection[0]
         to1 = collection[1]
         assert_equal from1.object_id, to1.object_id
-        assert_in_delta @lon, to0.x * Proj4::RAD_TO_DEG, 0.1 ** 9
-        assert_in_delta @lat, to0.y * Proj4::RAD_TO_DEG, 0.1 ** 9
-        assert_in_delta 0, to0.z, 0.1 ** 9
+        assert_in_delta @lon, to0.x * Proj4::RAD_TO_DEG, PRECISION
+        assert_in_delta @lat, to0.y * Proj4::RAD_TO_DEG, PRECISION
+        assert_in_delta 0, to0.z, PRECISION
     end
 
 end
