@@ -1,4 +1,8 @@
-ENV['PROJ_LIB'] = File.dirname(__FILE__) + '/../data'
+
+if File.exists?(File.dirname(__FILE__ + '/../data'))
+    ENV['PROJ_LIB'] = File.dirname(__FILE__) + '/../data'
+end
+
 require 'projrb'
 
 # Ruby bindings for the Proj.4 cartographic projection library (http://proj.maptools.org).
