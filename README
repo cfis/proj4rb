@@ -143,9 +143,8 @@ Proj4rb is released under the MIT license.
 
 ==Support
 Any questions, enhancement proposals, bug notifications or corrections can be
-sent to mailto:guilhem.vellut@gmail.com or mailto:jochen@topf.org.
+sent to mailto:jochen@topf.org.
 
 ==Authors
-The proj4rb Ruby bindings were created by Guilhelm Vellut with many additions
-by Jochen Topf.
+The proj4rb Ruby bindings were started by Guilhem Vellut with most of the code done by Jochen Topf.
 
