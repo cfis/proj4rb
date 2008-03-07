@@ -3,6 +3,7 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
 require 'rake/clean'
+require 'ftools'
 
 task :default => :test
 

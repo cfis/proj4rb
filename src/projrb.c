@@ -533,5 +533,5 @@ void Init_projrb(void) {
     rb_define_method(cUnit,"name",unit_get_name,0);
 
   #endif
-
 }
+
