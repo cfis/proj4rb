@@ -88,9 +88,9 @@ Just install the gem with
 ==Compiling
 ===Linux
 To compile the proj4rb Ruby bindings from source you'll need the
-Proj.4 C library installed. Enter the <i>src</i> directory and create
+Proj.4 C library installed. Enter the <i>ext</i> directory and create
 a Makefile:
-    cd src
+    cd ext
     ruby extconf.rb
 If there are any problems consult the <i>mkmf.log</i> log file.
 Then compile with
@@ -107,9 +107,9 @@ or similar in the <i>pkg</i> directory.
 
 ===Mac OS X
 To compile the proj4rb Ruby bindings from source you'll need the
-Proj.4 C library installed. Enter the <i>src</i> directory and create
+Proj.4 C library installed. Enter the <i>ext</i> directory and create
 a Makefile:
-    cd src
+    cd ext
     ruby extconf.rb
 If there are any problems consult the <i>mkmf.log</i> log file.
 Then compile with

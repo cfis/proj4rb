@@ -17,7 +17,7 @@ CLOBBER.include('projrb.so')
 
 task :default => "projrb"
 
-SRC = FileList['../src/*.c']
+SRC = FileList['../ext/*.c']
 OBJ = SRC.collect do |file_name|
   File.basename(file_name).ext('o')
 end
