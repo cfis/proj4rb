@@ -126,6 +126,9 @@ or similar in the <i>pkg</i> directory.
 
 
 ===Windows
+The stuff in the +vc+ and +mingw+ directories is needed for building on
+Windows.
+
 The result is the file <i>proj.dll</i> which you need to copy into
 the <i>lib</i> directory:
     cp proj.dll ../lib/
@@ -134,9 +137,7 @@ the <i>lib</i> directory:
 - Completely cross-platform build system (mkrf?)
 
 ==Changes since the last version
-- Added most functions supported by C library and many tests.
-- Added support for Linux builds.
-- Improved error handling. On error the methods throw exceptions now.
+- Improved build system
 
 ==License
 Proj4rb is released under the MIT license.

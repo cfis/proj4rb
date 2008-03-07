@@ -1,6 +1,6 @@
-#include "ruby.h"
-#include "projects.h"
-#include "proj_api.h"
+#include <ruby.h>
+#include <projects.h>
+#include <proj_api.h>
  
 static VALUE mProjrb;
 
@@ -14,7 +14,6 @@ static VALUE cUnit;
 static VALUE cError;
 static VALUE cProjection;
 
-static ID idRaise;
 static ID idGetX;
 static ID idSetX;
 static ID idGetY;
@@ -25,6 +24,16 @@ static ID idParseInitParameters;
 
 typedef struct {projPJ pj;} _wrap_pj;
 
+
+static void raise_error(int pj_errno_ref) {
+  char *errmsg = pj_strerrno(pj_errno_ref);
+  if (errmsg) {
+    rb_raise(cError, "%s", errmsg);
+  } else {
+    rb_raise(rb_path2class("StandardError"), "Unknown error");
+  }
+}
+ 
 static void proj_free(void* p){
   _wrap_pj * wpj = (_wrap_pj*) p;
   if(wpj->pj != 0)
@@ -61,10 +70,11 @@ static VALUE proj_initialize(VALUE self, VALUE params){
   wpj->pj = pj_init(size,c_params);
   free(c_params);
   if(wpj->pj == 0) {
-    if (pj_errno > 0) {
+    int pj_errno_ref = *pj_get_errno_ref();
+    if (pj_errno_ref > 0) {
         rb_raise(rb_eSystemCallError, "Unknown system call error");
     } else {
-        rb_funcall(cError, idRaise, 1, INT2FIX(pj_errno) );
+        raise_error(pj_errno_ref);
     }
   }
   return self;
@@ -122,6 +132,7 @@ static VALUE proj_get_def(VALUE self){
  */
 static VALUE proj_forward(VALUE self,VALUE point){
   _wrap_pj* wpj;
+  int pj_errno_ref;
   projUV* pResult = (projUV*) malloc(sizeof(projUV));
   Data_Get_Struct(self,_wrap_pj,wpj);
 
@@ -129,14 +140,15 @@ static VALUE proj_forward(VALUE self,VALUE point){
   pResult->v = NUM2DBL( rb_funcall(point, idGetY, 0) );
   *pResult = pj_fwd(*pResult,wpj->pj);
 
-  if (pj_errno == 0) {
+  pj_errno_ref = *pj_get_errno_ref();
+  if (pj_errno_ref == 0) {
     rb_funcall(point, idSetX, 1, rb_float_new(pResult->u) );
     rb_funcall(point, idSetY, 1, rb_float_new(pResult->v) );
     return point;
-  } else if (pj_errno > 0) {
+  } else if (pj_errno_ref > 0) {
     rb_raise(rb_eSystemCallError, "Unknown system call error");
   } else {
-    rb_funcall(cError, idRaise, 1, INT2FIX(pj_errno) );
+    raise_error(pj_errno_ref);
   }
 }
 
@@ -148,6 +160,7 @@ static VALUE proj_forward(VALUE self,VALUE point){
  */
 static VALUE proj_inverse(VALUE self,VALUE point){
   _wrap_pj* wpj;
+  int pj_errno_ref;
   projUV* pResult = (projUV*) malloc(sizeof(projUV));
   Data_Get_Struct(self,_wrap_pj,wpj);
 
@@ -155,14 +168,15 @@ static VALUE proj_inverse(VALUE self,VALUE point){
   pResult->v = NUM2DBL( rb_funcall(point, idGetY, 0) );
   *pResult = pj_inv(*pResult,wpj->pj);
 
-  if (pj_errno == 0) {
+  pj_errno_ref = *pj_get_errno_ref();
+  if (pj_errno_ref == 0) {
     rb_funcall(point, idSetX, 1, rb_float_new(pResult->u) );
     rb_funcall(point, idSetY, 1, rb_float_new(pResult->v) );
     return point;
-  } else if (pj_errno > 0) {
+  } else if (pj_errno_ref > 0) {
     rb_raise(rb_eSystemCallError, "Unknown system call error");
   } else {
-    rb_funcall(cError, idRaise, 1, INT2FIX(pj_errno) );
+    raise_error(pj_errno_ref);
   }
 }
 
@@ -210,18 +224,9 @@ static VALUE proj_transform(VALUE self, VALUE dst, VALUE point){
     if (result > 0) {
         rb_raise(rb_eSystemCallError, "Unknown system call error");
     } else {
-        rb_funcall(cError, idRaise, 1, INT2FIX(result) );
+        rb_raise(cError, "Proj transform error: %i", result);
     }
   }
-}
-
-static VALUE projerr_strerrno(VALUE self, VALUE errno){
-    char *errmsg = pj_strerrno(NUM2INT(errno));
-    if (errmsg) {
-        return rb_str_new2(errmsg);
-    } else {
-        return rb_str_new2("unknown error");
-    }
 }
 
 #if PJ_VERSION >= 449
@@ -447,9 +452,11 @@ static VALUE unit_get_name(VALUE self){
 
 #endif
 
+#if defined(_WIN32)
+__declspec(dllexport) 
+#endif
 void Init_projrb(void) {
 
-  idRaise = rb_intern("raise_error");
   idGetX = rb_intern("x");
   idSetX = rb_intern("x=");
   idGetY = rb_intern("y");
@@ -474,7 +481,6 @@ void Init_projrb(void) {
   rb_define_const(mProjrb,"LIBVERSION", rb_float_new(PJ_VERSION));
 
   cError = rb_define_class_under(mProjrb,"Error",rb_path2class("StandardError"));
-  rb_define_singleton_method(cError,"strerrno",projerr_strerrno,1);
 
   cProjection = rb_define_class_under(mProjrb,"Projection",rb_cObject);
   rb_define_alloc_func(cProjection,proj_alloc);
@@ -529,4 +535,3 @@ void Init_projrb(void) {
   #endif
 
 }
-

@@ -40,33 +40,64 @@ Rake::RDocTask::new do |rdoc|
     rdoc.rdoc_files.include('src/**/*.c', 'lib/proj4.rb')
 end
 
-spec = Gem::Specification::new do |s|
-    s.platform = Gem::Platform::CURRENT
-
+default_spec = Gem::Specification::new do |s|
     s.name = 'proj4rb'
-    s.version = "0.2.1"
+    s.version = "0.2.2"
     s.summary = "Ruby bindings for the Proj.4 Carthographic Projection library"
     s.description = <<EOF
     Proj4rb is a ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems and datums.
 EOF
     s.author = 'Guilhem Vellut'
     s.email = 'guilhem.vellut@gmail.com'
-    s.homepage = 'http://thepochisuperstarmegashow.com'
+    s.homepage = 'http://proj4rb.rubyforge.org/'
     s.rubyforge_project = 'proj4rb'
+    s.required_ruby_version = '>= 1.8.4'
     
+    s.platform = Gem::Platform::RUBY
     s.requirements << 'Proj.4 C library'
     s.require_path = 'lib'
+    s.extensions = ["src/extconf.rb"]
     s.files = FileList["lib/**/*.rb", "lib/**/*.dll","lib/**/*.so","lib/**/*.bundle","example/**/*.rb","src/extconf.rb","src/**/*.h","src/**/*.c","test/**/*.rb", "README","MIT-LICENSE","rakefile.rb"]
     s.test_files = FileList['test/test*.rb']
-
+    
     s.has_rdoc = true
     s.extra_rdoc_files = ["README"]
     s.rdoc_options.concat ['--main',  'README']
 end
 
 desc "Package the library as a gem"
-Rake::GemPackageTask.new(spec) do |pkg|
+Rake::GemPackageTask.new(default_spec) do |pkg|
     pkg.need_zip = true
     pkg.need_tar = true
 end
 
+
+# ------- Windows Package ----------
+# Windows specification
+SO_NAME = "projrb.so"
+
+win_spec = default_spec.clone
+win_spec.extensions = []
+win_spec.platform = Gem::Platform::CURRENT
+win_spec.files += ["lib/#{SO_NAME}"]
+
+desc "Create Windows Gem"
+task :create_win32_gem do
+  # Copy the win32 extension built by MingW - easier to install
+  # since there are no dependencies of msvcr80.dll
+  current_dir = File.expand_path(File.dirname(__FILE__))
+  source = File.join(current_dir, "mingw", SO_NAME)
+  target = File.join(current_dir, "lib", SO_NAME)
+  cp(source, target)
+
+  # Create the gem, then move it to pkg
+  Gem::Builder.new(win_spec).build
+  gem_file = "#{win_spec.name}-#{win_spec.version}-#{win_spec.platform}.gem"
+  mv(gem_file, "pkg/#{gem_file}")
+
+  # Remove win extension from top level directory  
+  rm(target)
+end
+
+
+task :package => :create_win32_gem

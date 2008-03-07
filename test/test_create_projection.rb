@@ -35,7 +35,8 @@ class CreateProjectionTest < Test::Unit::TestCase
 
     def test_get_def
         assert_equal '+init=epsg:4326 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0', @proj_wgs84.getDef.strip
-        assert_equal '+init=epsg:31467 +proj=tmerc +lat_0=0 +lon_0=9 +k=1.000000 +x_0=3500000 +y_0=0 +ellps=bessel +datum=potsdam +units=m +no_defs +towgs84=606.0,23.0,413.0', @proj_gk.getDef.strip
+        d = @proj_gk.getDef.strip
+        assert ('+init=epsg:31467 +proj=tmerc +lat_0=0 +lon_0=9 +k=1 +x_0=3500000 +y_0=0 +ellps=bessel +datum=potsdam +units=m +no_defs +towgs84=606.0,23.0,413.0' == d || '+init=epsg:31467 +proj=tmerc +lat_0=0 +lon_0=9 +k=1.000000 +x_0=3500000 +y_0=0 +ellps=bessel +datum=potsdam +units=m +no_defs +towgs84=606.0,23.0,413.0' == d)
         assert_equal '+init=epsg:31528 +proj=utm +zone=28 +a=6378249.2 +b=6356515 +towgs84=-23,259,-9,0,0,0,0 +units=m +no_defs', @proj_conakry.getDef.strip
         assert_equal '+proj=ortel +lon_0=90w +ellps=WGS84', @proj_ortel.getDef.strip
     end
