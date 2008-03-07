@@ -7,21 +7,21 @@ require 'ftools'
 
 task :default => :test
 
-CLOBBER.include('pkg/*', 'proj4rb-doc/**/*', 'lib/*.so', 'lib/*.bundle', 'lib/*.dll', 'src/*.o', 'src/*.so', 'src/*.bundle', 'src/*.dll', 'src/Makefile', 'src/mkmf.log')
+CLOBBER.include('pkg/*', 'proj4rb-doc/**/*', 'lib/*.so', 'lib/*.bundle', 'lib/*.dll', 'ext/*.o', 'ext/*.so', 'ext/*.bundle', 'ext/*.dll', 'ext/Makefile', 'ext/mkmf.log')
 
 desc "Create Makefile"
-file 'src/Makefile' => ['src/extconf.rb'] do
-    sh 'cd src; ruby extconf.rb'
+file 'ext/Makefile' => ['ext/extconf.rb'] do
+    sh 'cd ext; ruby extconf.rb'
 end
 
 desc "Build from C library"
-task :build => ['src/Makefile', 'src/projrb.c'] do
-    sh 'cd src; make'
+task :build => ['ext/Makefile', 'ext/projrb.c'] do
+    sh 'cd ext; make'
     # Try the different suffixes for Linux, Mac OS X, or Windows shared libraries and put the one found into lib dir
     ['so', 'bundle', 'dll'].each do |suffix|
-        if File.exists?('src/projrb.' + suffix)
-            puts "Copying 'src/projrb.#{suffix}' to lib/"
-            File.copy('src/projrb.' + suffix, 'lib/projrb.' + suffix)
+        if File.exists?('ext/projrb.' + suffix)
+            puts "Copying 'ext/projrb.#{suffix}' to lib/"
+            File.copy('ext/projrb.' + suffix, 'lib/projrb.' + suffix)
         end
     end
 end
@@ -38,7 +38,7 @@ Rake::RDocTask::new do |rdoc|
     rdoc.title    = "Proj4rb Documentation"
     rdoc.options << '--line-numbers' << '--inline-source'
     rdoc.rdoc_files.include('README')
-    rdoc.rdoc_files.include('src/**/*.c', 'lib/proj4.rb')
+    rdoc.rdoc_files.include('ext/*.c', 'lib/proj4.rb')
 end
 
 default_spec = Gem::Specification::new do |s|
@@ -57,8 +57,8 @@ EOF
     s.platform = Gem::Platform::RUBY
     s.requirements << 'Proj.4 C library'
     s.require_path = 'lib'
-    s.extensions = ["src/extconf.rb"]
-    s.files = FileList["lib/**/*.rb", "lib/**/*.dll","lib/**/*.so","lib/**/*.bundle","example/**/*.rb","src/extconf.rb","src/**/*.h","src/**/*.c","test/**/*.rb", "README","MIT-LICENSE","rakefile.rb"]
+    s.extensions = ["ext/extconf.rb"]
+    s.files = FileList["lib/**/*.rb", "lib/**/*.dll","lib/**/*.so","lib/**/*.bundle","example/**/*.rb","ext/extconf.rb","ext/*.h","ext/*.c","test/**/*.rb", "README","MIT-LICENSE","rakefile.rb"]
     s.test_files = FileList['test/test*.rb']
     
     s.has_rdoc = true
