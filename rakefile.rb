@@ -68,7 +68,7 @@ end
 
 desc "Package the library as a gem"
 Rake::GemPackageTask.new(default_spec) do |pkg|
-    pkg.need_zip = true
+    #pkg.need_zip = true
     pkg.need_tar = true
 end
 
