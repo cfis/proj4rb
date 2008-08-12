@@ -73,12 +73,16 @@ static VALUE proj_error_message(VALUE self, VALUE rerrno) {
 static VALUE proj_initialize(VALUE self, VALUE params){
   _wrap_pj* wpj;
   VALUE proj_params = rb_funcall(cProjection, idParseInitParameters, 1, params);
-  int size = RARRAY(proj_params)->len; 
+  int size = RARRAY(proj_params)->len;
   char** c_params = (char **) malloc(size*sizeof(char *));
-  VALUE *ptr = RARRAY(proj_params)->ptr; 
   int i;
-  for (i=0; i < size; i++, ptr++)
-    c_params[i]= STR2CSTR(*ptr); 
+
+  for (i=0; i < size; i++)
+  {
+    VALUE item = rb_ary_entry(params, i);
+    c_params[i]= StringValuePtr(item); 
+  }
+
   Data_Get_Struct(self,_wrap_pj,wpj);
   wpj->pj = pj_init(size,c_params);
   free(c_params);
