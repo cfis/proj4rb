@@ -50,6 +50,22 @@ static VALUE proj_alloc(VALUE klass){
   return obj;
 }
 
+
+/** Returns the current error message.
+
+   call-seq: Error.message(errno)
+   
+ */
+static VALUE proj_error_message(VALUE self, VALUE rerrno) {
+  int error_id = NUM2INT(rerrno);
+  char *msg = pj_strerrno(error_id);
+  if (msg)
+	return rb_str_new2(msg);
+  else
+    return rb_str_new2("unknown error");
+}
+
+
 /**Creates a new projection object. See the intro for details.
 
    call-seq: new(String) -> Proj4::Projection
@@ -455,7 +471,7 @@ static VALUE unit_get_name(VALUE self){
 #if defined(_WIN32)
 __declspec(dllexport) 
 #endif
-void Init_projrb(void) {
+void Init_proj4_ruby(void) {
 
   idGetX = rb_intern("x");
   idSetX = rb_intern("x=");
@@ -481,6 +497,7 @@ void Init_projrb(void) {
   rb_define_const(mProjrb,"LIBVERSION", rb_float_new(PJ_VERSION));
 
   cError = rb_define_class_under(mProjrb,"Error",rb_path2class("StandardError"));
+  rb_define_singleton_method(cError,"message",proj_error_message,1);
 
   cProjection = rb_define_class_under(mProjrb,"Projection",rb_cObject);
   rb_define_alloc_func(cProjection,proj_alloc);
