@@ -27,7 +27,6 @@ typedef struct {projPJ pj;} _wrap_pj;
 
 
 static void raise_error(int pj_errno_ref) {
-  VALUE error_klass = rb_path2class("Proj4::Error");
   VALUE error_id = INT2NUM(pj_errno_ref);
   rb_funcall(cError, idRaiseError, 1, error_id);
 }
@@ -165,6 +164,7 @@ static VALUE proj_forward(VALUE self,VALUE point){
   } else {
     raise_error(pj_errno_ref);
   }
+  return self; /* Makes gcc happy */
 }
 
 /**Transforms a point in the coordinate system defined at initialization of the Projection object to WGS84 LonLat in radians.
@@ -195,6 +195,7 @@ static VALUE proj_inverse(VALUE self,VALUE point){
   } else {
     raise_error(pj_errno_ref);
   }
+  return self; /* Makes gcc happy */
 }
 
 /**Transforms a point from one projection to another. The second parameter is
@@ -242,6 +243,7 @@ static VALUE proj_transform(VALUE self, VALUE dst, VALUE point){
   } else {
     raise_error(result);
   }
+  return self; /* Makes gcc happy */
 }
 
 #if PJ_VERSION >= 449
