@@ -21,17 +21,15 @@ static ID idSetY;
 static ID idGetZ;
 static ID idSetZ;
 static ID idParseInitParameters;
+static ID idRaiseError;
 
 typedef struct {projPJ pj;} _wrap_pj;
 
 
 static void raise_error(int pj_errno_ref) {
-  char *errmsg = pj_strerrno(pj_errno_ref);
-  if (errmsg) {
-    rb_raise(cError, "%s", errmsg);
-  } else {
-    rb_raise(rb_path2class("StandardError"), "Unknown error");
-  }
+  VALUE error_klass = rb_path2class("Proj4::Error");
+  VALUE error_id = INT2NUM(pj_errno_ref);
+  rb_funcall(cError, idRaiseError, 1, error_id);
 }
  
 static void proj_free(void* p){
@@ -483,6 +481,7 @@ void Init_proj4_ruby(void) {
   idGetZ = rb_intern("z");
   idSetZ = rb_intern("z=");
   idParseInitParameters = rb_intern("_parse_init_parameters");
+  idRaiseError = rb_intern("raise_error");
 
   mProjrb = rb_define_module("Proj4");
 
