@@ -5,4 +5,4 @@ $CFLAGS += " -I/sw/include"
 $LDFLAGS += " -L/sw/lib"
 
 have_library 'proj', 'pj_init'
-create_makefile 'projrb'
+create_makefile 'proj4_ruby'

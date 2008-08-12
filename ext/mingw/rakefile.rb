@@ -12,7 +12,7 @@ RUBY_LIB_DIR = Config::CONFIG["libdir"]
 RUBY_SHARED_LIB = Config::CONFIG["LIBRUBY"]
 RUBY_SHARED_DLL = RUBY_SHARED_LIB.gsub(/lib$/, 'dll')
 
-EXTENSION_NAME = "proj4rb.#{Config::CONFIG["DLEXT"]}"
+EXTENSION_NAME = "proj4_ruby.#{Config::CONFIG["DLEXT"]}"
     
 CLEAN.include('*.o')
 CLOBBER.include(EXTENSION_NAME)

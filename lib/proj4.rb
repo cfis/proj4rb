@@ -3,7 +3,7 @@ if File.exists?(File.dirname(__FILE__ + '/../data'))
     ENV['PROJ_LIB'] = File.dirname(__FILE__) + '/../data'
 end
 
-require 'projrb'
+require 'proj4_ruby'
 
 # Ruby bindings for the Proj.4 cartographic projection library (http://proj.maptools.org).
 module Proj4
@@ -35,7 +35,7 @@ module Proj4
 
         # Raise an error with error number +errnum+.
         def self.raise_error(errnum)
-            raise eval("#{error(errnum.abs)}Error"), strerrno(-(errnum.abs)), caller[0..-1]
+            raise eval("#{error(errnum.abs)}Error"), message(-(errnum.abs)), caller[0..-1]
         end
 
         # Return error number of this error.
