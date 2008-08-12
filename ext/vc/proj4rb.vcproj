@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="proj4rb"
 	ProjectGUID="{DDB3E992-BF4B-4413-B061-288E40AECAD3}"
 	RootNamespace="proj4rb"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -62,13 +63,15 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="msvcrt-ruby18.lib proj.lib"
+				AdditionalDependencies="msvcrt-ruby18.lib libproj.lib"
 				OutputFile="C:\Development\ruby\lib\ruby\gems\1.8\gems\proj4rb-0.2.1-x86-mswin32-60\lib\projrb.so"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="C:\Development\msys\local\bin;C:\Development\ruby\lib"
+				AdditionalLibraryDirectories="C:\Development\msys\local\lib;C:\Development\ruby\lib"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -88,9 +91,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -148,6 +148,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -169,9 +171,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -185,7 +184,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\ext\projrb.c"
+				RelativePath="..\projrb.c"
 				>
 			</File>
 		</Filter>
