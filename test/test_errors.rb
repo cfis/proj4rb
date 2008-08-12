@@ -38,10 +38,10 @@ class ErrorsTest < Test::Unit::TestCase
     end
 
     def test_strerrno
-        assert_equal 'no arguments in initialization list', Proj4::Error.strerrno(-1)
-        assert_equal 'reciprocal flattening (1/f) = 0',     Proj4::Error.strerrno(-10)
-        assert_equal 'unknown error',                       Proj4::Error.strerrno(0)
-        assert_match /^invalid projection system error/,    Proj4::Error.strerrno(-2000)
+        assert_equal 'no arguments in initialization list', Proj4::Error.message(-1)
+        assert_equal 'reciprocal flattening (1/f) = 0',     Proj4::Error.message(-10)
+        assert_equal 'unknown error',                       Proj4::Error.message(0)
+        assert_match /^invalid projection system error/,    Proj4::Error.message(-2000)
     end
 
     def test_raise_err0
