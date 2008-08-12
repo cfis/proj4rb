@@ -237,12 +237,10 @@ static VALUE proj_transform(VALUE self, VALUE dst, VALUE point){
         rb_funcall(point, idSetZ, 1, rb_float_new(array_z[0]) );
     }
     return point;
+  } else if (result > 0) {
+    rb_raise(rb_eSystemCallError, "Unknown system call error");
   } else {
-    if (result > 0) {
-        rb_raise(rb_eSystemCallError, "Unknown system call error");
-    } else {
-        rb_raise(cError, "Proj transform error: %i", result);
-    }
+    raise_error(result);
   }
 }
 
