@@ -1,11 +1,11 @@
+require 'rubygems'
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
 require 'rake/clean'
+require 'date'
 require 'ftools'
-
-task :default => :test
 
 CLOBBER.include('pkg/*', 'proj4rb-doc/**/*', 'lib/*.so', 'lib/*.bundle', 'lib/*.dll', 'ext/*.o', 'ext/*.so', 'ext/*.bundle', 'ext/*.dll', 'ext/Makefile', 'ext/mkmf.log')
 
@@ -41,24 +41,43 @@ Rake::RDocTask::new do |rdoc|
     rdoc.rdoc_files.include('ext/*.c', 'lib/proj4.rb')
 end
 
+
+
+# ------- Default Package ----------
+FILES = FileList[
+  'rakefile.rb',
+  'README',
+  'MIT-LICENSE',
+  'data/**/*',
+  'doc/**/*',
+  'example/**/*',
+  'ext/*',
+  'ext/mingw/rakefile.rb',
+  'ext/vc/*.sln',
+  'ext/vc/*.vcproj',
+  'lib/**/*.rb'
+]
+
+# Default GEM Specification
 default_spec = Gem::Specification::new do |s|
     s.name = 'proj4rb'
-    s.version = "0.2.2"
+    s.version = "0.3.0"
     s.summary = "Ruby bindings for the Proj.4 Carthographic Projection library"
-    s.description = <<EOF
-    Proj4rb is a ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems and datums.
-EOF
+    s.description = <<-EOF
+      Proj4rb is a ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems and datums.
+    EOF
     s.author = 'Guilhem Vellut'
     s.email = 'guilhem.vellut@gmail.com'
     s.homepage = 'http://proj4rb.rubyforge.org/'
     s.rubyforge_project = 'proj4rb'
     s.required_ruby_version = '>= 1.8.4'
+    s.date = DateTime.now
     
     s.platform = Gem::Platform::RUBY
     s.requirements << 'Proj.4 C library'
     s.require_path = 'lib'
     s.extensions = ["ext/extconf.rb"]
-    s.files = FileList["lib/**/*.rb", "lib/**/*.dll","lib/**/*.so","lib/**/*.bundle","example/**/*.rb","ext/extconf.rb","ext/*.h","ext/*.c","test/**/*.rb", "README","MIT-LICENSE","rakefile.rb"]
+    s.files = FILES.to_a
     s.test_files = FileList['test/test*.rb']
     
     s.has_rdoc = true
@@ -68,37 +87,58 @@ end
 
 desc "Package the library as a gem"
 Rake::GemPackageTask.new(default_spec) do |pkg|
-    #pkg.need_zip = true
+    pkg.need_zip = true
     pkg.need_tar = true
 end
 
 
 # ------- Windows Package ----------
-# Windows specification
-SO_NAME = "projrb.so"
+binaries = (FileList['ext/mingw/*.so',
+                     'ext/mingw/*.dll*'])
 
 win_spec = default_spec.clone
 win_spec.extensions = []
 win_spec.platform = Gem::Platform::CURRENT
-win_spec.files += ["lib/#{SO_NAME}"]
+win_spec.files += binaries.map {|binaryname| "lib/#{File.basename(binaryname)}"}
 
 desc "Create Windows Gem"
 task :create_win32_gem do
   # Copy the win32 extension built by MingW - easier to install
   # since there are no dependencies of msvcr80.dll
   current_dir = File.expand_path(File.dirname(__FILE__))
-  source = File.join(current_dir, "mingw", SO_NAME)
-  target = File.join(current_dir, "lib", SO_NAME)
-  cp(source, target)
 
-  # Create the gem, then move it to pkg
+  binaries.each do |binaryname|
+    target = File.join(current_dir, 'lib', File.basename(binaryname))
+    cp(binaryname, target)
+  end
+  
+  # Create the gem, then move it to admin/pkg
   Gem::Builder.new(win_spec).build
   gem_file = "#{win_spec.name}-#{win_spec.version}-#{win_spec.platform}.gem"
   mv(gem_file, "pkg/#{gem_file}")
 
   # Remove win extension from top level directory  
-  rm(target)
+  binaries.each do |binaryname|
+    target = File.join(current_dir, 'lib', File.basename(binaryname))
+    rm(target)
+  end
 end
 
+# ---------  RDoc Documentation ---------
+desc "Generate rdoc documentation"
+Rake::RDocTask.new("rdoc") do |rdoc|
+  rdoc.rdoc_dir = 'doc/rdoc'
+  rdoc.title    = "LibXML"
+  # Show source inline with line numbers
+  rdoc.options << "--inline-source" << "--line-numbers"
+  # Make the readme file the start page for the generated html
+  rdoc.options << '--main' << 'README'
+  rdoc.rdoc_files.include('doc/*.rdoc',
+                          'ext/**/*.c',
+                          'lib/**/*.rb',
+                          'README',
+                          'MIT-LICENSE')
+end
 
+task :default => :package
 task :package => :create_win32_gem
