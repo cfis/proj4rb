@@ -149,17 +149,18 @@ static VALUE proj_get_def(VALUE self){
 static VALUE proj_forward(VALUE self,VALUE point){
   _wrap_pj* wpj;
   int pj_errno_ref;
-  projUV* pResult = (projUV*) malloc(sizeof(projUV));
+  projLP pj_point;
+  projXY pj_result;
   Data_Get_Struct(self,_wrap_pj,wpj);
 
-  pResult->u = NUM2DBL( rb_funcall(point, idGetX, 0) );
-  pResult->v = NUM2DBL( rb_funcall(point, idGetY, 0) );
-  *pResult = pj_fwd(*pResult,wpj->pj);
+  pj_point.u = NUM2DBL( rb_funcall(point, idGetX, 0) );
+  pj_point.v = NUM2DBL( rb_funcall(point, idGetY, 0) );
+  pj_result = pj_fwd(pj_point, wpj->pj);
 
   pj_errno_ref = *pj_get_errno_ref();
   if (pj_errno_ref == 0) {
-    rb_funcall(point, idSetX, 1, rb_float_new(pResult->u) );
-    rb_funcall(point, idSetY, 1, rb_float_new(pResult->v) );
+    rb_funcall(point, idSetX, 1, rb_float_new(pj_result.u) );
+    rb_funcall(point, idSetY, 1, rb_float_new(pj_result.v) );
     return point;
   } else if (pj_errno_ref > 0) {
     rb_raise(rb_eSystemCallError, "Unknown system call error");
@@ -177,17 +178,19 @@ static VALUE proj_forward(VALUE self,VALUE point){
 static VALUE proj_inverse(VALUE self,VALUE point){
   _wrap_pj* wpj;
   int pj_errno_ref;
-  projUV* pResult = (projUV*) malloc(sizeof(projUV));
+  projXY pj_point;
+  projLP pj_result;
+
   Data_Get_Struct(self,_wrap_pj,wpj);
 
-  pResult->u = NUM2DBL( rb_funcall(point, idGetX, 0) );
-  pResult->v = NUM2DBL( rb_funcall(point, idGetY, 0) );
-  *pResult = pj_inv(*pResult,wpj->pj);
+  pj_point.u = NUM2DBL( rb_funcall(point, idGetX, 0) );
+  pj_point.v = NUM2DBL( rb_funcall(point, idGetY, 0) );
+  pj_result = pj_inv(pj_point, wpj->pj);
 
   pj_errno_ref = *pj_get_errno_ref();
   if (pj_errno_ref == 0) {
-    rb_funcall(point, idSetX, 1, rb_float_new(pResult->u) );
-    rb_funcall(point, idSetY, 1, rb_float_new(pResult->v) );
+    rb_funcall(point, idSetX, 1, rb_float_new(pj_result.u) );
+    rb_funcall(point, idSetY, 1, rb_float_new(pj_result.v) );
     return point;
   } else if (pj_errno_ref > 0) {
     rb_raise(rb_eSystemCallError, "Unknown system call error");
