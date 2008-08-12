@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="proj4rb"
+	Name="proj4_ruby"
 	ProjectGUID="{DDB3E992-BF4B-4413-B061-288E40AECAD3}"
 	RootNamespace="proj4rb"
 	Keyword="Win32Proj"
@@ -46,6 +46,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				StructMemberAlignment="4"
 				UsePrecompiledHeader="0"
 				BrowseInformation="0"
 				WarningLevel="3"
@@ -64,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="msvcrt-ruby18.lib libproj.lib"
-				OutputFile="C:\Development\ruby\lib\ruby\gems\1.8\gems\proj4rb-0.2.1-x86-mswin32-60\lib\projrb.so"
+				OutputFile="C:\Development\ruby\lib\ruby\gems\1.8\gems\proj4rb-0.3.0-x86-mswin32-60\lib\$(ProjectName).so"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Development\msys\local\lib;C:\Development\ruby\lib"
 				ModuleDefinitionFile=""
