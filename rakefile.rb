@@ -26,12 +26,6 @@ task :build => ['ext/Makefile', 'ext/projrb.c'] do
     end
 end
 
-desc "Run the tests"
-Rake::TestTask::new do |t|
-    t.test_files = FileList['test/test*.rb']
-    t.verbose = true
-end
-
 desc "Generate the documentation"
 Rake::RDocTask::new do |rdoc|
     rdoc.rdoc_dir = 'proj4rb-doc/'
@@ -124,11 +118,18 @@ task :create_win32_gem do
   end
 end
 
+
+# ---------  Test Task ---------
+Rake::TestTask.new do |t|
+  t.libs << "test"
+  t.libs << "lib"
+end
+
 # ---------  RDoc Documentation ---------
 desc "Generate rdoc documentation"
 Rake::RDocTask.new("rdoc") do |rdoc|
   rdoc.rdoc_dir = 'doc/rdoc'
-  rdoc.title    = "LibXML"
+  rdoc.title    = "proj4rb"
   # Show source inline with line numbers
   rdoc.options << "--inline-source" << "--line-numbers"
   # Make the readme file the start page for the generated html
