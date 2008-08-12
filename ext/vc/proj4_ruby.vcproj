@@ -46,7 +46,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				StructMemberAlignment="4"
+				StructMemberAlignment="0"
 				UsePrecompiledHeader="0"
 				BrowseInformation="0"
 				WarningLevel="3"
