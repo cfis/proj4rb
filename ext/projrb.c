@@ -79,7 +79,7 @@ static VALUE proj_initialize(VALUE self, VALUE params){
 
   for (i=0; i < size; i++)
   {
-    VALUE item = rb_ary_entry(params, i);
+    VALUE item = rb_ary_entry(proj_params, i);
     c_params[i]= StringValuePtr(item); 
   }
 
