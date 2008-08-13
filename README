@@ -1,7 +1,7 @@
 =Proj4rb
 
 This is a Ruby binding for the Proj.4 Carthographic Projection library
-(http://proj.maptools.org), that supports conversions between a very large
+(http://trac.osgeo.org/proj/), that supports conversions between a very large
 number of geographic coordinate systems and datums.
 
 Most functions of the C library are implemented in the Ruby binding. Where
