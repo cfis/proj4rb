@@ -5,7 +5,7 @@ end
 
 require 'proj4_ruby'
 
-# Ruby bindings for the Proj.4 cartographic projection library (http://proj.maptools.org).
+# Ruby bindings for the Proj.4 cartographic projection library (http://trac.osgeo.org/proj/).
 module Proj4
 
     # Base class for all Proj.4 exceptions. Subclasses with the name <errorname>Error are available for each exception.
@@ -58,7 +58,7 @@ module Proj4
     # = Creating a new projection object
     #
     # Projection objects are created through the new method as usual. Depending on the kind of projection, many
-    # different parameters are needed. Please consult the documentation of the Proj.4 C library at http://proj.maptools.org 
+    # different parameters are needed. Please consult the documentation of the Proj.4 C library at http://trac.osgeo.org/proj/
     # for details.
     #
     # There are several ways of specifying the parameters:
@@ -466,7 +466,7 @@ module Proj4
     #
     # This class is deprecated and it will disappear in a later version of this
     # library. Use Proj4::Point instead (or any other class supporting x, y read and
-    # write accessor method.
+    # write accessor method.)
     class UV
 
         attr_accessor :x, :y
