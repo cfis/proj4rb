@@ -1,6 +1,6 @@
 #!/usr/bin/ruby -w
 
-$:.unshift(File.dirname(__FILE__) + '/../lib/')
+$: << File.dirname(__FILE__) + '/../lib/' << File.dirname(__FILE__) + '/../ext/'
 
 require 'proj4'
 include Proj4

@@ -1,4 +1,4 @@
-$: << 'lib'
+$: << 'lib' << 'ext'
 require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
 require 'test/unit'
 
@@ -31,13 +31,6 @@ class SimpleProjectionTest < Test::Unit::TestCase
         result = @proj_gk.forwardDeg( Proj4::Point.new( @lon, @lat ) ) 
         assert_in_delta @rw, result.x, 0.1
         assert_in_delta @hw, result.y, 0.1
-    end
-
-    # for backwards compatibility
-    def test_forward_gk_degrees_UV
-        result = @proj_gk.forwardDeg( Proj4::UV.new( @lon, @lat ) ) 
-        assert_in_delta @rw, result.u, 0.1
-        assert_in_delta @hw, result.v, 0.1
     end
 
     # echo "3458305 5428192" | invproj -f '%.10f' +init=epsg:31467 -
