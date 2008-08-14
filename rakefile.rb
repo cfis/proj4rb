@@ -17,13 +17,6 @@ end
 desc "Build from C library"
 task :build => ['ext/Makefile', 'ext/projrb.c'] do
     sh 'cd ext; make'
-    # Try the different suffixes for Linux, Mac OS X, or Windows shared libraries and put the one found into lib dir
-    ['so', 'bundle', 'dll'].each do |suffix|
-        if File.exists?('ext/projrb.' + suffix)
-            puts "Copying 'ext/projrb.#{suffix}' to lib/"
-            File.copy('ext/projrb.' + suffix, 'lib/projrb.' + suffix)
-        end
-    end
 end
 
 # ------- Default Package ----------
