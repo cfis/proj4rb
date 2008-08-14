@@ -26,17 +26,6 @@ task :build => ['ext/Makefile', 'ext/projrb.c'] do
     end
 end
 
-desc "Generate the documentation"
-Rake::RDocTask::new do |rdoc|
-    rdoc.rdoc_dir = 'proj4rb-doc/'
-    rdoc.title    = "Proj4rb Documentation"
-    rdoc.options << '--line-numbers' << '--inline-source'
-    rdoc.rdoc_files.include('README')
-    rdoc.rdoc_files.include('ext/*.c', 'lib/proj4.rb')
-end
-
-
-
 # ------- Default Package ----------
 FILES = FileList[
   'rakefile.rb',
@@ -129,7 +118,7 @@ end
 desc "Generate rdoc documentation"
 Rake::RDocTask.new("rdoc") do |rdoc|
   rdoc.rdoc_dir = 'doc/rdoc'
-  rdoc.title    = "proj4rb"
+  rdoc.title    = "Proj4rb Documentation"
   # Show source inline with line numbers
   rdoc.options << "--inline-source" << "--line-numbers"
   # Make the readme file the start page for the generated html

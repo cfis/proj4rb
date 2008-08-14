@@ -46,10 +46,10 @@ degrees rather than radians.
 For the points you can use an object of the Proj4::Point class. It has 
 properties: +x+, +y+, and +z+, which can be set and retrieved. Aliases
 +lon+ and +lat+ for +x+ and +y+, respectively, are available.
-(For backwards compatibility there is also an UV class, but this will go away
-in future versions.) Instead of the Proj4::Point object you can use any other
-objects which responds to the methods +x+ and +y+ (and +z+ for 3D datum
-transformations with the +transform+ method).
+(There used to be a UV class, but this has been removed in version 0.3.0.)
+Instead of the Proj4::Point object you can use any other objects which
+responds to the methods +x+ and +y+ (and +z+ for 3D datum transformations
+with the +transform+ method).
 
 The methods +forward_all+, +inverse_all+, and +transform_all+ (and their
 in-place versions <tt>forward_all!</tt>, <tt>inverse_all!</tt>, and
