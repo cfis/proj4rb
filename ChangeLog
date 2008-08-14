@@ -1,0 +1,6 @@
+
+0.3.0
+	- Removed Proj4::UV class
+	- New build stuff for Windows (Charlie Savage)
+	- Fixed memory leaks in forward() and inverse() methods (Charlie Savage)
+
