@@ -88,16 +88,21 @@ Just install the gem with
 ==Compiling
 ===Linux
 To compile the proj4rb Ruby bindings from source you'll need the
-Proj.4 C library installed. Enter the <i>ext</i> directory and create
+Proj.4 C library installed. Simply call
+    rake build
+
+If there is a problem, you can do this step manuall:
+Enter the <i>ext</i> directory and create
 a Makefile:
     cd ext
     ruby extconf.rb
 If there are any problems consult the <i>mkmf.log</i> log file.
 Then compile with
     make
-The result is the file <i>projrb.so</i> which you need to copy into
-the <i>lib</i> directory:
-    cp projrb.so ../lib/
+The result is the file <i>proj4_ruby.so</i>.
+
+If you want to run the tests call
+    rake test
 
 If you want to, you can now create a gem with
     rake gem
