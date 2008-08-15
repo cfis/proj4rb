@@ -149,12 +149,6 @@ If you are using MingW/msys, then:
 The result is a proj4_ruby.so file which can be package into a GEM or 
 copied to the ruby/site-lib directory.
 
-==TODO
-- Completely cross-platform build system (mkrf?)
-
-==Changes since the last version
-- Improved build system
-
 ==License
 Proj4rb is released under the MIT license.
 
