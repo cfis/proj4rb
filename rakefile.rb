@@ -124,4 +124,7 @@ Rake::RDocTask.new("rdoc") do |rdoc|
 end
 
 task :default => :package
-task :package => :create_win32_gem
+
+if RUBY_PLATFORM.match(/win32/)
+  task :package => :create_win32_gem
+end
