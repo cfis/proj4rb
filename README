@@ -85,7 +85,7 @@ examples.
 Note that these lists rquire version 449 or later of the Proj.4 C library.
 
 ==Installation
-To intsall the gem simply type:
+To install the gem simply type:
     gem install proj4rb
 
 ==Compiling
