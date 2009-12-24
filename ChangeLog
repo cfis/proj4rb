@@ -1,3 +1,8 @@
+0.3.1 (December 23, 2009)
+	- Update extconf.conf file to be more flexible to make it easier to build
+    on OS X when using MacPorts
+	- Updated windows binary to link against proj4.7
+
 0.3.0 (August 14, 2008)
 	- Removed Proj4::UV class which was previously deprecated
 	- New build infrastructure for Windows (Charlie Savage)

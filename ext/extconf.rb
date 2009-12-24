@@ -1,8 +1,13 @@
 require 'mkmf'
 
-# help with compiling on Mac OS X
-$CFLAGS += " -I/sw/include"
-$LDFLAGS += " -L/sw/lib"
+dir_config('proj')
 
-have_library 'proj', 'pj_init'
+if not have_header('proj_api.h')
+  raise('Cannot find proj_api.h header')
+end
+
+if not have_library('proj', 'pj_init')
+  raise('Cannot find proj4 library')
+end
+
 create_makefile 'proj4_ruby'

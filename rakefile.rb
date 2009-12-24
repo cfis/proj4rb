@@ -37,7 +37,7 @@ FILES = FileList[
 # Default GEM Specification
 default_spec = Gem::Specification::new do |s|
     s.name = 'proj4rb'
-    s.version = "0.3.0"
+    s.version = "0.3.1"
     s.summary = "Ruby bindings for the Proj.4 Carthographic Projection library"
     s.description = <<-EOF
       Proj4rb is a ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems and datums.
@@ -63,7 +63,7 @@ end
 
 desc "Package the library as a gem"
 Rake::GemPackageTask.new(default_spec) do |pkg|
-    pkg.need_zip = true
+#    pkg.need_zip = true
     pkg.need_tar = true
 end
 
