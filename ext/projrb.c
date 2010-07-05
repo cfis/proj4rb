@@ -73,7 +73,7 @@ static VALUE proj_error_message(VALUE self, VALUE rerrno) {
 static VALUE proj_initialize(VALUE self, VALUE params){
   _wrap_pj* wpj;
   VALUE proj_params = rb_funcall(cProjection, idParseInitParameters, 1, params);
-  int size = RARRAY(proj_params)->len;
+  int size = RARRAY_LEN(proj_params);
   char** c_params = (char **) malloc(size*sizeof(char *));
   int i;
 

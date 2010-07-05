@@ -5,7 +5,7 @@ require 'rake/rdoctask'
 require 'rake/gempackagetask'
 require 'rake/clean'
 require 'date'
-require 'ftools'
+require 'fileutils'
 
 CLOBBER.include('pkg/*', 'proj4rb-doc/**/*', 'lib/*.so', 'lib/*.bundle', 'lib/*.dll', 'ext/*.o', 'ext/*.so', 'ext/*.bundle', 'ext/*.dll', 'ext/Makefile', 'ext/mkmf.log')
 
