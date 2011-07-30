@@ -1,3 +1,9 @@
+0.4.0 (July 30, 2011)
+	- Update to compile on Ruby 1.9.* (Fabio Renzo Panettieri)
+  - Add in gemspec file (Charlie Savage)
+  - Add rake-compiler as development dependency, remove older MinGW build system (Charlie Savage)
+  - Move to GitHub (Charlie Savage)
+
 0.3.1 (December 23, 2009)
 	- Update extconf.conf file to be more flexible to make it easier to build
     on OS X when using MacPorts
