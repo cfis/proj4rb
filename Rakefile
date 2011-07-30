@@ -18,6 +18,7 @@ Rake::ExtensionTask.new do |ext|
   ext.name = SO_NAME
   ext.ext_dir = "ext"
   ext.lib_dir = "lib/#{RUBY_VERSION.sub(/\.\d$/, '')}"
+  ext.config_options << "--with-proj-dir=C:/MinGW/local"
 end
 
 # Setup generic gem

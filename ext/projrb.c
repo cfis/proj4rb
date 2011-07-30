@@ -554,7 +554,5 @@ void Init_proj4_ruby(void) {
     rb_define_method(cUnit,"id",unit_get_id,0);
     rb_define_method(cUnit,"to_meter",unit_get_to_meter,0);
     rb_define_method(cUnit,"name",unit_get_name,0);
-
   #endif
 }
-
