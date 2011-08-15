@@ -1,3 +1,6 @@
+0.4.2 (August 15, 2011)
+	- Minor build tweak to support MSVC++
+
 0.4.1 (July 30, 2011)
 	- Search first for binaries when using windows gems
   - Add # encoding to test files
