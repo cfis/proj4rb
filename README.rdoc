@@ -152,9 +152,6 @@ copied to the ruby/site-lib directory.
 ==License
 Proj4rb is released under the MIT license.
 
-==Support
-Any questions, enhancement proposals, bug notifications or corrections can be
-sent to mailto:jochen@topf.org.
 
 ==Authors
 The proj4rb Ruby bindings were started by Guilhem Vellut with most of the code 
