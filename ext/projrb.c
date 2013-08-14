@@ -1,15 +1,19 @@
 #include <ruby.h>
+#ifdef HAVE_PROJECTS_H
 #include <projects.h>
+#endif
 #include <proj_api.h>
  
 static VALUE mProjrb;
 
+#ifdef HAVE_PROJECTS_H
 static VALUE cDef;
 static VALUE cDatum;
 static VALUE cEllipsoid;
 static VALUE cPrimeMeridian;
 static VALUE cProjectionType;
 static VALUE cUnit;
+#endif
 
 static VALUE cError;
 static VALUE cProjection;
@@ -97,6 +101,7 @@ static VALUE proj_initialize(VALUE self, VALUE params){
   return self;
 }
 
+#ifdef HAVE_PROJECTS_H
 /**Has this projection an inverse?
 
    call-seq: hasInverse? -> true or false
@@ -107,6 +112,7 @@ static VALUE proj_has_inverse(VALUE self){
   Data_Get_Struct(self,_wrap_pj,wpj);
   return wpj->pj->inv ? Qtrue : Qfalse;
 }
+#endif
 
 /**Is this projection a latlong projection?
 
@@ -250,7 +256,7 @@ static VALUE proj_transform(VALUE self, VALUE dst, VALUE point){
   return self; /* Makes gcc happy */
 }
 
-#if PJ_VERSION >= 449
+#if PJ_VERSION >= 449 && defined(HAVE_PROJECTS_H)
 /**Return list of all datums we know about.
 
    call-seq: list -> Array of Proj4::Datum
@@ -508,7 +514,9 @@ void Init_proj4_ruby(void) {
   cProjection = rb_define_class_under(mProjrb,"Projection",rb_cObject);
   rb_define_alloc_func(cProjection,proj_alloc);
   rb_define_method(cProjection,"initialize",proj_initialize,1);
+#ifdef HAVE_PROJECTS_H
   rb_define_method(cProjection,"hasInverse?",proj_has_inverse,0);
+#endif
   rb_define_method(cProjection,"isLatLong?",proj_is_latlong,0);
   rb_define_method(cProjection,"isGeocent?",proj_is_geocent,0);
   rb_define_alias(cProjection,"isGeocentric?","isGeocent?");
@@ -517,7 +525,7 @@ void Init_proj4_ruby(void) {
   rb_define_method(cProjection,"inverse!",proj_inverse,1);
   rb_define_method(cProjection,"transform!",proj_transform,2);
 
-  #if PJ_VERSION >= 449
+  #if PJ_VERSION >= 449 && defined(HAVE_PROJECTS_H)
     cDef = rb_define_class_under(mProjrb,"Def",rb_cObject);
 
     /* The Datum class holds information about datums ('WGS84', 'potsdam', ...) known to Proj.4. */
