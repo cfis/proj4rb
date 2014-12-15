@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/cfis/proj4rb'
   spec.required_ruby_version = '>= 1.8.7'
   spec.date = DateTime.now
+  spec.license = 'MIT'
 
   spec.requirements << 'Proj.4 C library'
   spec.require_path = 'lib'
