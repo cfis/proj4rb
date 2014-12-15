@@ -1,5 +1,5 @@
-0.4.4 (December 14, 2014)
-	- Remove reference to now private projects.h header
+1.0.0 (December 14, 2014)
+	- Calling this 1.0.0 since its a very stable gem
 
 0.4.3 (August 30, 2011)
 	- Remove reference to now private projects.h header
