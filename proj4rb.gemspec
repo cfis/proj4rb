@@ -26,7 +26,6 @@ Gem::Specification.new do |spec|
   spec.platform = Gem::Platform::RUBY
   spec.authors = ['Guilhem Vellut', 'Jochen Topf', 'Charlie Savage']
   spec.homepage = 'https://github.com/cfis/proj4rb'
-  spec.rubyforge_project = 'proj4rb'
   spec.required_ruby_version = '>= 1.8.7'
   spec.date = DateTime.now
 
