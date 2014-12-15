@@ -35,6 +35,4 @@ Gem::Specification.new do |spec|
   spec.extensions = ['ext/extconf.rb']
   spec.files = FILES.to_a
   spec.test_files = FileList['test/test*.rb']
-
-  spec.add_development_dependency('rake-compiler')
 end
