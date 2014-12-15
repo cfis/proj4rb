@@ -1,4 +1,7 @@
-0.4.3 (December 14, 2014)
+0.4.4 (December 14, 2014)
+	- Remove reference to now private projects.h header
+
+0.4.3 (August 30, 2011)
 	- Remove reference to now private projects.h header
 
 0.4.2 (August 15, 2011)

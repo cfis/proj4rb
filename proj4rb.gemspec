@@ -18,7 +18,7 @@ FILES = FileList[
 
 Gem::Specification.new do |spec|
   spec.name = 'proj4rb'
-  spec.version = '0.4.3'
+  spec.version = '0.4.4'
   spec.summary = 'Ruby bindings for the Proj.4 Carthographic Projection library'
   spec.description = <<-EOF
     Proj4rb is a ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems and datumspec.
