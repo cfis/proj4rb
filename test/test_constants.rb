@@ -1,9 +1,9 @@
 # encoding: UTF-8
 
 require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'test/unit'
+require 'minitest/autorun'
 
-class ConstantsTest < Test::Unit::TestCase
+class ConstantsTest < Minitest::Test
   def test_version
     assert 440 < Proj4::LIBVERSION
   end

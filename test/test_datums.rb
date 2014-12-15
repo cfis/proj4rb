@@ -1,10 +1,10 @@
 # encoding: UTF-8
 
 require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'test/unit'
+require 'minitest/autorun'
 
 if Proj4::LIBVERSION >= 449
-  class DatumsTest < Test::Unit::TestCase
+  class DatumsTest < Minitest::Test
 
     def test_get_all
       datums = Proj4::Datum.list.sort.collect{ |u| u.id }

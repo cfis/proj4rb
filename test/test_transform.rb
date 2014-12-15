@@ -1,9 +1,9 @@
 # encoding: UTF-8
 
 require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'test/unit'
+require 'minitest/autorun'
 
-class TransformTest < Test::Unit::TestCase
+class TransformTest < Minitest::Test
 
   PRECISION = 0.1 ** 8
 

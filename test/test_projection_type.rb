@@ -1,10 +1,10 @@
 # encoding: UTF-8
 
 require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'test/unit'
+require 'minitest/autorun'
 
 if Proj4::LIBVERSION >= 449
-  class ProjectionTypesTest < Test::Unit::TestCase
+  class ProjectionTypesTest < Minitest::Test
 
     def test_get_all
       pt = Proj4::ProjectionType.list.sort.collect{ |u| u.id }
