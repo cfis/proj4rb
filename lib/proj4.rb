@@ -6,10 +6,9 @@ end
 
 # Load the C-based binding.
 begin
-  RUBY_VERSION =~ /(\d+.\d+)/
-  require "#{$1}/proj4_ruby"
+  require 'proj4_ruby'
 rescue LoadError
-  require "proj4_ruby"
+  require '../ext/proj4_ruby'
 end
 
 # Ruby bindings for the Proj.4 cartographic projection library (http://trac.osgeo.org/proj/).
