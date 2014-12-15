@@ -1,7 +1,4 @@
 #include <ruby.h>
-#ifdef HAVE_PROJECTS_H
-#include <projects.h>
-#endif
 #include <proj_api.h>
  
 static VALUE mProjrb;
