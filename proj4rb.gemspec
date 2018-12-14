@@ -1,21 +1,3 @@
-# encoding: utf-8
-require 'rake'
-
-
-# ------- Default Package ----------
-FILES = FileList[
-  'Rakefile',
-  'README.rdoc',
-  'MIT-LICENSE',
-  'data/**/*',
-  'doc/**/*',
-  'example/**/*',
-  'ext/*',
-  'ext/vc/*.sln',
-  'ext/vc/*.vcproj',
-  'lib/**/*.rb'
-]
-
 Gem::Specification.new do |spec|
   spec.name = 'proj4rb'
   spec.version = '1.0.0'
@@ -33,6 +15,6 @@ Gem::Specification.new do |spec|
   spec.requirements << 'Proj.4 C library'
   spec.require_path = 'lib'
   spec.extensions = ['ext/extconf.rb']
-  spec.files = FILES.to_a
-  spec.test_files = FileList['test/test*.rb']
+  spec.files =  "git ls-files".split("\n")
+  spec.test_files =  "git ls-files -- {test,spec,features}/*".split("\n")
 end
