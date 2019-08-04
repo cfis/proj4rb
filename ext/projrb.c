@@ -1,7 +1,9 @@
 #include <ruby.h>
+
 #ifdef HAVE_PROJECTS_H
 #include <projects.h>
 #endif
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
 #include <proj_api.h>
  
 static VALUE mProjrb;
@@ -77,9 +79,9 @@ static VALUE proj_error_message(VALUE self, VALUE rerrno) {
 static VALUE proj_initialize(VALUE self, VALUE params){
   _wrap_pj* wpj;
   VALUE proj_params = rb_funcall(cProjection, idParseInitParameters, 1, params);
-  int size = RARRAY_LEN(proj_params);
+  long size = RARRAY_LEN(proj_params);
   char** c_params = (char **) malloc(size*sizeof(char *));
-  int i;
+  long i;
 
   for (i=0; i < size; i++)
   {
