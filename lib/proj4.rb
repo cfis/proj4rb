@@ -1,14 +1,16 @@
 # encoding: UTF-8
 
+data_path = File.expand_path(File.join(__dir__, '..', 'data'))
 if File.exists?(File.dirname(__FILE__ + '/../data'))
  ENV['PROJ_LIB'] = File.dirname(__FILE__) + '/../data'
 end
 
-# Load the C-based binding.
+#s Load the C-based binding.
 begin
-  require 'proj4_ruby'
+  RUBY_VERSION =~ /(\d+\.\d+\.\d+)/
+  require "#{$1}/proj4_ruby.so"
 rescue LoadError
-  require '../ext/proj4_ruby'
+  require "proj4_ruby.so"
 end
 
 # Ruby bindings for the Proj.4 cartographic projection library (http://trac.osgeo.org/proj/).
