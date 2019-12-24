@@ -8,13 +8,28 @@ Gem::Specification.new do |spec|
   spec.platform = Gem::Platform::RUBY
   spec.authors = ['Guilhem Vellut', 'Jochen Topf', 'Charlie Savage']
   spec.homepage = 'https://github.com/cfis/proj4rb'
-  spec.required_ruby_version = '>= 1.8.7'
-  spec.date = DateTime.now
+  spec.required_ruby_version = '>= 2.4.9'
   spec.license = 'MIT'
 
-  spec.requirements << 'Proj.4 C library'
+  spec.requirements << 'Proj (Proj4) Library'
   spec.require_path = 'lib'
   spec.extensions = ['ext/extconf.rb']
-  spec.files =  "git ls-files".split("\n")
-  spec.test_files =  "git ls-files -- {test,spec,features}/*".split("\n")
+  spec.files = Dir['ChangeLog',
+                   'Gemfile',
+                   'MIT-LICENSE',
+                   'proj4rb.gemspec',
+                   'README.rdoc',
+                   'ext/definitions.h',
+                   'ext/extconf.rb',
+                   'ext/projrb.c',
+                   'ext/vc/*.sln',
+                   'ext/vc/*.vcxproj',
+                   'lib/proj4.rb',
+                   'test/*.rb']
+
+  spec.test_files = Dir["test/test_*.rb"]
+
+  spec.add_development_dependency('minitest')
+  spec.add_development_dependency('rake-compiler')
+  spec.add_development_dependency('rdoc')
 end
