@@ -1,9 +1,8 @@
 # encoding: UTF-8
 
-require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'minitest/autorun'
+require_relative './abstract_test'
 
-class ConstantsTest < Minitest::Test
+class ConstantsTest < AbstractTest
   def test_version
     assert 440 < Proj4::LIBVERSION
   end

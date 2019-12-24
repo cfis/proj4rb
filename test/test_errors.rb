@@ -1,9 +1,8 @@
 # encoding: UTF-8
 
-require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'minitest/autorun'
+require_relative './abstract_test'
 
-class ErrorsTest < Minitest::Test
+class ErrorsTest < AbstractTest
 
   def test_list
     assert_equal "Unknown",       Proj4::Error.error(0)

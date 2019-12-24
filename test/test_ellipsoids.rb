@@ -1,10 +1,9 @@
 # encoding: UTF-8
 
-require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'minitest/autorun'
+require_relative './abstract_test'
 
 if Proj4::LIBVERSION >= 449
-  class EllipsoidsTest < Minitest::Test
+  class EllipsoidsTest < AbstractTest
 
     def test_get_all
       ellipsoids = Proj4::Ellipsoid.list.sort.collect{ |u| u.id }

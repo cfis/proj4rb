@@ -1,9 +1,8 @@
 # encoding: UTF-8
 
-require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'minitest/autorun'
+require_relative './abstract_test'
 
-class CreateProjectionTest < Minitest::Test
+class CreateProjectionTest < AbstractTest
   def setup
     @proj_wgs84   = Proj4::Projection.new(["init=epsg:4326"])       # WGS84
     @proj_gk    = Proj4::Projection.new(["init=epsg:31467"])      # Gauss-Kruger Zone 3

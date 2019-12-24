@@ -1,10 +1,9 @@
 # encoding: UTF-8
 
-require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'minitest/autorun'
+require_relative './abstract_test'
 
 if Proj4::LIBVERSION >= 449
-  class PrimeMeridiansTest < Minitest::Test
+  class PrimeMeridiansTest < AbstractTest
 
     def test_get_all
       prime_meridians = Proj4::PrimeMeridian.list.sort.collect{ |u| u.id}
@@ -35,7 +34,7 @@ if Proj4::LIBVERSION >= 449
     end
 
     def test_new
-      assert_raise TypeError do
+      assert_raises(TypeError) do
         Proj4::PrimeMeridian.new
       end
     end

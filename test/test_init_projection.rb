@@ -1,9 +1,8 @@
 # encoding: UTF-8
 
-require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'minitest/autorun'
+require_relative './abstract_test'
 
-class InitProjectionTest < Minitest::Test
+class InitProjectionTest < AbstractTest
 
   def setup
     # NAD27(76) / UTM zone 17N

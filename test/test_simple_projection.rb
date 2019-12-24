@@ -1,9 +1,8 @@
 # encoding: UTF-8
 
-require File.join(File.dirname(__FILE__), '..', 'lib', 'proj4')
-require 'minitest/autorun'
+require_relative './abstract_test'
 
-class SimpleProjectionTest < Minitest::Test
+class SimpleProjectionTest < AbstractTest
 
   def setup
     @proj_gk = Proj4::Projection.new(["init=epsg:31467"])
