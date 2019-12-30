@@ -3,11 +3,13 @@ require 'ffi'
 module Proj
   module Api
     extend FFI::Library
-    ffi_lib ['libproj',
-             'libproj-15', # Proj 6
-             'libproj-12', # Proj 5
-             '/opt/local/lib/proj6/lib/libproj.dylib', # Macports proj6 package
-             '/opt/local/lib/proj5/lib/libproj.dylib'] # Macports proj package
+    ffi_lib ['libproj-15', # Mingw64 Proj 6
+             'libproj.so.15', # Postgresql repository Proj 6
+             'libproj.so.13', # Fedora Proj 5
+             'libproj-12', # Mingw64 Proj 5
+             '/opt/local/lib/proj6/lib/libproj.dylib', # Macports Proj 6
+             '/opt/local/lib/proj5/lib/libproj.dylib', # Macports Proj 5
+             'libproj'] # Generic catch all (not used anywhere?)
 
     typedef :pointer, :PJ
     typedef :pointer, :PJ_CONTEXT

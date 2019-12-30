@@ -27,5 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "ffi"
 
   spec.add_development_dependency('minitest')
-  spec.add_development_dependency('rdoc')
+  spec.add_development_dependency('yard')
 end

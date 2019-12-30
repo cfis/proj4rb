@@ -17,7 +17,7 @@ To get started first require the gem:
   require 'proj'
 
 === Crs
-Next, create a coordinate system. To create a coordinate system, you can specify are CRS codes, well-known text (WKT) strings
+Next, create a coordinate system. To create a coordinate system, you can use CRS codes, well-known text (WKT) strings
 or old-style Proj4 strings (which are deprecated).
 
     crs1 = Proj::Crs.new('EPSG:4326')
@@ -97,6 +97,14 @@ plus time. In general you will need to fill out at least the first two values:
     from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
 
 Lam is longitude and phi is latitude.
+
+=== Context
+Proj 4.8 introduced the concept of a thread context object to support multi-threaded programs. The bindings
+expose this object via Context.current and store it using thread local storage. Use the context object to
+access error codes, set proj4 compatability settings, set the logging level and to install custom logging code.
+
+Both Crs and Transformation objects take a context object in their constructors. If none is passed, they default
+to using Context.current
 
 == Error handling
 When an error occurs, a Proj::Error instance will be thrown with the underlying message provided

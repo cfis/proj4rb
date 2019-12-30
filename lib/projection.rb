@@ -1,72 +1,8 @@
 # encoding: UTF-8
 
 module Proj
-  # The Projection class represents a geographical projection.
-  #
-  # = Creating a new projection object
-  #
-  # Projection objects are created through the new method as usual. Depending on the kind of projection, many
-  # different parameters are needed. Please consult the documentation of the Proj.4 C library at http://trac.osgeo.org/proj/
-  # for details.
-  #
-  # There are several ways of specifying the parameters:
-  #
-  # [<b>as a String:</b>] A string with the parameters in '[+]key=value' format concatenated together. This is the format used by the <tt>proj</tt> and <tt>cs2cs</tt> command line tool.
-  #
-  #      proj = Projection.new "+proj=utm +zone=21 +units=m"
-  #
-  # [<b>as an Array:</b>] An array with each parameter as a member in the array in '[+]key=value' format.
-  #
-  #      proj = Projection.new [ "proj=utm", "zone=21", "units=m" ]
-  #
-  # [<b>as a Hash:</b>] A hash with strings or symbols as keys.
-  #
-  #      proj = Projection.new( "proj" => "utm", "zone" => "21", "units" => "m" )
-  #      proj = Projection.new( :proj => "utm", :zone => "21", :units => "m" )
-  #
-  # With all variants the plus sign in front of the keys is optional.
-  #
-  # = Using a projection object to project points
-  #
-  # There are two ways a projection can be used: Through the +forward+ and +inverse+ methods (with all their variants)
-  # you can do projection from longitudes and latitudes into the coordinate system used by the projection and back.
-  # These projections are always 2D, i.e. you need and get lon/lat or x/y coordinates.
-  #
-  # The alternative is the +transform+ method (with all its variants) which is used to transform 3D points from one
-  # projection and datum to another. In addition to the x/y coordinates the transform method also reads and returns
-  # a z coordinate.
-  #
-  # = Versions of the projection methods
-  #
-  # All three projection methods (+forward+, +inverse+, and +transform+) work on points. Every method has an in-place
-  # version (with a name ending in !) which changes the given point and a normal version which first creates a copy of
-  # the point object and changes and returns that. All methods use radians when reading or returning points. For
-  # convenience there are also +forwardDeg+ and +inverseDeg+ methods (and in-place versions <tt>forwardDeg!</tt>
-  # and <tt>inverseDeg!</tt>) that will work with degrees.
-  #
-  # = Points
-  #
-  # All projection method project points to other points. You can use objects of the Point class for this or
-  # any other object which supports the x, y, z read and write accessor methods. (In fact you don't even need the
-  # z accessor methods, 0 is assumed if they don't exist.)
-  #
-  # Some projection methods act on the given point in-place, other return a copy of the point object. But in any case
-  # all other attributes of the point object are retained.
-  #
-  # = Projection collections
-  #
-  # The methods forward_all, inverse_all, and transform_all (and their in-place versions forward_all!,
-  # inverse_all!, and transform_all! work just like their simple counterparts, but instead of a single
-  # point they convert a collection of points in one go.
-  #
-  # These methods all take an array as an argument or any object responding to the +each+ method (for the in-place versions)
-  # or +each+, +clear+, and <tt><<</tt> methods (for the normal version).
-  #
-  # Some projection methods act on the given collection in-place, i.e. the collection is not touched and all points
-  # in the collection will be projected in-place. The other methods act on a copy of the collection and on copies
-  # of each point in the collection. So you'll get back a brand new copy of the collection with new copies of the
-  # points with the projected coordinates. In any case all other attributes of the collection and points are retained.
-
+  # @deprecated This class is *DEPRECATED.* It will be removed when Proj 7 is released and removes the
+  #   underlying API's this class uses. Code should be ported to use Crs and Transformation objects.
   class Projection
     def self.parse(value)
       values = case value
@@ -94,6 +30,17 @@ module Proj
       end
     end
 
+    # Projection classes are created using Proj4 strings which consist of a number of parameters.
+    # For more information please see the +opt arguments section at https://proj.org/apps/proj.html.
+    #
+    # @param value [string, array, hash] Parameters can be specified as strings, arrays or hashes.
+    #
+    # @example
+    #   proj = Projection.new("+proj=utm +zone=21 +units=m")
+    #   proj = Projection.new ["+proj=utm", "+zone=21", "+units=m"]
+    #   proj = Projection.new("proj" => "utm", "zone" => "21", "units" => "m")
+    #
+    # With all variants the plus sign in front of the keys is optional.
     def initialize(value)
       params = self.class.parse(value)
       p_params = FFI::MemoryPointer.new(:pointer, params.length)
@@ -113,47 +60,53 @@ module Proj
       @pointer
     end
 
+    # Returns projection definitions
+    #
+    # @return [String]
     def getDef
       Api.pj_get_def(self, 0)
     end
 
+    # Returns if this is a geocentric projection
+    #
+    # @return [Boolean]
     def isGeocent?
       Api::pj_is_geocent(self)
     end
     alias :isGeocentric? :isGeocent?
 
+    # Returns if this is a lat/long projection
+    #
+    # @return [Boolean]
     def isLatLong?
       Api::pj_is_latlong(self)
     end
 
     # Get the ID of this projection.
     #
-    # call-seq: projection -> String
-    #
-        def projection
-          getDef =~ /\+proj=(.+?) / ?  $1 : nil
-        end
+    # @return [String]
+    def projection
+      getDef =~ /\+proj=(.+?) / ?  $1 : nil
+    end
 
     # Get the ID of the datum used in this projection.
     #
-    # call-seq: datum -> String
-    #
+    # @return [String]
     def datum
       getDef =~ /\+datum=(.+?) / ? $1 : nil
     end
 
     # Get definition of projection in typical inspect format (#<Proj::Projection +init=... +proj=... ...>).
     #
-    # call-seq: to_s -> String
-    #
+    # @return [String]
     def to_s
       "#<#{self.class.name}#{getDef}>"
     end
 
     # Forward projection of a point. Returns a copy of the point object with coordinates projected.
     #
-    # call-seq: forward(point) -> point
-    #
+    # @param point [Point] in radians
+    # @return [Point] in cartesian coordinates
     def forward(point)
       struct = Api.pj_fwd3d(point, self)
       ptr = Api.pj_get_errno_ref
@@ -163,18 +116,16 @@ module Proj
 
     # Convenience function for calculating a forward projection with degrees instead of radians.
     #
-    # call-seq: forwardDeg(point) -> point
-    #
+    # @param point [Point] in degrees
+    # @return [Point] in cartesian coordinates
     def forwardDeg(point)
       forward(point.to_radians)
     end
 
     # Projects all points in a collection.
-    # The +collection+ object must implement the +each+,
-    # +clear+, and << methods (just like an Array) for this to work.
     #
-    # call-seq: forward_all(collection) -> collection
-    #
+    # @param collection [Enumerable<Point>] Points specified in radians
+    # @return [Enumerable<Point>] Points specified in cartesian coordinates
     def forward_all(collection)
       collection.map do |point|
         forward(point)
@@ -183,8 +134,8 @@ module Proj
 
     # Inverse projection of a point. Returns a copy of the point object with coordinates projected.
     #
-    # call-seq: inverse(point) -> point
-    #
+    # @param point [Point] in cartesian coordinates
+    # @return [Point] in radians
     def inverse(point)
       struct = Api.pj_inv3d(point, self)
       ptr = Api.pj_get_errno_ref
@@ -194,19 +145,17 @@ module Proj
 
     # Convenience function for calculating an inverse projection with the result in degrees instead of radians.
     #
-    # call-seq: inverseDeg(point) -> point
-    #
+    # @param point [Point] in cartesian coordinates
+    # @return [Point] in degrees
     def inverseDeg(point)
       result = inverse(point)
       result.to_degrees
     end
 
-    # Projects all points in a collection.
-    # The +collection+ object must implement the +each+,
-    # +clear+, and << methods (just like an Array) for this to work.
+    # Inverse projection of all points in a collection.
     #
-    # call-seq: inverse_all(collection) -> collection
-    #
+    # @param collection [Enumerable<Point>] Points specified in cartesian coordinates
+    # @return [Enumerable<Point>] Points specified in radians
     def inverse_all(collection)
       collection.map do |point|
         inverse(point)
@@ -215,8 +164,9 @@ module Proj
 
     # Transforms a point from one projection to another.
     #
-    # call-seq: transform(destinationProjection, point) -> point
-    #
+    # @param other [Projection]
+    # @param point [Point]
+    # @return [Point]
     def transform(other, point)
       p_x = FFI::MemoryPointer.new(:double, 1)
       p_x.write_double(point.x)
@@ -238,8 +188,9 @@ module Proj
     # another. The +collection+ object must implement the +each+,
     # +clear+, and << methods (just like an Array) for this to work.
     #
-    # call-seq: transform_all(destinationProjection, collection) -> collection
-    #
+    # @param other [Projection]
+    # @param collection [Enumerable, Point]
+    # @return [Enumerable, Point]
     def transform_all(other, collection)
       collection.map do |point|
         transform(other, point)

@@ -1,7 +1,8 @@
 # encoding: UTF-8
 
 module Proj
-  # This class represents a point in either lon/lat or projected x/y coordinates.
+  # @deprecated This class is *DEPRECATED.* It will be removed when Proj 7 is released and removes the
+  #   underlying API's this class uses. Code should be ported to use Coordinate objects.
   class Point
     def self.from_pointer(pointer)
       result = self.allocate
