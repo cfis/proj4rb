@@ -147,7 +147,7 @@ module Proj
     # call-seq: to_s -> String
     #
     def to_s
-      "#<#{self.class.name} #{getDef}>"
+      "#<#{self.class.name}#{getDef}>"
     end
 
     # Forward projection of a point. Returns a copy of the point object with coordinates projected.
