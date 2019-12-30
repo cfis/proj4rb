@@ -4,8 +4,9 @@ module Proj
   module Api
     extend FFI::Library
     ffi_lib ['libproj-15', # Mingw64 Proj 6
-             'libproj.so.15', # Postgresql repository Proj 6
-             'libproj.so.13', # Fedora Proj 5
+             'libproj.so.15', # Linux (Postgresql repository )Proj 6
+             'libproj.so.13', # Linux (Fedora 31) Proj 5
+             'libprojso.12', # Linux (Ubuntu 18.04 )Proj 5
              'libproj-12', # Mingw64 Proj 5
              '/opt/local/lib/proj6/lib/libproj.dylib', # Macports Proj 6
              '/opt/local/lib/proj5/lib/libproj.dylib', # Macports Proj 5
