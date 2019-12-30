@@ -15,7 +15,7 @@ module Proj
                    e: nil, n: nil, #u: nil,
                    s: nil, a1: nil, a2: nil)
 
-      @coord = Proj4::Api::PJ_COORD.new
+      @coord = Api::PJ_COORD.new
 
       keys = if x && y && z && t
                [:x, :y, :z, :t]

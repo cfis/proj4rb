@@ -4,7 +4,7 @@ require_relative './abstract_test'
 
 class ProjTest < AbstractTest
   def test_info
-    info = Proj4.info
+    info = Proj.info
     assert_equal(6, info[:major])
     assert_equal(2, info[:minor])
     assert_equal(1, info[:patch])

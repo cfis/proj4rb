@@ -9,7 +9,7 @@ module Proj
       result
     end
 
-    # Create new Proj4::Point object from coordinates.
+    # Create new Point object from coordinates.
     def initialize(x, y, z=0)
       @struct = Api::ProjUVW.new
       @struct[:u] = x

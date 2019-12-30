@@ -1,6 +1,6 @@
 require 'bundler/setup'
 require 'minitest/autorun'
-require 'proj4'
+require 'proj'
 
 class AbstractTest < Minitest::Test
 end

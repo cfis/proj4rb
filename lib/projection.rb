@@ -46,7 +46,7 @@ module Proj
   #
   # = Points
   #
-  # All projection method project points to other points. You can use objects of the Proj4::Point class for this or
+  # All projection method project points to other points. You can use objects of the Point class for this or
   # any other object which supports the x, y, z read and write accessor methods. (In fact you don't even need the
   # z accessor methods, 0 is assumed if they don't exist.)
   #
@@ -81,7 +81,7 @@ module Proj
                      array << (value.nil? ? key : "#{key}=#{value}")
                    end
                    array
-                 when Proj4::Projection
+                 when Projection
                    value.getDef.split(' ')
                  else
                    raise ArgumentError, "Unknown type #{value.class} for projection definition"
@@ -102,7 +102,7 @@ module Proj
         p_params[i].write_pointer(p_param)
       end
 
-      @pointer = Proj4::Api.pj_init(params.count, p_params)
+      @pointer = Api.pj_init(params.count, p_params)
       ptr = Api.pj_get_errno_ref
       Error.check(ptr.read_int)
 
@@ -142,12 +142,12 @@ module Proj
       getDef =~ /\+datum=(.+?) / ? $1 : nil
     end
 
-    # Get definition of projection in typical inspect format (#<Proj4::Projection +init=... +proj=... ...>).
+    # Get definition of projection in typical inspect format (#<Proj::Projection +init=... +proj=... ...>).
     #
     # call-seq: to_s -> String
     #
     def to_s
-      "#<Proj4::Projection#{ getDef }>"
+      "#<#{self.class.name} #{getDef}>"
     end
 
     # Forward projection of a point. Returns a copy of the point object with coordinates projected.
