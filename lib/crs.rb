@@ -3,14 +3,24 @@ require 'stringio'
 
 module Proj
   class Crs < PjObject
-    def initialize(value)
-      pointer = Api.proj_create(Context.current, value)
+    def initialize(value, context=nil)
+      # Check for old style init strings
+      if !context
+        if value.match(/\Winit\W/)
+          context = Context.new
+          context.use_proj4_init_rules = true
+        else
+          context = Context.current
+        end
+      end
+
+      pointer = Api.proj_create(context, value)
 
       if pointer.null?
         Error.check
       end
 
-      super(pointer)
+      super(pointer, context)
 
       unless Api.proj_is_crs(pointer)
         raise(Error, "Invalid crs definition. Proj created an instance of: #{self.proj_type}.")
@@ -18,28 +28,28 @@ module Proj
     end
 
     def geodetic_crs
-      PjObject.new(Api.proj_crs_get_geodetic_crs(Context.current, self))
+      PjObject.new(Api.proj_crs_get_geodetic_crs(self.context, self))
     end
 
     def sub_crs(index)
-      PjObject.new(Api.proj_crs_get_sub_crs(Context.current, self, index))
+      PjObject.new(Api.proj_crs_get_sub_crs(self.context, self, index))
     end
 
     def datum
-      PjObject.new(Api.proj_crs_get_datum(Context.current, self))
+      PjObject.new(Api.proj_crs_get_datum(self.context, self))
     end
 
     def horizontal_datum
-      PjObject.new(Api.proj_crs_get_horizontal_datum(Context.current, self))
+      PjObject.new(Api.proj_crs_get_horizontal_datum(self.context, self))
     end
 
     def coordinate_system
-      PjObject.new(Api.proj_crs_get_coordinate_system(Context.current, self))
+      PjObject.new(Api.proj_crs_get_coordinate_system(self.context, self))
     end
 
     def axis_count
-      foo = Api.proj_crs_get_coordinate_system(Context.current, self)
-      result = Api.proj_cs_get_axis_count(Context.current, self.coordinate_system)
+      foo = Api.proj_crs_get_coordinate_system(self.context, self)
+      result = Api.proj_cs_get_axis_count(self.context, self.coordinate_system)
       if result == -1
         Error.check
       end
@@ -56,7 +66,7 @@ module Proj
         p_unit_auth_name = FFI::MemoryPointer.new(:pointer)
         p_unit_code = FFI::MemoryPointer.new(:pointer)
 
-        result = Api.proj_cs_get_axis_info(Context.current, self.coordinate_system, index,
+        result = Api.proj_cs_get_axis_info(self.context, self.coordinate_system, index,
                                            p_name, p_abbreviation, p_direction, p_unit_conv_factor, p_unit_name, p_unit_auth_name, p_unit_code)
 
         unless result
@@ -74,8 +84,8 @@ module Proj
     end
 
     def crs_type
-      foo = Api.proj_crs_get_coordinate_system(Context.current, self)
-      result = Api.proj_cs_get_type(Context.current, self.coordinate_system)
+      foo = Api.proj_crs_get_coordinate_system(self.context, self)
+      result = Api.proj_cs_get_type(self.context, self.coordinate_system)
       if result == :PJ_CS_TYPE_UNKNOWN
         Error.check
       end
@@ -87,11 +97,11 @@ module Proj
     end
 
     def ellipsoid
-      PjObject.new(Api.proj_get_ellipsoid(Context.current, self))
+      PjObject.new(Api.proj_get_ellipsoid(self.context, self))
     end
 
     def operation
-      pointer = Api.proj_crs_get_coordoperation(Context.current, self)
+      pointer = Api.proj_crs_get_coordoperation(self.context, self)
       if pointer.null?
         Error.check
       end
@@ -99,7 +109,7 @@ module Proj
     end
 
     def prime_meridian
-      PjObject.new(Api.proj_get_prime_meridian(Context.current, self))
+      PjObject.new(Api.proj_get_prime_meridian(self.context, self))
     end
 
     def inspect
