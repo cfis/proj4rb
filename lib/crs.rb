@@ -6,7 +6,7 @@ module Proj
     def initialize(value, context=nil)
       # Check for old style init strings
       if !context
-        if value.match(/\Winit\W/)
+        if value.match(/\Winit\W/) && Api.method_defined?(:use_proj4_init_rules)
           context = Context.new
           context.use_proj4_init_rules = true
         else
@@ -22,7 +22,7 @@ module Proj
 
       super(pointer, context)
 
-      unless Api.proj_is_crs(pointer)
+      if Api.method_defined?(:proj_is_crs) && !Api.proj_is_crs(pointer)
         raise(Error, "Invalid crs definition. Proj created an instance of: #{self.proj_type}.")
       end
     end

@@ -2,7 +2,11 @@ module Proj
   class Transformation < PjObject
     def initialize(crs1, crs2, context=nil)
       pointer = if crs1.is_a?(Crs) && crs2.is_a?(Crs)
-                  Api.proj_create_crs_to_crs_from_pj(self.context, crs1, crs2, nil, nil)
+                  if Api.method_defined?(:proj_create_crs_to_crs_from_pj)
+                    Api.proj_create_crs_to_crs_from_pj(self.context, crs1, crs2, nil, nil)
+                  else
+                    Api.proj_create_crs_to_crs(self.context, crs1.definition, crs2.definition, nil)
+                  end
                 else
                   Api.proj_create_crs_to_crs(self.context, crs1, crs2, nil)
                 end
