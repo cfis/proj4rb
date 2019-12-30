@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require "rubygems"
-require "rake/extensiontask"
 require "rake/testtask"
 require "rubygems/package_task"
 require "rdoc/task"
@@ -9,7 +8,6 @@ require "yaml"
 
 # Read the spec file
 GEM_NAME = "proj4rb"
-SO_NAME = "proj4_ruby"
 spec = Gem::Specification.load("#{GEM_NAME}.gemspec")
 
 # Setup generic gem
@@ -28,7 +26,6 @@ RDoc::Task.new("rdoc") do |rdoc|
   # Make the readme file the start page for the generated html
   rdoc.main = 'README.rdoc'
   rdoc.rdoc_files.include('doc/*.rdoc',
-                          'ext/projrb.c',
                           'README',
                           'proj4rb.gemspec',
                           'Changelog',

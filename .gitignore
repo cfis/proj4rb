@@ -5,3 +5,4 @@
 /ext/mkmf.log
 /lib/1.8/proj4_ruby.so
 /.idea
+/Gemfile.lock
