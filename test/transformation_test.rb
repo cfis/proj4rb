@@ -21,7 +21,7 @@ class TransformationTest < AbstractTest
   end
 
   # echo "3458305 5428192" | cs2cs -f '%.10f' +init=epsg:31467 +to +init=epsg:4326 -
-  def test_gk_to_wgs84
+  def test_gk_to_wgs84_forward
     transform = Proj::Transformation.new(@crs_gk, @crs_wgs84)
     from = Proj::Coordinate.new(x: 5428192.0, y: 3458305.0, z: -5.1790915237)
     to = transform.forward(from)
@@ -32,8 +32,19 @@ class TransformationTest < AbstractTest
     assert_in_delta(0, to.t, PRECISION)
   end
 
+  def test_gk_to_wgs84_inverse
+    transform = Proj::Transformation.new(@crs_gk, @crs_wgs84)
+    from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
+    to = transform.inverse(from)
+
+    assert_in_delta(5428306.389495558, to.x, PRECISION)
+    assert_in_delta(3458375.3367194114, to.y, PRECISION)
+    assert_in_delta(0, to.z, PRECISION)
+    assert_in_delta(0, to.t, PRECISION)
+  end
+
   # echo "8.4293092923 48.9896114523" | cs2cs -f '%.10f' +init=epsg:4326 +to +init=epsg:31467 -
-  def test_wgs84_to_gk
+  def test_wgs84_to_gk_forward
     transform = Proj::Transformation.new(@crs_wgs84, @crs_gk)
     from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
     to = transform.forward(from)
@@ -43,5 +54,15 @@ class TransformationTest < AbstractTest
     assert_in_delta(0, to.z, PRECISION)
     assert_in_delta(0, to.t, PRECISION)
   end
-end
 
+  def test_wgs84_to_gk_forward_inverse
+    transform = Proj::Transformation.new(@crs_wgs84, @crs_gk)
+    from = Proj::Coordinate.new(x: 5428192.0, y: 3458305.0, z: -5.1790915237)
+    to = transform.inverse(from)
+
+    assert_in_delta(48.98963932450735, to.x, PRECISION)
+    assert_in_delta(8.429263044355544, to.y, PRECISION)
+    assert_in_delta(-5.1790915237, to.z, PRECISION)
+    assert_in_delta(0, to.t, PRECISION)
+  end
+end
