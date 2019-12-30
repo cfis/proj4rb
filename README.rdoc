@@ -1,160 +1,129 @@
 =Proj4rb
+This gem provides Ruby bindings for the Proj Library (https://proj.org). The Proj Library supports converting coordinates
+between a number of different coordinate systems and projections.
 
-This is a Ruby binding for the Proj.4 Carthographic Projection library
-(http://trac.osgeo.org/proj/), that supports conversions between a large
-number of geographic coordinate systems and datums.
+== Installation
+First install the gem in the usual manner:
 
-Most functions of the C library are exposed to Ruby. In cases where
-there is a direct equivalent between C and Ruby, identifiers (such as names of
-functions and constants) are the same. But the usage has been changed to
-take advantage of Ruby's object-oriented features.
-
-== Operations
-To load the library:
-  require 'proj4'
-
-The classes are in the Proj4 module so you may wish to include it:
-  include Proj4
-
-Next, you need to create a projection:
-    proj = Projection.new( :proj => "utm", :zone => "21", :units => "m" )
-
-This defines a UTM21 North projection in WGS84. Note that the <tt>proj</tt> /
-<tt>proj.exe</tt> initialization arguments equivalent to the one above would
-be:
-    +proj=utm +zone=21 +units=m
-
-Note there are several alternative ways of specifying the arguments, see
-the documentation for Proj4::Projection.new for details.
-
-Once you've created the projection, you can tranform coordinates using either
-the +forward+ or +inverse+ methods.  +forward+ transforms the point in WGS84
-lon/lat (in radians) to the coordinate system defined during the creation 
-of the Projection object. +inverse+ does the opposite. For example:
-
-    projected_point = proj.forward(lonlat_point)
-    lonlat_point = proj.inverse(projected_point)
-
-There is also a +transform+ function which can transform between any two
-projections including datum conversions:
-
-    point_in_projB = projA.transform(projB, point_in_projA)
-
-The +forward+, +inverse+, and +transform+ methods all have an in-place
-equivalent: <tt>forward!</tt>, <tt>inverse!</tt>, and <tt>transform!</tt>
-which projects the given point in place. There are also +forwardDeg+
-and +inverseDeg+ methods which work with longitudes and latitudes in
-degrees rather than radians.
-
-For the points you can use an object of the Proj4::Point class. It has 
-properties: +x+, +y+, and +z+, which can be set and retrieved. Aliases
-+lon+ and +lat+ for +x+ and +y+, respectively, are also available.
-(There used to be a UV class, but this has been removed in version 0.3.0.)
-
-Instead of using the Proj4::Point object, you may use another class as long
-as it responds to the methods +x+ and +y+ (and +z+ for 3D datum transformations
-with the +transform+ method).
-
-The methods +forward_all+, +inverse_all+, and +transform_all+ (and their
-in-place versions <tt>forward_all!</tt>, <tt>inverse_all!</tt>, and
-<tt>transform_all!</tt> work just like their simple counterparts, but
-instead of transforming a single point they transform a collection of points 
-in a single call.  They take an array as an argument or any object that responds
-to the +each+ method (for the in-place versions) or +each+, +clear+, and
-<tt><<</tt> methods (for the normal version).
-
-The library also defines two constants to make it easy to convert between
-degrees and radians:
-+DEG_TO_RAD+ and +RAD_TO_DEG+
- 
-==Error handling
-Projection initialization (Proj4::Projection.new) and transformation functions
-(Proj4::Projection#forward/inverse/transform) all throw exceptions when
-they encounter an error.  This is done by mapping proj4's C error codes to 
-Ruby specific exception classes.  See Proj4::Error for more information or
-use the <tt>list-errors.rb</tt> program from the examples for a list.
-
-==Definition lists
-Proj.4 supports many different datums, ellipsoids, prime meridians,
-projection types and length units. Use the Proj4::Datum, Proj4::Ellipsoid,
-Proj4::PrimeMeridian, Proj4::ProjectionType, and Proj4::Unit classes
-to access this information and get detailed information about each definition.
-See the <i>list-*</i> files in the <i>example</i> directory for code
-examples.
-
-Note that these lists rquire version 449 or later of the Proj.4 C library.
-
-==Installation
-To install the gem simply type:
     gem install proj4rb
 
-==Compiling
-===Linux
-To compile the proj4rb Ruby bindings from source you'll need the
-Proj.4 C library installed. Then simply call:
-    rake build
+Next install the Proj Library. This of course varies per system, but the library is likely called proj4 which is
+its old name. Once installed, you'll need to make sure that libproj is installed on your operating system's
+load path.
 
-If there is a problem, you can perform this step manually:
-Enter the <i>ext</i> directory and create
-a Makefile:
-    cd ext
-    ruby extconf.rb
-If there are any problems consult the <i>mkmf.log</i> log file.
-Then compile with
-    make
-The result is the file <i>proj4_ruby.so</i>.
+== Usage
+To get started first require the gem:
 
-If you want to run the tests call
-    rake test
+  require 'proj'
 
-If you want to, you can now create a gem with
-    rake gem
+=== Crs
+Next, create a coordinate system. To create a coordinate system, you can specify are CRS codes, well-known text (WKT) strings
+or old-style Proj4 strings (which are deprecated).
 
-This will create a file <tt>proj4rb-<i>version</i>-i486-linux.gem</tt>
-or similar in the <i>pkg</i> directory.
+    crs1 = Proj::Crs.new('EPSG:4326')
 
-===Mac OS X
-To compile the proj4rb Ruby bindings from source you'll need the
-Proj.4 C library installed. Enter the <i>ext</i> directory and create
-a Makefile:
-    cd ext
-    ruby extconf.rb
-If there are any problems consult the <i>mkmf.log</i> log file.
-Then compile with
-    make
-The result is the file <i>projrb.bundle</i> which you need to copy into
-the <i>lib</i> directory:
-    cp projrb.bundle ../lib/
+    crs2 = Proj::Crs.new('urn:ogc:def:crs:EPSG::4326')
 
-If you want to, you can now create a gem with
-    rake gem
+    crs3 = Proj::Crs.new('+proj=longlat +datum=WGS84 +no_defs +type=crs')
 
-This will create a file <tt>proj4rb-<i>version</i>-universal-darwin8.0.gem</tt>
-or similar in the <i>pkg</i> directory.
+    crs4 = Proj::Crs.new(<<~EOS)
+      GEOGCRS["WGS 84",
+      DATUM["World Geodetic System 1984",
+            ELLIPSOID["WGS 84",6378137,298.257223563,
+                      LENGTHUNIT["metre",1]]],
+      PRIMEM["Greenwich",0,
+             ANGLEUNIT["degree",0.0174532925199433]],
+      CS[ellipsoidal,2],
+      AXIS["geodetic latitude (Lat)",north,
+           ORDER[1],
+           ANGLEUNIT["degree",0.0174532925199433]],
+      AXIS["geodetic longitude (Lon)",east,
+           ORDER[2],
+           ANGLEUNIT["degree",0.0174532925199433]],
+      USAGE[
+          SCOPE["unknown"],
+              AREA["World"],
+          BBOX[-90,-180,90,180]],
+      ID["EPSG",4326]]
+    EOS
 
-===Windows
-To build the library on Windows requires a working installation of Visual
-Studio or MingW/msys.  You of course also need to have proj4 installed.
+Notice when using the old-style Proj4 string, the addition of the "+type=crs" value. If you'd like to use old-style
+init parameters, then do this:
 
-If you are using Visual Studio, you'll find a Visual Studio 2008 project 
-file in ext/vc.  You'll have to edit the various include and library paths
-to fit your specific environment.
+    crs = Proj::Crs.new('+init=epsg:4326')
 
-If you are using MingW/msys, then:
+Note this usage is deprecated in Proj however.
 
-1.  Open a msys prompt (a DOS prompt may also work)
-2.  Change diretories to ext/MingW
-3.  Type in rake
+=== Transformation
+After you have created two coordinate systems, you can then create a transformation. For example, if you want to
+convert coordinates from the "3-degree Gauss-Kruger zone 3" coordinate system to WGS84 (one version of lat-long)
+first create a transformation:
 
-The result is a proj4_ruby.so file which can be package into a GEM or 
-copied to the ruby/site-lib directory.
+    crs_gk  = Proj::Crs.new('epsg:31467')
+    crs_wgs84 = Proj::Crs.new('epsg:4326')
+    transform = Proj::Transformation.new(crs_gk, crs_wgs84)
+
+Once you've created the transformation, you can tranform coordinates using either
+the +forward+ or +inverse+ methods. The forward transformation looks like this:
+
+    from = Proj::Coordinate.new(x: 5428192.0, y: 3458305.0, z: -5.1790915237)
+    to = transform.forward(from)
+
+    assert_in_delta(48.98963932450735, to.x, PRECISION)
+    assert_in_delta(8.429263044355544, to.y, PRECISION)
+    assert_in_delta(-5.1790915237, to.z, PRECISION)
+    assert_in_delta(0, to.t, PRECISION)
+
+While the inverse transformation looks like this:
+
+    from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
+    to = transform.inverse(from)
+
+    assert_in_delta(5428306.389495558, to.x, PRECISION)
+    assert_in_delta(3458375.3367194114, to.y, PRECISION)
+    assert_in_delta(0, to.z, PRECISION)
+    assert_in_delta(0, to.t, PRECISION)
+
+Transformation objects can also be created directly like this:
+
+    transform = Proj::Transformation.new('epsg:31467', 'epsg:4326')
+
+=== Coordinate
+Notice in the examples above we are transformation instance of Proj::Coordinate.
+Proj::Coordinate consists of up to four double values to represent three directions
+plus time. In general you will need to fill out at least the first two values:
+
+    from = Proj::Coordinate.new(x: 5428192.0, y: 3458305.0, z: -5.1790915237)
+    from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
+
+Lam is longitude and phi is latitude.
+
+== Error handling
+When an error occurs, a Proj::Error instance will be thrown with the underlying message provided
+from the Proj library.
+
+== Finding Proj Files (LIB_PROJ)
+Starting with version 6, Proj stores its information (datums, ellipsoids, prime meridians, coordinate systems,
+units, etc) in a sqlite file called proj.db. If Proj cannot find its database, then the Ruby bindings will
+search for it in some well-known locations. Failing that, the Ruby bindings will raise an exception.
+In this case, set the environmental variable PROJ_LIB to point at the folder that contains the proj.db file.
+Note PROJ_LIB must be set by whatever launches your Ruby program. The Ruby program itself cannot set this
+variable and have it work correctly (at least not on windows).
+
+== Backwards Compatibility
+Proj versions 5 and 6 are *very* different than Proj version 4. To ensure backwards compatiblity, the Ruby
+bindings still include the older Point and Projection classes. Thus your old code still should correctly. However,
+these classes are not documented in this Readme because they will be removed upon the release of Proj 7
+which will remove the underlying API's they are dependent upon. So please port your code!
+
+Note that the gem should gracefully degrade (as in newer functionality stops working) depending on if you
+are using Proj 6, Proj 5 or Proj 4.
 
 ==License
 Proj4rb is released under the MIT license.
 
-
 ==Authors
 The proj4rb Ruby bindings were started by Guilhem Vellut with most of the code 
 written by Jochen Topf.  Charlie Savage ported the code to Windows and added 
-the Windows build infrastructure.
-
+the Windows build infrastructure. Later, he updated the code to support
+Proj version 5 and 6 and ported the code to use FFI.
