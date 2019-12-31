@@ -51,12 +51,7 @@ or old-style Proj4 strings (which are deprecated).
       ID["EPSG",4326]]
     EOS
 
-Notice when using the old-style Proj4 string, the addition of the "+type=crs" value. If you'd like to use old-style
-init parameters, then do this:
-
-    crs = Proj::Crs.new('+init=epsg:4326')
-
-Note this usage is deprecated in Proj however.
+Notice when using the old-style Proj4 string, the addition of the "+type=crs" value.
 
 === Transformation
 After you have created two coordinate systems, you can then create a transformation. For example, if you want to

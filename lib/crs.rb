@@ -32,26 +32,12 @@ module Proj
     #            ID["EPSG",4326]]
     #          EOS
     #
-    # Notice when using the old-style Proj4 string, the addition of the "+type=crs" value. If you'd like to use old-style
-    # init parameters, then do this:
-    #
-    # @example
-    #   crs = Proj::Crs.new('+init=epsg:4326')
+    # Notice when using the old-style Proj4 string, the addition of the "+type=crs" value.
     #
     # @param value [String]. See above
     # @param context [Context]. An optional Context that the Crs will use for calculations.
     def initialize(value, context=nil)
-      # Check for old style init strings
-      if !context
-        if value.match(/\Winit\W/) && Api.method_defined?(:use_proj4_init_rules)
-          context = Context.new
-          context.use_proj4_init_rules = true
-        else
-          context = Context.current
-        end
-      end
-
-      pointer = Api.proj_create(context, value)
+      pointer = Api.proj_create(context || Context.current, value)
 
       if pointer.null?
         Error.check

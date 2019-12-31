@@ -53,12 +53,6 @@ class CrsTest < AbstractTest
     assert_equal('+proj=longlat +datum=WGS84 +no_defs +type=crs', crs.to_proj_string)
   end
 
-  def test_create_from_proj4_init
-    crs = Proj::Crs.new('+init=epsg:4326')
-    assert_equal(:PJ_TYPE_GEOGRAPHIC_2D_CRS, crs.proj_type)
-    assert_equal('+proj=longlat +datum=WGS84 +no_defs +type=crs', crs.to_proj_string)
-  end
-
   def test_compound
     crs = Proj::Crs.new('EPSG:2393+5717')
     assert_equal(:PJ_TYPE_COMPOUND_CRS, crs.proj_type)
