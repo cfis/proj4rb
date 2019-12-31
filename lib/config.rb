@@ -31,7 +31,7 @@ module Proj
     end
 
     def data_path
-      if ENV['PROJ_LIB']
+      if ENV['PROJ_LIB'] && File.directory?(ENV['PROJ_LIB'])
         ENV['PROJ_LIB']
       else
         result = self.search_paths.detect do |path|
