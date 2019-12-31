@@ -124,7 +124,7 @@ class ProjectionTest < AbstractTest
 
   def test_get_def
     assert_equal(' +init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0', @proj_wgs84.getDef)
-    assert_equal(' +init=epsg:31467 +proj=tmerc +lat_0=0 +lon_0=9 +k=1 +x_0=3500000 +y_0=0 +datum=potsdam +units=m +no_defs +ellps=bessel +nadgrids=@BETA2007.gsb', @proj_gk.getDef)
+    assert_equal(' +init=epsg:31467 +proj=tmerc +lat_0=0 +lon_0=9 +k=1 +x_0=3500000 +y_0=0 +ellps=bessel +units=m +no_defs', @proj_gk.getDef)
     assert_equal('+proj=ortel +lon_0=90w +ellps=GRS80', @proj_ortel.getDef.strip)
   end
 
@@ -141,7 +141,7 @@ class ProjectionTest < AbstractTest
 
   def test_datum
     assert_equal('WGS84', @proj_wgs84.datum)
-    assert_equal('potsdam', @proj_gk.datum)
+    assert_nil(@proj_gk.datum)
     assert_nil(@proj_conakry.datum)
   end
 
