@@ -24,5 +24,15 @@ module Proj
     attach_function :pj_fwd3d, [ProjLPZ.by_value, :projPJ], ProjXYZ.by_value
     attach_function :pj_inv3d, [ProjXYZ.by_value, :projPJ], ProjLPZ.by_value
     attach_function :pj_transform, [:projPJ, :projPJ, :long, :int, :pointer, :pointer, :pointer], :bool
+
+    if PROJ_VERSION < Gem::Version.new('5.0.0')
+      def proj_torad(value)
+        value * 0.017453292519943296
+      end
+
+      def proj_todeg(value)
+        value * 57.295779513082321
+      end
+    end
   end
 end
