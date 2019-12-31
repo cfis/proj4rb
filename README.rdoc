@@ -21,7 +21,7 @@ If you are using the old Proj4 namespace, then you can do this:
   require 'proj4'
 
 === Crs
-Next, create a coordinate system. To create a coordinate system, you can use CRS codes, well-known text (WKT) strings
+If you are using Proj 6 create a coordinate system. To create a coordinate system, you can use CRS codes, well-known text (WKT) strings
 or old-style Proj4 strings (which are deprecated).
 
     crs1 = Proj::Crs.new('EPSG:4326')
@@ -53,6 +53,9 @@ or old-style Proj4 strings (which are deprecated).
 
 Notice when using the old-style Proj4 string, the addition of the "+type=crs" value.
 
+If you are using Proj 5, then you should create a transformation using epsg strings (see below). If you are using Proj 4,
+you need to use the deprecated Projection class (see documentation).
+
 === Transformation
 After you have created two coordinate systems, you can then create a transformation. For example, if you want to
 convert coordinates from the "3-degree Gauss-Kruger zone 3" coordinate system to WGS84 (one version of lat-long)
@@ -61,6 +64,11 @@ first create a transformation:
     crs_gk  = Proj::Crs.new('epsg:31467')
     crs_wgs84 = Proj::Crs.new('epsg:4326')
     transform = Proj::Transformation.new(crs_gk, crs_wgs84)
+
+Alternatively, or if you are using Proj 5, you can create a transformation without first
+creating Crs instances. Instead, pass the EPSG information directly to the transformation:
+
+    transform = Proj::Transformation.new('epsg:31467', 'epsg:4326')
 
 Once you've created the transformation, you can tranform coordinates using either
 the +forward+ or +inverse+ methods. The forward transformation looks like this:
@@ -88,9 +96,9 @@ Transformation objects can also be created directly like this:
     transform = Proj::Transformation.new('epsg:31467', 'epsg:4326')
 
 === Coordinate
-Notice in the examples above we are transformation instance of Proj::Coordinate.
-Proj::Coordinate consists of up to four double values to represent three directions
-plus time. In general you will need to fill out at least the first two values:
+Notice the examples above transform Coordinate objects. A Coordinate consists
+of up to four double values to represent three directions plus time. In general
+you will need to fill out at least the first two values:
 
     from = Proj::Coordinate.new(x: 5428192.0, y: 3458305.0, z: -5.1790915237)
     from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
@@ -98,12 +106,17 @@ plus time. In general you will need to fill out at least the first two values:
 Lam is longitude and phi is latitude.
 
 === Context
-Proj 4.8 introduced the concept of a thread context object to support multi-threaded programs. The bindings
-expose this object via Context.current and store it using thread local storage. Use the context object to
-access error codes, set proj4 compatability settings, set the logging level and to install custom logging code.
+Contexts are used to support multi-threaded programs. The bindings expose this object via Context.current
+and store it using thread local storage. Use the context object to access error codes, set proj4
+compatability settings, set the logging level and to install custom logging code.
 
 Both Crs and Transformation objects take a context object in their constructors. If none is passed, they default
 to using Context.current
+
+=== Projection
+If you are using Proj 4, then instead of using Coordinates, Crses and Tranformations you use Points and Projections. Those
+are deprecated classes but will continue to work until the release of Proj 7.  Please refer to the documentation
+for more information.
 
 == Error handling
 When an error occurs, a Proj::Error instance will be thrown with the underlying message provided
@@ -123,7 +136,7 @@ https://proj.org/development/migration.html. Note that the gem should gracefully
 (as in newer functionality stops working) depending on if you are using Proj 6, Proj 5 or Proj 4.
 
 To ensure backwards compatiblity, the Ruby bindings still include the older Point and Projection
-classes. However, these classes are no longer documented in this Readme because  they will be
+classes. However, these classes are no longer documented in this Readme because they will be
 removed upon the release of Proj 7 which will remove the underlying API's they are dependent upon.
 So please port your code! But take note of the changes in Proj 6 described below.
 
