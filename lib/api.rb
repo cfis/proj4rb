@@ -6,420 +6,59 @@ module Proj
     ffi_lib ['libproj-15', # Mingw64 Proj 6
              'libproj.so.15', # Linux (Postgresql repository )Proj 6
              'libproj.so.13', # Linux (Fedora 31) Proj 5
-             'libproj.so.12', # Linux (Ubuntu 18.04 )Proj 5
-             'libproj-12', # Mingw64 Proj 5
+             'libproj.so.12', # Linux (Ubuntu 18.04 ) Proj 4
+             'libproj-12', # Mingw64 Proj 4
              '/opt/local/lib/proj6/lib/libproj.dylib', # Macports Proj 6
              '/opt/local/lib/proj5/lib/libproj.dylib', # Macports Proj 5
              'libproj'] # Generic catch all (not used anywhere?)
 
-    typedef :pointer, :PJ
-    typedef :pointer, :PJ_CONTEXT
-    typedef :pointer, :PJ_AREA
+    library = ffi_libraries.first
 
-    class P5_FACTORS < FFI::Struct
-      layout :meridional_scale, :double,               # h 
-             :parallel_scale, :double,                 # k 
-             :areal_scale, :double,                    # s 
-         
-             :angular_distortion, :double,             # omega 
-             :meridian_parallel_angle, :double,        # theta-prime 
-             :meridian_convergence, :double,           # alpha 
-        
-             :tissot_semimajor, :double,               # a 
-             :tissot_semiminor, :double,               # b 
-         
-             :dx_dlam, :double,
-             :dx_dphi, :double,
-             :dy_dlam, :double,
-             :dy_dphi, :double
-    end
-
-    # Data types for list of operations, ellipsoids, datums and units used in PROJ.4 */
-    class PJ_LIST < FFI::Struct
-      layout :id,    :string,   # projection keyword
-             :PJ,    :pointer,  # projection entry point
-             :descr, :pointer   # description text
-    end
-    PJ_OPERATIONS = PJ_LIST
-
-    class PJ_ELLPS < FFI::Struct
-      layout :id, :string, # ellipse keyword name
-             :major, :string, # a= value
-             :ell, :string, # elliptical parameter
-             :name, :string # comments
-    end
-
-    class PJ_UNITS < FFI::Struct
-      layout :id, :string, # units keyword
-             :to_meter, :string, # multiply by value to get meters
-             :name, :string, # comments
-             :factor, :double # to_meter factor in actual numbers
-    end
-
-      class PJ_PRIME_MERIDIANS < FFI::Struct
-      layout :id, :string, # prime meridian keyword
-             :defn, :string # offset from greenwich in DMS format.
-    end
-
-    # Geodetic, mostly spatiotemporal coordinate types
-    class PJ_XYZT < FFI::Struct
-      layout :x, :double,
-             :y, :double,
-             :z, :double,
-             :t, :double
-    end
-
-    class PJ_UVWT < FFI::Struct
-      layout :u, :double,
-             :v, :double,
-             :w, :double,
-             :t, :double
-    end
-
-    class PJ_LPZT < FFI::Struct
-      layout :lam, :double,
-             :phi, :double,
-             :z, :double,
-             :t, :double
-    end
-
-    # Rotations: omega, phi, kappa
-    class PJ_OPK < FFI::Struct
-      layout :o, :double,
-             :p, :double,
-             :k, :double
-    end
-
-    # East, North, Up
-    class PJ_ENU < FFI::Struct
-      layout :e, :double,
-             :n, :double,
-             :u, :double
-    end
-
-    # Geodesic length, fwd azi, rev azi
-    class PJ_GEOD < FFI::Struct
-      layout :s, :double,
-             :a1, :double,
-             :a2, :double
-    end
-
-    # Classic proj.4 pair/triplet types - moved into the PJ_ name space.
-    class PJ_UV < FFI::Struct
-      layout :u, :double,
-             :v, :double
-    end
-
-    class PJ_XY < FFI::Struct
-      layout :x, :double,
-             :y, :double
-    end
-
-    class PJ_LP < FFI::Struct
-      layout :lam, :double,
-             :phi, :double
-    end
-
-    class PJ_XYZ < FFI::Struct
-      layout :x, :double,
-             :y, :double,
-             :z, :double
-    end
-
-    class PJ_UVW < FFI::Struct
-      layout :u, :double,
-             :v, :double,
-             :w, :double
-    end
-
-    class PJ_LPZ < FFI::Struct
-      layout :lam, :double,
-             :phi, :double,
-             :z, :double
-    end
-
-    class PJ_COORD < FFI::Union
-      layout :v, [:double, 4],
-             :xyzt, PJ_XYZT,
-             :uvwt, PJ_UVWT,
-             :lpzt, PJ_LPZT,
-             :geod, PJ_GEOD,
-             :opk, PJ_OPK,
-             :enu, PJ_ENU,
-             :xyz, PJ_XYZ,
-             :uvw, PJ_UVW,
-             :lpz, PJ_LPZ,
-             :xy,  PJ_XY,
-             :uv, PJ_UV,
-             :lp, PJ_LP
-    end
-
-    class PJ_INFO < FFI::Struct
-      layout :major, :int, # Major release number
-             :minor, :int,  # Minor release number
-             :patch, :int,  # Patch level
-             :release, :string,  # Release info. Version + date
-             :version, :string,   # Full version number
-             :searchpath, :string,  # Paths where init and grid files are looked for. Paths are separated by
-                                    # semi-colons on Windows, and colons on non-Windows platforms.
-             :paths, :pointer,
-             :path_count, :size_t
-    end
-
-    class PJ_PROJ_INFO < FFI::Struct
-      layout :id, :string, # Name of the projection in question
-             :description, :string, # Description of the projection
-             :definition, :string, # Projection definition
-             :has_inverse, :int, # 1 if an inverse mapping exists, 0 otherwise
-             :accuracy, :double # Expected accuracy of the transformation. -1 if unknown.
-
-      def to_s
-        "<#{self.class.name} id: #{self[:id]},  description: #{self[:description]}, definition: #{self[:definition]}, has_inverse: #{self[:has_inverse]} accuracy: #{self[:accuracy]}"
+    # proj_info was introduced in Proj 5
+    if library.find_function('proj_info')
+      class PJ_INFO < FFI::Struct
+        layout :major, :int, # Major release number
+               :minor, :int,  # Minor release number
+               :patch, :int,  # Patch level
+               :release, :string,  # Release info. Version + date
+               :version, :string,   # Full version number
+               :searchpath, :string,  # Paths where init and grid files are looked for. Paths are separated by
+               # semi-colons on Windows, and colons on non-Windows platforms.
+               :paths, :pointer,
+               :path_count, :size_t
       end
+
+      attach_function :proj_info, [], PJ_INFO.by_value
+      PROJ_VERSION = Gem::Version.new(self.proj_info[:version])
+    else
+      PROJ_VERSION = Gem::Version.new('4.9.0')
     end
+  end
 
-    class PJ_GRID_INFO < FFI::Struct
-      layout :gridname, [:string, 32],  # name of grid
-             :filename, [:string, 260], # full path to grid
-             :format, [:string, 8],     # file format of grid
-             :lowerleft, PJ_LP,         # Coordinates of lower left corner
-             :upperright, PJ_LP,        # Coordinates of upper right corner
-             :n_lon, :int,              # Grid size
-             :n_lat, :int,              # Grid size
-             :cs_lon, :double,          # Cell size of grid
-             :cs_lat, :double           # Cell size of grid
-          end
+  # Load the old deprecated api - supported by all Proj versions (until Proj 7!)
+  require_relative './api_4_9'
 
-    class PJ_INIT_INFO < FFI::Struct
-      layout :name, [:string, 32],       # name init file
-             :filename, [:string, 260],  # full path to the init file
-             :version, [:string, 32],    # version of the init file
-             :origin, [:string, 32],     # origin of the file, e.g. EPSG
-             :lastupdate, [:string, 16] # Date of last update in YYYY-MM-DD format
-    end
+  if Api::PROJ_VERSION >= Gem::Version.new('5.0.0')
+    require_relative './api_5_0'
+  end
 
-    enum :PJ_LOG_LEVEL, [:PJ_LOG_NONE , 0,
-                         :PJ_LOG_ERROR, 1,
-                         :PJ_LOG_DEBUG, 2,
-                         :PJ_LOG_TRACE, 3,
-                         :PJ_LOG_TELL , 4,
-                         :PJ_LOG_DEBUG_MAJOR, 2, # for proj_api.h compatibility
-                         :PJ_LOG_DEBUG_MINOR, 3] # for proj_api.h compatibility
+  if Api::PROJ_VERSION >= Gem::Version.new('5.1.0')
+    require_relative './api_5_1'
+  end
 
-    # Apply transformation to observation - in forward or inverse direction
-    enum :PJ_DIRECTION, [:PJ_FWD, 1,   # Forward
-                         :PJ_IDENT, 0, # Do nothing
-                         :PJ_INV, -1]   # Inverse
+  if Api::PROJ_VERSION >= Gem::Version.new('5.2.0')
+    require_relative './api_5_2'
+  end
 
-    enum :PJ_CATEGORY, [:PJ_CATEGORY_ELLIPSOID,
-                        :PJ_CATEGORY_PRIME_MERIDIAN,
-                        :PJ_CATEGORY_DATUM,
-                        :PJ_CATEGORY_CRS,
-                        :PJ_CATEGORY_COORDINATE_OPERATION]
+  if Api::PROJ_VERSION >= Gem::Version.new('6.0.0')
+    require_relative './api_6_0'
+  end
 
-    enum :PJ_TYPE, [:PJ_TYPE_UNKNOWN,
-                    :PJ_TYPE_ELLIPSOID,
-                    :PJ_TYPE_PRIME_MERIDIAN,
-                    :PJ_TYPE_GEODETIC_REFERENCE_FRAME,
-                    :PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME,
-                    :PJ_TYPE_VERTICAL_REFERENCE_FRAME,
-                    :PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME,
-                    :PJ_TYPE_DATUM_ENSEMBLE,
+  if Api::PROJ_VERSION >= Gem::Version.new('6.1.0')
+    require_relative './api_6_1'
+  end
 
-                    # Abstract type, not returned by proj_get_type()
-                    :PJ_TYPE_CRS,
-
-                    :PJ_TYPE_GEODETIC_CRS,
-                    :PJ_TYPE_GEOCENTRIC_CRS,
-
-                    # proj_get_type() will never return that type, but
-                    # :PJ_TYPE_GEOGRAPHIC_2D_CRS or :PJ_TYPE_GEOGRAPHIC_3D_CRS.
-                    :PJ_TYPE_GEOGRAPHIC_CRS,
-
-                    :PJ_TYPE_GEOGRAPHIC_2D_CRS,
-                    :PJ_TYPE_GEOGRAPHIC_3D_CRS,
-                    :PJ_TYPE_VERTICAL_CRS,
-                    :PJ_TYPE_PROJECTED_CRS,
-                    :PJ_TYPE_COMPOUND_CRS,
-                    :PJ_TYPE_TEMPORAL_CRS,
-                    :PJ_TYPE_ENGINEERING_CRS,
-                    :PJ_TYPE_BOUND_CRS,
-                    :PJ_TYPE_OTHER_CRS,
-
-                    :PJ_TYPE_CONVERSION,
-                    :PJ_TYPE_TRANSFORMATION,
-                    :PJ_TYPE_CONCATENATED_OPERATION,
-                    :PJ_TYPE_OTHER_COORDINATE_OPERATION]
-
-    enum :PJ_PROJ_STRING_TYPE, [:PJ_PROJ_5,
-                                :PJ_PROJ_4]
-
-    enum :PJ_COORDINATE_SYSTEM_TYPE, [:PJ_CS_TYPE_UNKNOWN,
-                                      :PJ_CS_TYPE_CARTESIAN,
-                                      :PJ_CS_TYPE_ELLIPSOIDAL,
-                                      :PJ_CS_TYPE_VERTICAL,
-                                      :PJ_CS_TYPE_SPHERICAL,
-                                      :PJ_CS_TYPE_ORDINAL,
-                                      :PJ_CS_TYPE_PARAMETRIC,
-                                      :PJ_CS_TYPE_DATETIMETEMPORAL,
-                                      :PJ_CS_TYPE_TEMPORALCOUNT,
-                                      :PJ_CS_TYPE_TEMPORALMEASURE]
-
-    enum :PJ_WKT_TYPE, [:PJ_WKT2_2015,
-                        :PJ_WKT2_2015_SIMPLIFIED,
-                        :PJ_WKT2_2018,
-                        :PJ_WKT2_2018_SIMPLIFIED,
-                        :PJ_WKT1_GDAL,
-                        :PJ_WKT1_ESRI]
-
-
-    # Info functions - get information about various PROJ.4 entities
-    attach_function :proj_info, [], PJ_INFO.by_value
-
-    # Get the version number of the dll we just loaded so we can selectively attach functions
-    PROJ_VERSION = Gem::Version.new(self.proj_info[:version])
-    PROJ_VERSION_6_2 = Gem::Version.new('6.2.0')
-    PROJ_VERSION_6_1 = Gem::Version.new('6.1.0')
-    PROJ_VERSION_6_0 = Gem::Version.new('6.0.0')
-    PROJ_VERSION_5_2 = Gem::Version.new('5.2.0')
-    PROJ_VERSION_5_1 = Gem::Version.new('5.1.0')
-
-    attach_function :proj_pj_info, [:PJ], PJ_PROJ_INFO.by_value
-    attach_function :proj_grid_info, [:string], PJ_GRID_INFO.by_value
-    attach_function :proj_init_info, [:string], PJ_INIT_INFO.by_value
-
-    if PROJ_VERSION >= PROJ_VERSION_6_2
-      attach_function :proj_cleanup, [], :void
-    end
-
-    # Contexts
-    attach_function :proj_context_create, [], :PJ_CONTEXT
-    attach_function :proj_context_destroy, [:PJ_CONTEXT], :PJ_CONTEXT
-
-    if PROJ_VERSION >= PROJ_VERSION_5_1
-      attach_function :proj_log_level, [:PJ_CONTEXT, :PJ_LOG_LEVEL], :PJ_LOG_LEVEL
-      callback :pj_log_function, [:pointer, :int, :string], :void
-      attach_function :proj_log_func, [:PJ_CONTEXT, :pointer, :pj_log_function], :void
-    end
-
-    if PROJ_VERSION >= PROJ_VERSION_6_0
-      attach_function :proj_context_use_proj4_init_rules, [:PJ_CONTEXT, :int], :void
-      attach_function :proj_context_get_use_proj4_init_rules, [:PJ_CONTEXT, :int], :bool
-    end
-
-    # Error handling
-    attach_function :proj_context_errno, [:PJ_CONTEXT], :int
-    attach_function :proj_errno, [:PJ], :int
-    attach_function :proj_errno_set, [:PJ, :int], :int
-    attach_function :proj_errno_reset, [:PJ], :int
-    attach_function :proj_errno_restore, [:PJ, :int], :int
-
-    if PROJ_VERSION >= PROJ_VERSION_5_2
-    attach_function :proj_errno_string, [:int], :string
-    end
-
-    # Manage the transformation definition object PJ
-    attach_function :proj_create, [:PJ_CONTEXT, :string], :PJ
-    attach_function :proj_create_argv, [:PJ_CONTEXT, :int, :pointer], :PJ
-    attach_function :proj_create_crs_to_crs, [:PJ_CONTEXT, :string, :string, :PJ_AREA], :PJ
-    attach_function :proj_destroy, [:PJ], :PJ
-
-    if PROJ_VERSION >= PROJ_VERSION_6_1
-      attach_function :proj_normalize_for_visualization, [:PJ_CONTEXT, :PJ], :PJ
-    end
-
-    if PROJ_VERSION >= PROJ_VERSION_6_2
-      attach_function :proj_create_crs_to_crs_from_pj, [:PJ_CONTEXT, :PJ, :PJ, :PJ_AREA, :string], :PJ
-    end
-
-    attach_function :proj_trans, [:PJ, :PJ_DIRECTION, PJ_COORD.by_value], PJ_COORD.by_value
-
-    # Get lists of operations, ellipsoids, units and prime meridians
-    attach_function :proj_list_operations, [], :pointer #PJ_LIST
-    attach_function :proj_list_ellps, [], :pointer #PJ_ELLPS
-    attach_function :proj_list_units, [], :pointer #PJ_UNITS
-    attach_function :proj_list_prime_meridians, [], :pointer #PJ_PRIME_MERIDIANS
-
-    if PROJ_VERSION >= PROJ_VERSION_6_0
-      attach_function :proj_list_angular_units, [], :pointer #PJ_UNITS
-    end
-
-    if PROJ_VERSION >= PROJ_VERSION_6_0
-      # Base methods
-      attach_function :proj_get_name, [:PJ], :string
-      attach_function :proj_get_id_auth_name, [:PJ, :int], :string
-      attach_function :proj_get_id_code, [:PJ, :int], :string
-      attach_function :proj_get_type, [:PJ], :PJ_TYPE
-      attach_function :proj_is_deprecated, [:PJ], :bool
-      attach_function :proj_is_crs, [:PJ], :bool
-      attach_function :proj_get_area_of_use, [:PJ_CONTEXT, :PJ, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
-
-      # Export to various formats
-      attach_function :proj_as_wkt, [:PJ_CONTEXT, :PJ, :PJ_WKT_TYPE, :pointer], :string
-      attach_function :proj_as_proj_string, [:PJ_CONTEXT, :PJ, :PJ_PROJ_STRING_TYPE, :pointer], :string
-      attach_function :proj_as_projjson, [:PJ_CONTEXT, :PJ, :pointer], :string
-    end
-
-    # Degrees/radians
-    attach_function :proj_torad, [:double], :double
-    attach_function :proj_todeg, [:double], :double
-    attach_function :proj_dmstor, [:string, :pointer], :double
-    attach_function :proj_rtodms, [:string, :double, :int, :int], :string
-    attach_function :proj_angular_input, [:PJ, :PJ_DIRECTION], :bool
-    attach_function :proj_angular_output, [:PJ, :PJ_DIRECTION], :bool
-
-    if PROJ_VERSION >= PROJ_VERSION_6_0
-      # Projection database functions
-      attach_function :proj_context_set_autoclose_database, [:PJ_CONTEXT, :int], :void
-      attach_function :proj_context_set_database_path, [:PJ_CONTEXT, :string, :pointer, :pointer], :int
-      attach_function :proj_context_get_database_path, [:PJ_CONTEXT], :string
-      attach_function :proj_context_get_database_metadata, [:PJ_CONTEXT, :string], :string
-    end
-
-    # CRS methods
-    if PROJ_VERSION >= PROJ_VERSION_6_0
-      attach_function :proj_crs_get_geodetic_crs, [:PJ_CONTEXT, :PJ], :PJ
-      attach_function :proj_crs_get_horizontal_datum, [:PJ_CONTEXT, :PJ], :PJ
-      attach_function :proj_crs_get_sub_crs, [:PJ_CONTEXT, :PJ, :int], :PJ
-      attach_function :proj_crs_get_datum, [:PJ_CONTEXT, :PJ], :PJ
-      attach_function :proj_crs_get_coordinate_system, [:PJ_CONTEXT, :PJ], :PJ
-      attach_function :proj_cs_get_type, [:PJ_CONTEXT, :PJ], :PJ_COORDINATE_SYSTEM_TYPE
-      attach_function :proj_cs_get_axis_count, [:PJ_CONTEXT, :PJ], :int
-      attach_function :proj_cs_get_axis_info, [:PJ_CONTEXT, :PJ, :int, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
-      attach_function :proj_get_prime_meridian, [:PJ_CONTEXT, :PJ], :PJ
-      attach_function :proj_get_ellipsoid, [:PJ_CONTEXT, :PJ], :PJ
-      attach_function :proj_crs_get_coordoperation, [:PJ_CONTEXT, :PJ], :PJ
-    end
-
-    # Transformations
-    attach_function :proj_create_crs_to_crs, [:PJ_CONTEXT, :string, :string, :PJ_AREA], :PJ
-    if PROJ_VERSION >= PROJ_VERSION_6_0
-      attach_function :proj_create_crs_to_crs_from_pj, [:PJ_CONTEXT, :PJ, :PJ, :PJ_AREA, :pointer], :PJ
-    end
-
-    #########  Deprecated API from proj_api.h. Don't use these anymore! ##############
-    typedef :pointer, :projPJ
-
-    class ProjUVW < FFI::Struct
-      layout :u, :double,
-             :v, :double,
-             :w, :double
-    end
-
-    ProjXYZ = ProjUVW
-    ProjLPZ = ProjUVW
-
-    attach_function :pj_init, [:int, :pointer], :projPJ
-    attach_function :pj_free, [:projPJ], :void
-    attach_function :pj_get_errno_ref, [], :pointer
-    attach_function :pj_strerrno, [:int], :string
-
-    attach_function :pj_get_def, [:projPJ, :int], :string
-    attach_function :pj_is_latlong, [:projPJ], :bool
-    attach_function :pj_is_geocent, [:projPJ], :bool
-
-    attach_function :pj_fwd3d, [ProjLPZ.by_value, :projPJ], ProjXYZ.by_value
-    attach_function :pj_inv3d, [ProjXYZ.by_value, :projPJ], ProjLPZ.by_value
-    attach_function :pj_transform, [:projPJ, :projPJ, :long, :int, :pointer, :pointer, :pointer], :bool
+  if Api::PROJ_VERSION >= Gem::Version.new('6.2.0')
+    require_relative './api_6_2'
   end
 end
