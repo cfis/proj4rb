@@ -9,8 +9,15 @@ module Proj
     end
 
     def search_paths
-      ['/usr/share/proj', '/usr/local/share/proj', '/opt/share/proj', '/opt/local/share/proj',
-       'c:/msys64/mingw64/share/proj', 'c:/mingw64/share/proj']
+      ['/usr/share/proj',
+       '/usr/local/share/proj',
+       '/opt/share/proj',
+       '/opt/local/share/proj',
+       'c:/msys64/mingw64/share/proj',
+       'c:/mingw64/share/proj',
+       '/opt/local/lib/proj49/share/proj',
+       '/opt/local/lib/proj5/share/proj',
+       '/opt/local/lib/proj6/share/proj']
     end
 
     def data_path
