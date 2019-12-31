@@ -16,7 +16,6 @@ module Proj
     require_relative './api_4_9'
 
     library = ffi_libraries.first
-    a = library.name
 
     # proj_info was introduced in Proj 5
     if library.find_function('proj_info')
