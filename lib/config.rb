@@ -33,7 +33,7 @@ module Proj
     end
 
     def db_path
-      self.search_paths.map do |path|
+      result = self.search_paths.map do |path|
         File.join(path, 'proj.db')
       end.detect do |path|
         File.exists?(path)
