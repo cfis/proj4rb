@@ -6,8 +6,6 @@
 - Add in a bunch of new classes including Context, Crs, Coordinate, Ellipsoid, Prime Meridian and Transform
 - Deprecate Projection and Point - these will stop working with Proj 7 since the use an older deprecated API
 
-- Calling this 1.0.0 since its a very stable gem
-
 1.0.0 (December 14, 2014)
 =========================
 - Calling this 1.0.0 since its a very stable gem
