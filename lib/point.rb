@@ -11,11 +11,10 @@ module Proj
     end
 
     # Create new Point object from coordinates.
-    def initialize(x, y, z=0)
-      @struct = Api::ProjUVW.new
+    def initialize(x, y)
+      @struct = Api::ProjUV.new
       @struct[:u] = x
       @struct[:v] = y
-      @struct[:w] = z
     end
 
     def to_ptr
@@ -23,11 +22,11 @@ module Proj
     end
 
     def to_radians
-      self.class.new(Api.proj_torad(self.x), Api.proj_torad(self.y), Api.proj_torad(self.z))
+      self.class.new(Api.proj_torad(self.x), Api.proj_torad(self.y))
     end
 
     def to_degrees
-      self.class.new(Api.proj_todeg(self.x), Api.proj_todeg(self.y), Api.proj_todeg(self.z))
+      self.class.new(Api.proj_todeg(self.x), Api.proj_todeg(self.y))
     end
 
     # Get x coordinate.
@@ -48,16 +47,6 @@ module Proj
     # Set y coordinate.
     def y=(value)
       @struct[:v] = value
-    end
-
-    # Get z coordinate.
-    def z
-      @struct[:w]
-    end
-
-    # Set z coordinate.
-    def z=(value)
-      @struct[:w] = value
     end
 
     # Get longitude/x coordinate.

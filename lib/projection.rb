@@ -108,7 +108,7 @@ module Proj
     # @param point [Point] in radians
     # @return [Point] in cartesian coordinates
     def forward(point)
-      struct = Api.pj_fwd3d(point, self)
+      struct = Api.pj_fwd(point, self)
       ptr = Api.pj_get_errno_ref
       Error.check(ptr.read_int)
       Point.from_pointer(struct)
@@ -137,7 +137,7 @@ module Proj
     # @param point [Point] in cartesian coordinates
     # @return [Point] in radians
     def inverse(point)
-      struct = Api.pj_inv3d(point, self)
+      struct = Api.pj_inv(point, self)
       ptr = Api.pj_get_errno_ref
       Error.check(ptr.read_int)
       Point.from_pointer(struct)
