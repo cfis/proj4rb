@@ -175,13 +175,13 @@ module Proj
       p_y.write_double(point.y)
 
       p_z = FFI::MemoryPointer.new(:double, 1)
-      p_z.write_double(point.z)
+      p_z.write_double(0)
 
       a = Api.pj_transform(self, other, 1, 1, p_x, p_y, p_z)
       ptr = Api.pj_get_errno_ref
       Error.check(ptr.read_int)
 
-      Point.new(p_x.read_double, p_y.read_double, p_z.read_double)
+      Point.new(p_x.read_double, p_y.read_double)
     end
 
     # Transforms all points in a collection from one projection to

@@ -186,11 +186,10 @@ class ProjectionTest < AbstractTest
 
   # echo "3458305 5428192" | cs2cs -f '%.10f' +init=epsg:31467 +to +init=epsg:4326 -
   def test_gk_to_wgs84
-    from = Proj::Point.new(3458305.0, 5428192.0, -5.1790915237)
+    from = Proj::Point.new(3458305.0, 5428192.0)
     to = @proj_gk.transform(@proj_wgs84, from).to_degrees
     assert_in_delta(8.4302123334, to.x, PRECISION)
     assert_in_delta(48.9906726079, to.y, PRECISION)
-    assert_in_delta(-296.74008, to.z, PRECISION)
   end
 
   # echo "8.4293092923 48.9896114523" | cs2cs -f '%.10f' +init=epsg:4326 +to +init=epsg:31467 -
@@ -199,7 +198,6 @@ class ProjectionTest < AbstractTest
     to = @proj_wgs84.transform(@proj_gk, from.to_radians)
     assert_in_delta(3458305.0, to.x, PRECISION)
     assert_in_delta(5428192.0, to.y, PRECISION)
-    assert_in_delta(0, to.z, PRECISION)
   end
 
   def test_mercator_at_pole_raise
@@ -210,8 +208,8 @@ class ProjectionTest < AbstractTest
   end
 
   def test_collection
-    from0 = Proj::Point.new(3458305.0, 5428192.0, -5.1790915237)
-    from1 = Proj::Point.new(0, 0, 0)
+    from0 = Proj::Point.new(3458305.0, 5428192.0)
+    from1 = Proj::Point.new(0, 0)
     collection = @proj_gk.transform_all(@proj_wgs84, [from0, from1])
 
     to0 = collection[0].to_degrees
@@ -219,10 +217,8 @@ class ProjectionTest < AbstractTest
 
     assert_in_delta(8.4302123334, to0.x, PRECISION)
     assert_in_delta(48.9906726079, to0.y, PRECISION)
-    assert_in_delta(-296.740, to0.z, PRECISION)
 
     assert_in_delta(-20.9657785647, to1.x, PRECISION)
     assert_in_delta(0, to1.y, PRECISION)
-    assert_in_delta(0, to1.z, PRECISION)
   end
 end
