@@ -16,6 +16,10 @@ To get started first require the gem:
 
   require 'proj'
 
+If you are using the old Proj4 namespace, then you can do this:
+
+  require 'proj4'
+
 === Crs
 Next, create a coordinate system. To create a coordinate system, you can use CRS codes, well-known text (WKT) strings
 or old-style Proj4 strings (which are deprecated).
