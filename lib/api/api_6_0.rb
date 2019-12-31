@@ -1,5 +1,9 @@
 module Proj
   module Api
+    callback :proj_file_finder, [:PJ_CONTEXT, :string, :pointer], :string
+    attach_function :proj_context_set_file_finder, [:PJ_CONTEXT, :proj_file_finder, :pointer], :void
+    attach_function :proj_context_set_search_paths, [:PJ_CONTEXT, :int, :pointer], :void
+
     attach_function :proj_context_use_proj4_init_rules, [:PJ_CONTEXT, :int], :void
     attach_function :proj_context_get_use_proj4_init_rules, [:PJ_CONTEXT, :int], :bool
     attach_function :proj_list_angular_units, [], :pointer #PJ_UNITS

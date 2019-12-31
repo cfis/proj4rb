@@ -8,7 +8,7 @@ module Proj
              'libproj.so.13', # Linux (Fedora 31) Proj 5
              'libproj.so.12', # Linux (Ubuntu 18.04 ) Proj 4
              'libproj-12', # Mingw64 Proj 4
-             '/opt/local/lib/proj6/lib/libproj.15.dylib', # Macports Proj 6
+             #'/opt/local/lib/proj6/lib/libproj.15.dylib', # Macports Proj 6
              '/opt/local/lib/proj5/lib/libproj.13.dylib', # Macports Proj 5
              '/opt/local/lib/proj49/lib/libproj.12.dylib'] # Macports Proj 5
 

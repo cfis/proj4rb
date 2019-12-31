@@ -149,7 +149,7 @@ module Proj
              :release, :string,  # Release info. Version + date
              :version, :string,   # Full version number
              :searchpath, :string,  # Paths where init and grid files are looked for. Paths are separated by
-             # semi-colons on Windows, and colons on non-Windows platforms.
+                                    # semi-colons on Windows, and colons on non-Windows platforms.
              :paths, :pointer,
              :path_count, :size_t
     end
