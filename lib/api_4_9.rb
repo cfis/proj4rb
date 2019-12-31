@@ -14,6 +14,7 @@ module Proj
     attach_function :pj_init, [:int, :pointer], :projPJ
     attach_function :pj_free, [:projPJ], :void
 
+    attach_function :pj_get_release, [], :string
     attach_function :pj_set_searchpath, [:int, :pointer], :void
 
     attach_function :pj_get_errno_ref, [], :pointer
@@ -26,15 +27,5 @@ module Proj
     attach_function :pj_fwd, [ProjLP.by_value, :projPJ], ProjXY.by_value
     attach_function :pj_inv, [ProjXY.by_value, :projPJ], ProjLP.by_value
     attach_function :pj_transform, [:projPJ, :projPJ, :long, :int, :pointer, :pointer, :pointer], :bool
-
-    if PROJ_VERSION < Gem::Version.new('5.0.0')
-      def self.proj_torad(value)
-        value * 0.017453292519943296
-      end
-
-      def self.proj_todeg(value)
-        value * 57.295779513082321
-      end
-    end
   end
 end

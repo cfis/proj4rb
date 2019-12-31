@@ -142,6 +142,18 @@ module Proj
              :lp, PJ_LP
     end
 
+    class PJ_INFO < FFI::Struct
+      layout :major, :int, # Major release number
+             :minor, :int,  # Minor release number
+             :patch, :int,  # Patch level
+             :release, :string,  # Release info. Version + date
+             :version, :string,   # Full version number
+             :searchpath, :string,  # Paths where init and grid files are looked for. Paths are separated by
+             # semi-colons on Windows, and colons on non-Windows platforms.
+             :paths, :pointer,
+             :path_count, :size_t
+    end
+
     class PJ_PROJ_INFO < FFI::Struct
       layout :id, :string, # Name of the projection in question
              :description, :string, # Description of the projection
@@ -248,6 +260,7 @@ module Proj
                         :PJ_WKT1_GDAL,
                         :PJ_WKT1_ESRI]
 
+    attach_function :proj_info, [], PJ_INFO.by_value
     attach_function :proj_pj_info, [:PJ], PJ_PROJ_INFO.by_value
     attach_function :proj_grid_info, [:string], PJ_GRID_INFO.by_value
     attach_function :proj_init_info, [:string], PJ_INIT_INFO.by_value
