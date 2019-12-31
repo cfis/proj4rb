@@ -19,31 +19,15 @@ module Proj
       @pointer = Api.proj_context_create
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
 
-      check_database_path
+      set_database_path
     end
 
     # Helper method that tries to locate the Proj coordinate database (proj.db)
-    def check_database_path
+    def set_database_path
       return unless Api.method_defined?(:proj_context_get_database_path)
       return if database_path
 
-      # No database path is set. Unfortunately ffi does not provide an api to tell us the location of the proj library.
-      # So just guess on paths
-      paths = ['/usr/share/proj', '/usr/local/share/proj', '/opt/share/proj', '/opt/local/share/proj',
-               'c:/msys64/mingw64/share/proj', 'c:/mingw64/share/proj'].map do |path|
-                File.join(path, 'proj.db')
-      end
-
-      path = paths.detect do |path|
-              File.exists?(path)
-             end
-
-      if path
-        self.database_path = path
-      else
-        raise(Error, "Could not find proj.db. Please set the PROJ_LIB environmental variable to the directory that contains proj.db.")
-      end
-      database_path
+      self.database_path = Config.instance.db_path
     end
 
     def to_ptr

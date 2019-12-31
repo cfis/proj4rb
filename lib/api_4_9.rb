@@ -13,6 +13,9 @@ module Proj
 
     attach_function :pj_init, [:int, :pointer], :projPJ
     attach_function :pj_free, [:projPJ], :void
+
+    attach_function :pj_set_searchpath, [:int, :pointer], :void
+
     attach_function :pj_get_errno_ref, [], :pointer
     attach_function :pj_strerrno, [:int], :string
 

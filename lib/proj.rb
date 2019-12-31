@@ -1,6 +1,7 @@
 # encoding: UTF-8
 
 require_relative './api'
+require_relative './config'
 
 require_relative './area'
 require_relative './context'
@@ -25,4 +26,13 @@ module Proj
   def self.version
     self.info[:version]
   end
+
+  def self.set_data_path
+    path = Config.instance.data_path
+    p_path = FFI::MemoryPointer.from_string(path)
+    p_paths = FFI::MemoryPointer.new(:pointer, 1)
+    p_paths[0].write_pointer(p_path)
+    Api.pj_set_searchpath(1, p_paths)
+  end
+  self.set_data_path
 end
