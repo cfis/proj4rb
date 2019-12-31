@@ -50,11 +50,21 @@ module Proj
       end
 
       @pointer = Api.pj_init(params.count, p_params)
-      ptr = Api.pj_get_errno_ref
-      Error.check(ptr.read_int)
+      self.check_error
 
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
     end
+
+    def check_error
+      ptr = Api.pj_get_errno_ref
+      errno = ptr.read_int
+      if errno != 0
+        # If we don't reset the error code it hangs around. This doesn't seem documented anyplace?
+        ptr.write_int(0)
+        Error.check(errno)
+      end
+    end
+
 
     def to_ptr
       @pointer
@@ -109,8 +119,7 @@ module Proj
     # @return [Point] in cartesian coordinates
     def forward(point)
       struct = Api.pj_fwd(point, self)
-      ptr = Api.pj_get_errno_ref
-      Error.check(ptr.read_int)
+      self.check_error
       Point.from_pointer(struct)
     end
 
@@ -138,8 +147,7 @@ module Proj
     # @return [Point] in radians
     def inverse(point)
       struct = Api.pj_inv(point, self)
-      ptr = Api.pj_get_errno_ref
-      Error.check(ptr.read_int)
+      self.check_error
       Point.from_pointer(struct)
     end
 
@@ -178,8 +186,7 @@ module Proj
       p_z.write_double(0)
 
       a = Api.pj_transform(self, other, 1, 1, p_x, p_y, p_z)
-      ptr = Api.pj_get_errno_ref
-      Error.check(ptr.read_int)
+      self.check_error
 
       Point.new(p_x.read_double, p_y.read_double)
     end
