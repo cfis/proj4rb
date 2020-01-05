@@ -21,12 +21,12 @@ module Proj
     def initialize(source, target, context=nil)
       pointer = if source.is_a?(Crs) && target.is_a?(Crs)
                   if Api.method_defined?(:proj_create_crs_to_crs_from_pj)
-                    Api.proj_create_crs_to_crs_from_pj(self.context, source, target, nil, nil)
+                    Api.proj_create_crs_to_crs_from_pj(context, source, target, nil, nil)
                   else
-                    Api.proj_create_crs_to_crs(self.context, source.definition, target.definition, nil)
+                    Api.proj_create_crs_to_crs(context, source.definition, target.definition, nil)
                   end
                 else
-                  Api.proj_create_crs_to_crs(self.context, source, target, nil)
+                  Api.proj_create_crs_to_crs(context, source, target, nil)
                 end
 
       if pointer.null?
