@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.platform = Gem::Platform::RUBY
   spec.authors = ['Guilhem Vellut', 'Jochen Topf', 'Charlie Savage']
   spec.homepage = 'https://github.com/cfis/proj4rb'
-  spec.required_ruby_version = '>= 2.4.9'
+  spec.required_ruby_version = '>= 2.4.1'
   spec.license = 'MIT'
 
   spec.requirements << 'Proj (Proj4) Library'
