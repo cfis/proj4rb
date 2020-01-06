@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
                    'proj4rb.gemspec',
                    'Rakefile',
                    'README.rdoc',
-                   'lib/*.rb',
+                   'lib/**/*.rb',
                    'test/*.rb']
 
   spec.test_files = Dir["test/test_*.rb"]
