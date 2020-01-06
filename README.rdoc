@@ -1,6 +1,9 @@
-=Proj4rb
+= Proj4rb
 This gem provides Ruby bindings for the Proj Library (https://proj.org). The Proj Library supports converting coordinates
 between a number of different coordinate systems and projections.
+
+== Documentation
+Besides this readme file, reference documentation is available at https://rubydoc.info/github/cfis/proj4rb.
 
 == Installation
 First install the gem in the usual manner:
