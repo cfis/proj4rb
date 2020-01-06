@@ -10,7 +10,11 @@ module Proj
              'libproj-12', # Mingw64 Proj 4
              '/opt/local/lib/proj6/lib/libproj.15.dylib', # Macports Proj 6
              '/opt/local/lib/proj5/lib/libproj.13.dylib', # Macports Proj 5
-             '/opt/local/lib/proj49/lib/libproj.12.dylib'] # Macports Proj 5
+             '/opt/local/lib/proj49/lib/libproj.12.dylib', # Macports Proj 5
+             '/opt/local/lib/libproj.15.dylib', # mac homebrew mac Proj 6
+             '/opt/local/lib/libproj.13.dylib', # mac howbrew Proj 5
+             '/opt/local/lib/libproj.12.dylib' # mac howbrew Proj 5
+            ] 
 
     # Load the old deprecated api - supported by all Proj versions (until Proj 7!)
     require_relative './api_4_9'
