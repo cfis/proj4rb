@@ -79,24 +79,20 @@ the +forward+ or +inverse+ methods. The forward transformation looks like this:
     from = Proj::Coordinate.new(x: 5428192.0, y: 3458305.0, z: -5.1790915237)
     to = transform.forward(from)
 
-    assert_in_delta(48.98963932450735, to.x, PRECISION)
-    assert_in_delta(8.429263044355544, to.y, PRECISION)
-    assert_in_delta(-5.1790915237, to.z, PRECISION)
-    assert_in_delta(0, to.t, PRECISION)
+    assert_in_delta(48.98963932450735, to.x, 0.01)
+    assert_in_delta(8.429263044355544, to.y, 0.01)
+    assert_in_delta(-5.1790915237, to.z, 0.01)
+    assert_in_delta(0, to.t, 0.01)
 
 While the inverse transformation looks like this:
 
     from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
     to = transform.inverse(from)
 
-    assert_in_delta(5428306.389495558, to.x, PRECISION)
-    assert_in_delta(3458375.3367194114, to.y, PRECISION)
-    assert_in_delta(0, to.z, PRECISION)
-    assert_in_delta(0, to.t, PRECISION)
-
-Transformation objects can also be created directly like this:
-
-    transform = Proj::Transformation.new('epsg:31467', 'epsg:4326')
+    assert_in_delta(5428306.389495558, to.x, 0.01)
+    assert_in_delta(3458375.3367194114, to.y, 0.01)
+    assert_in_delta(0, to.z, 0.01)
+    assert_in_delta(0, to.t, 0.01)
 
 === Coordinate
 Notice the examples above transform Coordinate objects. A Coordinate consists
@@ -117,8 +113,8 @@ Both Crs and Transformation objects take a context object in their constructors.
 to using Context.current
 
 === Projection
-If you are using Proj 4, then instead of using Coordinates, Crses and Tranformations you use Points and Projections. Those
-are deprecated classes but will continue to work until the release of Proj 7.  Please refer to the documentation
+If you are using Proj 4, then instead of using Coordinates, Crses and Tranformations you need to us Points and Projections.
+Those are deprecated classes but will continue to work until the release of Proj 7.  Please refer to the documentation
 for more information.
 
 == Error handling
@@ -136,15 +132,16 @@ variable and have it work correctly (at least not on windows).
 == Backwards Compatibility
 Proj versions 5 and 6 are *very* different than Proj version 4. Changes are documented at
 https://proj.org/development/migration.html. Note that the gem should gracefully degrade
-(as in newer functionality stops working) depending on if you are using Proj 6, Proj 5 or Proj 4.
+(as in newer functionality stops working but older functionality keeps working) depending on
+the version of Proj you are using.
 
 To ensure backwards compatiblity, the Ruby bindings still include the older Point and Projection
 classes. However, these classes are no longer documented in this Readme because they will be
-removed upon the release of Proj 7 which will remove the underlying API's they are dependent upon.
+removed upon the release of Proj 7 which will remove the underlying API's they depend on.
 So please port your code! But take note of the changes in Proj 6 described below.
 
-Proj 5 introduced the the Coordinate, Crs and Tranformation apis. However, it wasn't until Proj 6 that additional
-metadata APIs were added, so the amount of information about each object is somewhat limited.
+Proj 5 introduced the Coordinate, Crs and Tranformation APIs. However, it wasn't until Proj 6 that additional
+metadata APIs were added, so the amount of information about each object is somewhat limited in Proj 5.
 
 Proj 6 makes a big change compared to previous releases that is not well documented (see
 https://github.com/OSGeo/PROJ/pull/1182). When creating tranformations with EPSG values Proj 6
@@ -169,5 +166,5 @@ Proj4rb is released under the MIT license.
 ==Authors
 The proj4rb Ruby bindings were started by Guilhem Vellut with most of the code 
 written by Jochen Topf.  Charlie Savage ported the code to Windows and added 
-the Windows build infrastructure. Later, he updated the code to support
-Proj version 5 and 6 and ported the code to use FFI.
+the Windows build infrastructure. Later, he rewrote the code to support
+Proj version 5 and 6 and ported it to use FFI.
