@@ -1,3 +1,10 @@
+2.0.1 (January 50, 2020)
+=========================
+* Set Ruby 2.4.1 to be the minimum allowed version (Samuel Williams)
+* Fix incorrect use of context, reduce warnings when running tests (Samuel Williams)
+* Fix `bundle exec rake test` (Samuel Williams)
+* Add 2.4.1 to the travis test matrix  (Samuel Williams)
+
 2.0.0 (December 30, 2019)
 =========================
 - Full rewrite to support API changes in Proj versions 5 and 6
