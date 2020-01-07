@@ -1,8 +1,6 @@
 # encoding: UTF-8
 module Proj
   class PjObject
-    attr_reader :context
-
     def self.finalize(pointer)
       proc do
         Api.proj_destroy(pointer)
