@@ -5,23 +5,23 @@ module Proj
   #   underlying API's this class uses. Code should be ported to use Crs and Transformation objects.
   class Projection
     def self.parse(value)
-      values = case value
-                 when Array
-                   value
-                 when String
-                   value.strip.split(' ')
-                 when Hash
-                   array = []
-                   value.each_pair do |key, value|
-                     key = "+#{key}"
-                     array << (value.nil? ? key : "#{key}=#{value}")
-                   end
-                   array
-                 when Projection
-                   value.getDef.split(' ')
-                 else
-                   raise ArgumentError, "Unknown type #{value.class} for projection definition"
-               end
+      case value
+        when Array
+         value
+        when String
+         value.strip.split(' ')
+        when Hash
+         array = []
+         value.each_pair do |key, value|
+           key = "+#{key}"
+           array << (value.nil? ? key : "#{key}=#{value}")
+         end
+         array
+        when Projection
+         value.getDef.split(' ')
+        else
+         raise ArgumentError, "Unknown type #{value.class} for projection definition"
+      end
     end
 
     def self.finalize(pointer)
@@ -185,7 +185,7 @@ module Proj
       p_z = FFI::MemoryPointer.new(:double, 1)
       p_z.write_double(0)
 
-      a = Api.pj_transform(self, other, 1, 1, p_x, p_y, p_z)
+      Api.pj_transform(self, other, 1, 1, p_x, p_y, p_z)
       self.check_error
 
       Point.new(p_x.read_double, p_y.read_double)
