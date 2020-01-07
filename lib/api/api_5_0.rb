@@ -44,7 +44,7 @@ module Proj
              :factor, :double # to_meter factor in actual numbers
     end
 
-      class PJ_PRIME_MERIDIANS < FFI::Struct
+    class PJ_PRIME_MERIDIANS < FFI::Struct
       layout :id, :string, # prime meridian keyword
              :defn, :string # offset from greenwich in DMS format.
     end
@@ -176,7 +176,7 @@ module Proj
              :n_lat, :int,              # Grid size
              :cs_lon, :double,          # Cell size of grid
              :cs_lat, :double           # Cell size of grid
-          end
+    end
 
     class PJ_INIT_INFO < FFI::Struct
       layout :name, [:string, 32],       # name init file
@@ -297,8 +297,5 @@ module Proj
     attach_function :proj_rtodms, [:string, :double, :int, :int], :string
     attach_function :proj_angular_input, [:PJ, :PJ_DIRECTION], :bool
     attach_function :proj_angular_output, [:PJ, :PJ_DIRECTION], :bool
-
-    # Transformations
-    attach_function :proj_create_crs_to_crs, [:PJ_CONTEXT, :string, :string, :PJ_AREA], :PJ
   end
 end
