@@ -89,7 +89,6 @@ module Proj
     #
     # @return [Integer]
     def axis_count
-      foo = Api.proj_crs_get_coordinate_system(self.context, self)
       result = Api.proj_cs_get_axis_count(self.context, self.coordinate_system)
       if result == -1
         Error.check
@@ -131,7 +130,6 @@ module Proj
     #
     # @return [:PJ_COORDINATE_SYSTEM_TYPE]
     def crs_type
-      foo = Api.proj_crs_get_coordinate_system(self.context, self)
       result = Api.proj_cs_get_type(self.context, self.coordinate_system)
       if result == :PJ_CS_TYPE_UNKNOWN
         Error.check
