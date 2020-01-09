@@ -3,18 +3,24 @@ require 'ffi'
 module Proj
   module Api
     extend FFI::Library
-    ffi_lib ['libproj-15', # Mingw64 Proj 6
-             'libproj.so.15', # Linux (Postgresql repository )Proj 6
-             'libproj.so.13', # Linux (Fedora 31) Proj 5
-             'libproj.so.12', # Linux (Ubuntu 18.04 ) Proj 4
-             'libproj-12', # Mingw64 Proj 4
-             '/opt/local/lib/proj6/lib/libproj.15.dylib', # Macports Proj 6
-             '/opt/local/lib/proj5/lib/libproj.13.dylib', # Macports Proj 5
-             '/opt/local/lib/proj49/lib/libproj.12.dylib', # Macports Proj 5
-             '/usr/local/lib/libproj.15.dylib', # mac homebrew mac Proj 6
-             '/usr/local/lib/libproj.13.dylib', # mac howbrew Proj 5
-             '/usr/local/lib/libproj.12.dylib' # mac howbrew Proj 5
-            ] 
+
+    proj_library_versions = {'proj6' => 15,
+                             'proj5' => 13,
+                             'proj49' => 12}
+
+    file_patterns = ["libproj-%d", # Mingw64
+                     "libproj.so.%d", # Linux
+                     "/opt/local/lib/%s/lib/libproj.%d.dylib", # Macports
+                     "/usr/local/lib/libproj.%d.dylib"] # Mac HomeBrew
+
+    search_paths = file_patterns.map do |file_pattern|
+                     proj_library_versions.map do |proj_version, proj_library_version|
+                       formats = file_pattern.count("%") == 1 ? [proj_library_version] : [proj_version, proj_library_version]
+                       file_pattern % formats
+                     end
+                   end.flatten
+
+    ffi_lib search_paths
 
     # Load the old deprecated api - supported by all Proj versions (until Proj 7!)
     require_relative './api_4_9'
