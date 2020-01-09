@@ -21,8 +21,7 @@ module Proj
     attach_function :proj_as_wkt, [:PJ_CONTEXT, :PJ, :PJ_WKT_TYPE, :pointer], :string
     attach_function :proj_as_proj_string, [:PJ_CONTEXT, :PJ, :PJ_PROJ_STRING_TYPE, :pointer], :string
 
-    # Projection database functions
-    attach_function :proj_context_set_autoclose_database, [:PJ_CONTEXT, :int], :void
+    # Projection database functions    
     attach_function :proj_context_set_database_path, [:PJ_CONTEXT, :string, :pointer, :pointer], :int
     attach_function :proj_context_get_database_path, [:PJ_CONTEXT], :string
     attach_function :proj_context_get_database_metadata, [:PJ_CONTEXT, :string], :string
