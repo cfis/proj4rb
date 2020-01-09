@@ -20,6 +20,20 @@ module Proj
                      end
                    end.flatten
 
+    # Generates this array
+    # [0] = "libproj-15"
+    # [1] = "libproj-13"
+    # [2] = "libproj-12"
+    # [3] = "libproj.so.15"
+    # [4] = "libproj.so.13"
+    # [5] = "libproj.so.12"
+    # [6] = "/opt/local/lib/proj6/lib/libproj.15.dylib"
+    # [7] = "/opt/local/lib/proj5/lib/libproj.13.dylib"
+    # [8] = "/opt/local/lib/proj49/lib/libproj.12.dylib"
+    # [9] = "/usr/local/lib/libproj.15.dylib"
+    # [10] = "/usr/local/lib/libproj.13.dylib"
+    # [11] = "/usr/local/lib/libproj.12.dylib"
+
     ffi_lib search_paths
 
     # Load the old deprecated api - supported by all Proj versions (until Proj 7!)
