@@ -20,7 +20,6 @@ module Proj
     # Export to various formats
     attach_function :proj_as_wkt, [:PJ_CONTEXT, :PJ, :PJ_WKT_TYPE, :pointer], :string
     attach_function :proj_as_proj_string, [:PJ_CONTEXT, :PJ, :PJ_PROJ_STRING_TYPE, :pointer], :string
-    attach_function :proj_as_projjson, [:PJ_CONTEXT, :PJ, :pointer], :string
 
     # Projection database functions
     attach_function :proj_context_set_autoclose_database, [:PJ_CONTEXT, :int], :void
