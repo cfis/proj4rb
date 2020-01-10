@@ -45,17 +45,17 @@ module Proj
       paths1 = self.library_versions.map do |version|
         case version
           when 15..17
-            "/opt/local/lib/proj6/lib/libproj.#{version}"
+            "/opt/local/lib/proj6/lib/libproj.#{version}.dylib"
           when 13..14
-            "/opt/local/lib/proj5/lib/libproj.#{version}"
+            "/opt/local/lib/proj5/lib/libproj.#{version}.dylib"
           when 11..12
-            "/opt/local/lib/proj49/lib/libproj.#{version}"
+            "/opt/local/lib/proj49/lib/libproj.#{version}.dylib"
         end
       end
 
       # Mac HomeBrew
       paths2 = self.library_versions.map do |version|
-        "/usr/local/lib/libproj.#{version}"
+        "/usr/local/lib/libproj.#{version}.dylib"
       end
 
       paths1 + paths2
