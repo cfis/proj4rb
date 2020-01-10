@@ -1,40 +1,67 @@
+require 'rbconfig'
 require 'ffi'
 
 module Proj
   module Api
     extend FFI::Library
 
-    proj_library_versions = {'proj6' => 15,
-                             'proj5' => 13,
-                             'proj49' => 12}
+    def self.library_versions
+      [17, # 6.2 *and* 6.1
+       15, # 6.0
+       14, # 5.2
+       13, # 5.0
+       12, # 4.9
+       11] # 4.9
+    end
 
-    file_patterns = ["libproj-%d", # Mingw64
-                     "libproj.so.%d", # Linux
-                     "/opt/local/lib/%s/lib/libproj.%d.dylib", # Macports
-                     "/usr/local/lib/libproj.%d.dylib"] # Mac HomeBrew
+    def self.search_paths
+      result = case RbConfig::CONFIG['host_os']
+                 when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+                   self.windows_search_paths
+                 when /darwin|mac os/
+                   self.macos_search_paths
+                 else
+                   self.linux_search_paths
+               end
 
-    search_paths = file_patterns.map do |file_pattern|
-                     proj_library_versions.map do |proj_version, proj_library_version|
-                       formats = file_pattern.count("%") == 1 ? [proj_library_version] : [proj_version, proj_library_version]
-                       file_pattern % formats
-                     end
-                   end.flatten
+      result << 'libproj'
+      result
+    end
 
-    # Generates this array
-    # [0] = "libproj-15"
-    # [1] = "libproj-13"
-    # [2] = "libproj-12"
-    # [3] = "libproj.so.15"
-    # [4] = "libproj.so.13"
-    # [5] = "libproj.so.12"
-    # [6] = "/opt/local/lib/proj6/lib/libproj.15.dylib"
-    # [7] = "/opt/local/lib/proj5/lib/libproj.13.dylib"
-    # [8] = "/opt/local/lib/proj49/lib/libproj.12.dylib"
-    # [9] = "/usr/local/lib/libproj.15.dylib"
-    # [10] = "/usr/local/lib/libproj.13.dylib"
-    # [11] = "/usr/local/lib/libproj.12.dylib"
+    def self.windows_search_paths
+      self.library_versions.map do |version|
+        "libproj-#{version}"
+      end
+    end
 
-    ffi_lib search_paths
+    def self.linux_search_paths
+      self.library_versions.map do |version|
+        "libproj.so.#{version}"
+      end
+    end
+
+    def self.macos_search_paths
+      # Mac Ports
+      paths1 = self.library_versions.map do |version|
+        case version
+          when 15..17
+            "/opt/local/lib/proj6/lib/libproj.#{version}"
+          when 13..14
+            "/opt/local/lib/proj5/lib/libproj.#{version}"
+          when 11..12
+            "/opt/local/lib/proj49/lib/libproj.#{version}"
+        end
+      end
+
+      # Mac HomeBrew
+      paths2 = self.library_versions.map do |version|
+        "/usr/local/lib/libproj.#{version}"
+      end
+
+      paths1 + paths2
+    end
+
+    ffi_lib self.search_paths
 
     # Load the old deprecated api - supported by all Proj versions (until Proj 7!)
     require_relative './api_4_9'
