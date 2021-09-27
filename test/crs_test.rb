@@ -331,8 +331,7 @@ class CrsTest < AbstractTest
             }
           ]
         },
-        "scope": "Engineering survey, topographic mapping.",
-        "area": "North America - between 96°W and 90°W - onshore and offshore. Canada - Manitoba; Nunavut; Ontario. United States (USA) - Arkansas; Illinois; Iowa; Kansas; Louisiana; Michigan; Minnesota; Mississippi; Missouri; Nebraska; Oklahoma; Tennessee; Texas; Wisconsin.",
+        "area": "North America - 96°W to 90°W and NAD83 by country",
         "bbox": {
           "south_latitude": 25.61,
           "west_longitude": -96,
