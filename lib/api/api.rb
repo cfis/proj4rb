@@ -6,7 +6,9 @@ module Proj
     extend FFI::Library
 
     def self.library_versions
-      [17, # 6.2 *and* 6.1
+      [22, # 8.0 and 8.1
+       19, # 7.x
+       17, # 6.2 *and* 6.1
        15, # 6.0
        14, # 5.2
        13, # 5.0
@@ -63,9 +65,6 @@ module Proj
 
     ffi_lib self.search_paths
 
-    # Load the old deprecated api - supported by all Proj versions (until Proj 7!)
-    require_relative './api_4_9'
-
     library = ffi_libraries.first
 
     # proj_info was introduced in Proj 5
@@ -73,6 +72,9 @@ module Proj
       require_relative './api_5_0'
       PROJ_VERSION = Gem::Version.new(self.proj_info[:version])
     else
+      # Load the old deprecated api
+      require_relative './api_4_9'
+
       release = self.pj_get_release
       version = release.match(/\d\.\d\.\d/)
       PROJ_VERSION = Gem::Version.new(version)
@@ -87,6 +89,11 @@ module Proj
     def Api.proj_todeg(value)
       value * 57.295779513082321
     end
+  end
+
+  # Load the old deprecated API for versions before version 8
+  if Api::PROJ_VERSION < Gem::Version.new('8.0.0')
+    require_relative './api_4_9'
   end
 
   if Api::PROJ_VERSION >= Gem::Version.new('5.1.0')
