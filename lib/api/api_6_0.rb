@@ -1,6 +1,6 @@
 module Proj
   module Api
-    callback :proj_file_finder, [:PJ_CONTEXT, :string, :pointer], :string
+    callback :proj_file_finder, [:PJ_CONTEXT, :string, :pointer], :pointer
     attach_function :proj_context_set_file_finder, [:PJ_CONTEXT, :proj_file_finder, :pointer], :void
     attach_function :proj_context_set_search_paths, [:PJ_CONTEXT, :int, :pointer], :void
 
