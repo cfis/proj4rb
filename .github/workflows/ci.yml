@@ -1,4 +1,4 @@
-name: postgresql
+name: proj4rb
 
 on: [push, pull_request]
 
