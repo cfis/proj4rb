@@ -221,7 +221,7 @@ class CrsTest < AbstractTest
     crs = Proj::Crs.new('EPSG:26915')
     expected = <<~EOS
       {
-        "$schema": "https://proj.org/schemas/v0.1/projjson.schema.json",
+        "$schema": "https://proj.org/schemas/v0.2/projjson.schema.json",
         "type": "ProjectedCRS",
         "name": "NAD83 / UTM zone 15N",
         "base_crs": {
@@ -331,7 +331,8 @@ class CrsTest < AbstractTest
             }
           ]
         },
-        "area": "North America - 96°W to 90°W and NAD83 by country",
+        "scope": "Engineering survey, topographic mapping.",
+        "area": "North America - between 96°W and 90°W - onshore and offshore. Canada - Manitoba; Nunavut; Ontario. United States (USA) - Arkansas; Illinois; Iowa; Kansas; Louisiana; Michigan; Minnesota; Mississippi; Missouri; Nebraska; Oklahoma; Tennessee; Texas; Wisconsin.",
         "bbox": {
           "south_latitude": 25.61,
           "west_longitude": -96,
