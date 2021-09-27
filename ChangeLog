@@ -1,3 +1,8 @@
+3.0.0 (September 26, 2021)
+=========================
+* Support Proj 8 which removes the old Proj API (Charlie Savage)
+* Support newer versions of FFI which remove support for returning strings from callbacks (Charlie Savage)
+
 2.2.2 (January 10, 2020)
 =========================
 * Move proj_context_set_autoclose_database to api 6.2 (Jan Klimke)

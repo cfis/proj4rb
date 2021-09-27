@@ -24,8 +24,8 @@ If you are using the old Proj4 namespace, then you can do this:
   require 'proj4'
 
 === Crs
-If you are using Proj 6 create a coordinate system. To create a coordinate system, you can use CRS codes, well-known text (WKT) strings
-or old-style Proj4 strings (which are deprecated).
+If you are using Proj 6, or newer, create a coordinate system. To create a coordinate system, you can use CRS codes,
+well-known text (WKT) strings or old-style Proj4 strings (which are deprecated).
 
     crs1 = Proj::Crs.new('EPSG:4326')
 
@@ -114,7 +114,7 @@ to using Context.current
 
 === Projection
 If you are using Proj 4, then instead of using Coordinates, Crses and Tranformations you need to us Points and Projections.
-Those are deprecated classes but will continue to work until the release of Proj 7.  Please refer to the documentation
+Those are deprecated classes but will continue to work with Proj version 7 and older.  Please refer to the documentation
 for more information.
 
 == Error handling
@@ -136,9 +136,8 @@ https://proj.org/development/migration.html. Note that the gem should gracefully
 the version of Proj you are using.
 
 To ensure backwards compatiblity, the Ruby bindings still include the older Point and Projection
-classes. However, these classes are no longer documented in this Readme because they will be
-removed upon the release of Proj 7 which will remove the underlying API's they depend on.
-So please port your code! But take note of the changes in Proj 6 described below.
+classes. However, these classes are no longer documented in this Readme because the underlying API
+they rely on was removed in Proj 8. So please port your code! But take note of the changes in Proj 6 described below.
 
 Proj 5 introduced the Coordinate, Crs and Tranformation APIs. However, it wasn't until Proj 6 that additional
 metadata APIs were added, so the amount of information about each object is somewhat limited in Proj 5.
