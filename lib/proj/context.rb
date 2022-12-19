@@ -1,6 +1,6 @@
 module Proj
   # Proj 4.8 introduced the concept of a thread context object to support multi-threaded programs. The bindings
-  # automatically create on context per thread (its stored in local thread storage).
+  # automatically create one context per thread (its stored in local thread storage).
   class Context
     # The context for the current thread
     #
