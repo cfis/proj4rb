@@ -28,7 +28,7 @@ class ContextTest < AbstractTest
   end
 
   def test_log_level
-    assert_equal(:PJ_LOG_NONE, Proj::Context.current.log_level)
+    assert_equal(:PJ_LOG_ERROR, Proj::Context.current.log_level)
   end
 
   def test_set_log_level

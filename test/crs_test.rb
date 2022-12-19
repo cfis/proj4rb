@@ -89,13 +89,13 @@ class CrsTest < AbstractTest
   def test_datum
     crs = Proj::Crs.new('EPSG:4326')
     datum = crs.datum
-    assert_equal(:PJ_TYPE_GEODETIC_REFERENCE_FRAME, datum.proj_type)
+    assert_equal(:PJ_TYPE_UNKNOWN, datum.proj_type)
   end
 
   def test_horizontal_datum
     crs = Proj::Crs.new('EPSG:4326')
     datum = crs.horizontal_datum
-    assert_equal(:PJ_TYPE_GEODETIC_REFERENCE_FRAME, datum.proj_type)
+    assert_equal(:PJ_TYPE_DATUM_ENSEMBLE, datum.proj_type)
   end
 
   def test_coordinate_system
@@ -158,7 +158,7 @@ class CrsTest < AbstractTest
   def test_area
     crs = Proj::Crs.new('EPSG:4326')
     assert_kind_of(Proj::Area, crs.area)
-    assert_equal('World', crs.area.name)
+    assert_equal('World.', crs.area.name)
     assert_in_delta(-180.0, crs.area.west_lon_degree, 0.1)
     assert_in_delta(-90.0, crs.area.south_lat_degree, 0.1)
     assert_in_delta(180.0, crs.area.east_lon_degree, 0.1)
@@ -208,8 +208,8 @@ class CrsTest < AbstractTest
                   ORDER[2],
                   LENGTHUNIT["metre",1]],
           USAGE[
-              SCOPE["unknown"],
-              AREA["North America - 96\xC2\xB0W to 90\xC2\xB0W and NAD83 by country"],
+              SCOPE["Engineering survey, topographic mapping."],
+              AREA["North America - between 96\xC2\xB0W and 90\xC2\xB0W - onshore and offshore. Canada - Manitoba; Nunavut; Ontario. United States (USA) - Arkansas; Illinois; Iowa; Kansas; Louisiana; Michigan; Minnesota; Mississippi; Missouri; Nebraska; Oklahoma; Tennessee; Texas; Wisconsin."],
               BBOX[25.61,-96,84,-90]],
           ID["EPSG",26915]]
       EOS
@@ -221,7 +221,7 @@ class CrsTest < AbstractTest
     crs = Proj::Crs.new('EPSG:26915')
     expected = <<~EOS
       {
-        "$schema": "https://proj.org/schemas/v0.2/projjson.schema.json",
+        "$schema": "https://proj.org/schemas/v0.5/projjson.schema.json",
         "type": "ProjectedCRS",
         "name": "NAD83 / UTM zone 15N",
         "base_crs": {
@@ -331,7 +331,8 @@ class CrsTest < AbstractTest
             }
           ]
         },
-        "area": "North America - 96°W to 90°W and NAD83 by country",
+        "scope": "Engineering survey, topographic mapping.",
+        "area": "North America - between 96\xC2\xB0W and 90\xC2\xB0W - onshore and offshore. Canada - Manitoba; Nunavut; Ontario. United States (USA) - Arkansas; Illinois; Iowa; Kansas; Louisiana; Michigan; Minnesota; Mississippi; Missouri; Nebraska; Oklahoma; Tennessee; Texas; Wisconsin.",
         "bbox": {
           "south_latitude": 25.61,
           "west_longitude": -96,
@@ -358,7 +359,7 @@ class CrsTest < AbstractTest
       - E[east]: Easting (metre)
       - N[north]: Northing (metre)
       Area of Use:
-      - name: North America - 96°W to 90°W and NAD83 by country
+      - name: North America - between 96°W and 90°W - onshore and offshore. Canada - Manitoba; Nunavut; Ontario. United States (USA) - Arkansas; Illinois; Iowa; Kansas; Louisiana; Michigan; Minnesota; Mississippi; Missouri; Nebraska; Oklahoma; Tennessee; Texas; Wisconsin.
       - bounds: (-96.0, 25.61, -90.0, 84.0)
       Coordinate operation:
       - name: ?
