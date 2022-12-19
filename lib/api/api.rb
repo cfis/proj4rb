@@ -6,14 +6,15 @@ module Proj
     extend FFI::Library
 
     def self.library_versions
-      [22, # 8.0 and 8.1
-       19, # 7.x
-       17, # 6.2 *and* 6.1
-       15, # 6.0
-       14, # 5.2
-       13, # 5.0
-       12, # 4.9
-       11] # 4.9
+      ["9_1", # 9.1
+       "22", # 8.0 and 8.1
+       "19", # 7.x
+       "17", # 6.2 *and* 6.1
+       "15", # 6.0
+       "14", # 5.2
+       "13", # 5.0
+       "12", # 4.9
+       "11"] # 4.9
     end
 
     def self.search_paths
@@ -32,8 +33,8 @@ module Proj
 
     def self.windows_search_paths
       self.library_versions.map do |version|
-        "libproj-#{version}"
-      end
+        ["libproj-#{version}", "libproj_#{version}"]
+      end.flatten
     end
 
     def self.linux_search_paths
