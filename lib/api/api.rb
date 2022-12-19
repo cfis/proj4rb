@@ -116,4 +116,8 @@ module Proj
   if Api::PROJ_VERSION >= Gem::Version.new('6.2.0')
     require_relative './api_6_2'
   end
+
+  if Api::PROJ_VERSION >= Gem::Version.new('7.1.0')
+    require_relative './api_7_1'
+  end
 end
