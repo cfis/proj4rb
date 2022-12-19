@@ -57,7 +57,7 @@ module Proj
       result = self.search_paths.map do |path|
         File.join(path, 'proj.db')
       end.detect do |path|
-        File.exists?(path)
+        File.exist?(path)
       end
 
       unless result
