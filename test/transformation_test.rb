@@ -109,50 +109,6 @@ class TransformationTest < AbstractTest
     assert_equal(2234551.1855909275, end_bounds.ymax)
   end
 
-  def test_last_used_operation
-    operation = Proj::Conversion.create('+proj=utm +zone=31')
-    puts operation.to_wkt
-
-    wkt = <<~EOS
-      CONVERSION["UTM zone 31N",
-          METHOD["Transverse Mercator",
-              ID["EPSG",9807]],
-          PARAMETER["Latitude of natural origin",0,
-              ANGLEUNIT["degree",0.0174532925199433],
-              ID["EPSG",8801]],
-          PARAMETER["Longitude of natural origin",3,
-              ANGLEUNIT["degree",0.0174532925199433],
-              ID["EPSG",8802]],
-          PARAMETER["Scale factor at natural origin",0.9996,
-              SCALEUNIT["unity",1],
-              ID["EPSG",8805]],
-          PARAMETER["False easting",500000,
-              LENGTHUNIT["metre",1],
-              ID["EPSG",8806]],
-          PARAMETER["False northing",0,
-              LENGTHUNIT["metre",1],
-              ID["EPSG",8807]],
-          ID["EPSG",16031]]
-    EOS
-
-    operation = Proj::Conversion.create_from_wkt(wkt)
-    puts operation.to_wkt
-
-    operation = Proj::Conversion.create_from_database("EPSG", "16031", :PJ_CATEGORY_COORDINATE_OPERATION)
-    puts operation.to_wkt
-
-    last = operation.last_used_operation
-    refute(last)
-
-    coord = Proj::Coordinate.new(x: Proj::Api.proj_torad(3.0), y: 0, z: 0, t: 0)
-    new_coord = operation.forward(coord)
-
-    assert_equal(0.05235987755982988, coord.x)
-    assert_equal(0.0, coord.y)
-    assert_equal(0.0, coord.z)
-    assert_equal(0.0, coord.t)
-  end
-
   def test_instantiable
     operation = Proj::Conversion.create_from_database("EPSG", "1671", :PJ_CATEGORY_COORDINATE_OPERATION)
     assert(operation.instantiable?)

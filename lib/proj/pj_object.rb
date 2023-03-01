@@ -133,23 +133,11 @@ module Proj
       @context || Context.current
     end
 
-    # Return whether two objects are equivalent
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_is_equivalent_to proj_is_equivalent_to
-    #
-    # @param other [PjObject] Object to compare to
-    # @param comparison [PJ_COMPARISON_CRITERION] Comparison criterion
-    #
-    # @return [Boolean] True if the objects are equivalent, otherwise false
-    def equivalent_to?(other, comparison)
-      result = Api.proj_is_equivalent_to(self, other, comparison)
-      result == 1 ? true : false
-    end
-
     # Return whether two objects are equivalent. For versions 6.3.0 and higher
     # the check may use using the proj database to check for name aliases
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_is_equivalent_to proj_is_equivalent_to
+    # @see https://proj.org/development/reference/functions.html#c.proj_is_equivalent_to_with_ctx proj_is_equivalent_to_with_ctx
     #
     # @param other [PjObject] Object to compare to
     # @param comparison [PJ_COMPARISON_CRITERION] Comparison criterion

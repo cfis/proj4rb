@@ -73,10 +73,10 @@ class ConversionTest < AbstractTest
     coord = Proj::Coordinate.new(x: Proj::Api.proj_torad(3.0), y: 0, z: 0, t: 0)
     new_coord = operation.forward(coord)
 
-    assert_equal(0.05235987755982988, coord.x)
-    assert_equal(0.0, coord.y)
-    assert_equal(0.0, coord.z)
-    assert_equal(0.0, coord.t)
+    assert_equal(0.05235987755982988, new_coord.x)
+    assert_equal(0.0, new_coord.y)
+    assert_equal(0.0, new_coord.z)
+    assert_equal(0.0, new_coord.t)
 
     last = operation.last_used_operation
     assert(last)

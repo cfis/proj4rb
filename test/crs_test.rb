@@ -91,7 +91,7 @@ class CrsTest < AbstractTest
     wkt.strip!
 
     crs = nil
-    out, err = capture_io do
+    _, err = capture_io do
       crs = Proj::Crs.create_from_wkt(wkt)
     end
 

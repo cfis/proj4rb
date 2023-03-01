@@ -36,7 +36,6 @@ module Proj
 
         result = Array.new(count)
         result.size.times do |i|
-          p_units = FFI::Pointer.new(array_p_units[i])
           unit_info = Api::PROJ_UNIT_INFO.new(array_p_units[i])
 
           result[i] = self.new(unit_info[:auth_name], unit_info[:code], unit_info[:name],
