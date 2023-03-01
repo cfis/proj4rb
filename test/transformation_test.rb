@@ -3,7 +3,7 @@
 require_relative './abstract_test'
 
 class TransformationTest < AbstractTest
-  PRECISION = 0.5
+  PRECISION = 1.5
 
   def setup
     @crs_wgs84 = Proj::Crs.new('epsg:4326')

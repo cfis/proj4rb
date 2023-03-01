@@ -52,7 +52,7 @@ class OperationFactoryContextTest < AbstractTest
                else
                  2
                end
-    assert_equal(2, index)
+    assert_equal(expected, index)
 
     operation = operations[index]
     assert_equal("NAD27 to NAD83 (1)", operation.name)

@@ -100,7 +100,14 @@ class DatabaseTest < AbstractTest
   def test_crs_info
     database = Proj::Database.new(Proj::Context.current)
     crs_infos = database.crs_info
-    assert_equal(13107, crs_infos.count)
+
+    expected = case
+               when proj8?
+                 12609
+               else
+                 13107
+               end
+    assert_equal(expected, crs_infos.count)
 
     crs_info = crs_infos.first
     assert_equal("EPSG", crs_info.auth_name)
@@ -155,7 +162,7 @@ class DatabaseTest < AbstractTest
 
     expected = case
                when proj8?
-                 13107
+                 5534
                else
                  5689
                end
