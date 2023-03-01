@@ -57,7 +57,6 @@ module Proj
     attach_function :proj_operation_factory_context_set_allow_ballpark_transformations, [:PJ_CONTEXT, :pointer, :int], :void
     attach_function :proj_operation_factory_context_set_desired_accuracy, [:PJ_CONTEXT, :pointer, :double], :void
     attach_function :proj_operation_factory_context_set_area_of_interest, [:PJ_CONTEXT, :pointer, :double, :double, :double, :double], :void
-    attach_function :proj_operation_factory_context_set_area_of_interest_name, [:PJ_CONTEXT, :pointer, :string], :void
     attach_function :proj_operation_factory_context_set_crs_extent_use, [:PJ_CONTEXT, :pointer, :PROJ_CRS_EXTENT_USE], :void
     attach_function :proj_operation_factory_context_set_spatial_criterion, [:PJ_CONTEXT, :pointer, :PROJ_SPATIAL_CRITERION], :void
     attach_function :proj_operation_factory_context_set_grid_availability_use, [:PJ_CONTEXT, :pointer, :PROJ_GRID_AVAILABILITY_USE], :void
