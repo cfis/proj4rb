@@ -25,12 +25,13 @@ module Proj
     end
 
     def initialize_copy(original)
+      ObjectSpace.undefine_finalizer(self)
+
       super
 
       @pointer = Api.proj_context_clone(original)
       @database = Database.new(self)
 
-      ObjectSpace.undefine_finalizer(self)
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
     end
 
