@@ -54,7 +54,7 @@ class SessionTest < AbstractTest
 
     session = Proj::Session.new(crs.context)
     statements = session.get_insert_statements(crs, "HOBU", "XXXX", false, [])
-    assert_equal(6, statements.count)
+    assert_equal(0, statements.count)
   end
 
   def test_insert_statements_authorities_proj

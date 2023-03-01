@@ -45,6 +45,13 @@ class OperationFactoryContextTest < AbstractTest
 
     coord = Proj::Coordinate.new(x: 40, y: -100)
     index = operations.suggested_operation(:PJ_FWD, coord)
+
+    expected = case
+               when proj8?
+                 7
+               else
+                 2
+               end
     assert_equal(2, index)
 
     operation = operations[index]

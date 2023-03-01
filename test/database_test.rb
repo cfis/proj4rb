@@ -121,7 +121,14 @@ class DatabaseTest < AbstractTest
   def test_crs_info_epsg
     database = Proj::Database.new(Proj::Context.current)
     crs_infos = database.crs_info("EPSG")
-    assert_equal(7251, crs_infos.count)
+
+    expected = case
+               when proj8?
+                 7056
+               else
+                 7251
+               end
+    assert_equal(expected, crs_infos.count)
   end
 
   def test_crs_info_geodetic
@@ -129,7 +136,15 @@ class DatabaseTest < AbstractTest
     params = Proj::Parameters.new
     params.types = [:PJ_TYPE_GEODETIC_CRS]
     crs_infos = database.crs_info("EPSG", params)
-    assert_equal(943, crs_infos.count)
+
+    expected = case
+               when proj8?
+                 930
+               else
+                 943
+               end
+
+    assert_equal(expected, crs_infos.count)
   end
 
   def test_crs_info_geographic
@@ -137,12 +152,21 @@ class DatabaseTest < AbstractTest
     params = Proj::Parameters.new
     params.types = [:PJ_TYPE_GEOGRAPHIC_2D_CRS, :PJ_TYPE_PROJECTED_CRS]
     crs_infos = database.crs_info("EPSG", params)
-    assert_equal(5689, crs_infos.count)
+
+    expected = case
+               when proj8?
+                 13107
+               else
+                 5689
+               end
+
+    assert_equal(expected, crs_infos.count)
   end
 
   def test_geoid_models
     database = Proj::Database.new(Proj::Context.current)
     models = database.geoid_models("EPSG", "5703")
+
     assert_equal(8, models.size)
 
     expected = %w[GEOID03 GEOID06 GEOID09 GEOID12A GEOID12B GEOID18 GEOID99 GGM10]
@@ -152,7 +176,15 @@ class DatabaseTest < AbstractTest
   def test_celestial_bodies
     database = Proj::Database.new(Proj::Context.current)
     bodies = database.celestial_bodies
-    assert_equal(176, bodies.size)
+
+    expected = case
+               when proj8?
+                 170
+               else
+                 176
+               end
+
+    assert_equal(expected, bodies.size)
 
     celestial_body = bodies[0]
     assert_equal('ESRI', celestial_body.auth_name)
@@ -162,7 +194,15 @@ class DatabaseTest < AbstractTest
   def test_celestial_bodies_authority
     database = Proj::Database.new(Proj::Context.current)
     bodies = database.celestial_bodies('ESRI')
-    assert_equal(78, bodies.size)
+
+    expected = case
+               when proj8?
+                 72
+               else
+                 78
+               end
+
+    assert_equal(expected, bodies.size)
 
     celestial_body = bodies[0]
     assert_equal('ESRI', celestial_body.auth_name)
