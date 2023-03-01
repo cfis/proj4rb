@@ -50,7 +50,7 @@ module Proj
                 if Api::PROJ_VERSION >= Gem::Version.new('8.1.0')
                   fields += [:celestial_body_name, :string] #Name of the celestial body of the CRS (e.g. "Earth")
                 end
-      layout *fields
+      layout(*fields)
     end
 
     attach_function :proj_crs_info_list_destroy, [:pointer], :void
@@ -70,7 +70,7 @@ module Proj
       if Api::PROJ_VERSION >= Gem::Version.new('8.1.0')
         fields += [:celestial_body_name, :string] #Name of the celestial body of the CRS (e.g. "Earth")
       end
-      layout *fields
+      layout(*fields)
     end
 
     attach_function :proj_get_crs_list_parameters_create, [], :pointer
