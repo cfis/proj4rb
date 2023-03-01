@@ -55,7 +55,15 @@ class OperationFactoryContextTest < AbstractTest
     assert_equal(expected, index)
 
     operation = operations[index]
-    assert_equal("NAD27 to NAD83 (1)", operation.name)
+
+    expected = case
+               when proj8?
+                 "Ballpark geographic offset from NAD27 to NAD83"
+               else
+                 "NAD27 to NAD83 (1)"
+               end
+
+    assert_equal(expected, operation.name)
   end
 
   def test_ballpark_transformations
@@ -89,11 +97,6 @@ class OperationFactoryContextTest < AbstractTest
   def test_set_area_of_interest
     context = Proj::OperationFactoryContext.new
     context.set_area_of_interest(10, 10, 10, 10)
-  end
-
-  def test_set_area_of_interest_name
-    context = Proj::OperationFactoryContext.new
-    context.area_of_interest_name = 'test'
   end
 
   def test_crs_extent_use
@@ -171,5 +174,12 @@ class OperationFactoryContextTest < AbstractTest
     factory_context.discard_superseded = false
     operations = factory_context.create_operations(source, target)
     assert_equal(5, operations.count)
+  end
+
+  if proj9?
+    def test_set_area_of_interest_name
+      context = Proj::OperationFactoryContext.new
+      context.area_of_interest_name = 'test'
+    end
   end
 end

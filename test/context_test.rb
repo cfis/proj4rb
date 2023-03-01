@@ -64,7 +64,7 @@ class ContextTest < AbstractTest
     end
     # TODO - if you run this test on its own you get a useful error message, if you run all tests
     # at once you get a useless error message. Not sure what is causing the difference
-    assert_match(/No such file or directory|generic error of unknown origin/, error.to_s)
+    assert_match(/No such file or directory|generic error of unknown origin|File not found or invalid/, error.to_s)
   end
 
   def test_set_log_function
