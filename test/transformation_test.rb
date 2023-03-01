@@ -65,4 +65,101 @@ class TransformationTest < AbstractTest
     assert_in_delta(-5.1790915237, to.z, PRECISION)
     assert_in_delta(0, to.t, PRECISION)
   end
+
+  def test_transform_bounds
+    transform = Proj::Transformation.new("EPSG:4326",
+                                         "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
+
+    start_bounds = Proj::Bounds.new(40, -120, 64, -80)
+    end_bounds = transform.transform_bounds(start_bounds, :PJ_FWD, 0)
+
+    assert_equal(-1684649.4133828662, end_bounds.xmin)
+    assert_equal(-350356.8137658477, end_bounds.ymin)
+    assert_equal(1684649.4133828674, end_bounds.xmax)
+    assert_equal(2234551.1855909275, end_bounds.ymax)
+  end
+
+  def test_transform_bounds_densify
+    transform = Proj::Transformation.new("EPSG:4326",
+                                         "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
+
+    puts transform.to_wkt
+
+    start_bounds = Proj::Bounds.new(40, -120, 64, -80)
+    end_bounds = transform.transform_bounds(start_bounds, :PJ_FWD, 100)
+
+    assert_equal(-1684649.4133828662, end_bounds.xmin)
+    assert_equal(-555777.7923351025, end_bounds.ymin)
+    assert_equal(1684649.4133828674, end_bounds.xmax)
+    assert_equal(2234551.1855909275, end_bounds.ymax)
+  end
+
+  def test_transform_bounds_normalized
+    transform = Proj::Transformation.new("EPSG:4326",
+                                         "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
+
+    normalized = transform.normalize_for_visualization
+
+    start_bounds = Proj::Bounds.new(-120, 40, -80, 64)
+    end_bounds = normalized.transform_bounds(start_bounds, :PJ_FWD, 100)
+
+    assert_equal(-1684649.4133828662, end_bounds.xmin)
+    assert_equal(-555777.7923351025, end_bounds.ymin)
+    assert_equal(1684649.4133828674, end_bounds.xmax)
+    assert_equal(2234551.1855909275, end_bounds.ymax)
+  end
+
+  def test_last_used_operation
+    operation = Proj::Conversion.create('+proj=utm +zone=31')
+    puts operation.to_wkt
+
+    wkt = <<~EOS
+      CONVERSION["UTM zone 31N",
+          METHOD["Transverse Mercator",
+              ID["EPSG",9807]],
+          PARAMETER["Latitude of natural origin",0,
+              ANGLEUNIT["degree",0.0174532925199433],
+              ID["EPSG",8801]],
+          PARAMETER["Longitude of natural origin",3,
+              ANGLEUNIT["degree",0.0174532925199433],
+              ID["EPSG",8802]],
+          PARAMETER["Scale factor at natural origin",0.9996,
+              SCALEUNIT["unity",1],
+              ID["EPSG",8805]],
+          PARAMETER["False easting",500000,
+              LENGTHUNIT["metre",1],
+              ID["EPSG",8806]],
+          PARAMETER["False northing",0,
+              LENGTHUNIT["metre",1],
+              ID["EPSG",8807]],
+          ID["EPSG",16031]]
+    EOS
+
+    operation = Proj::Conversion.create_from_wkt(wkt)
+    puts operation.to_wkt
+
+    operation = Proj::Conversion.create_from_database("EPSG", "16031", :PJ_CATEGORY_COORDINATE_OPERATION)
+    puts operation.to_wkt
+
+    last = operation.last_used_operation
+    refute(last)
+
+    coord = Proj::Coordinate.new(x: Proj::Api.proj_torad(3.0), y: 0, z: 0, t: 0)
+    new_coord = operation.forward(coord)
+
+    assert_equal(0.05235987755982988, coord.x)
+    assert_equal(0.0, coord.y)
+    assert_equal(0.0, coord.z)
+    assert_equal(0.0, coord.t)
+  end
+
+  def test_instantiable
+    operation = Proj::Conversion.create_from_database("EPSG", "1671", :PJ_CATEGORY_COORDINATE_OPERATION)
+    assert(operation.instantiable?)
+  end
+
+  def test_grid_count
+    operation = Proj::Conversion.create_from_database("EPSG", "1312", :PJ_CATEGORY_COORDINATE_OPERATION)
+    assert_equal(1, operation.grid_count)
+  end
 end

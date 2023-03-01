@@ -9,7 +9,7 @@ module Proj
       ["9_1", # 9.1
        "22", # 8.0 and 8.1
        "19", # 7.x
-       "17", # 6.2 *and* 6.1
+       "17", # 6.1 *and* 6.2
        "15", # 6.0
        "14", # 5.2
        "13", # 5.0
@@ -97,27 +97,16 @@ module Proj
     require_relative './api_4_9'
   end
 
-  if Api::PROJ_VERSION >= Gem::Version.new('5.1.0')
-    require_relative './api_5_1'
-  end
+  versions = ['5.1.0', '5.2.0',
+              '6.0.0', '6.1.0', '6.2.0', '6.3.0',
+              '7.0.0', '7.1.0', '7.2.0',
+              '8.0.0', '8.1.0', '8.2.0',
+              '9.1.0']
+  versions.each do |version|
+    api_version = Gem::Version.new(version)
 
-  if Api::PROJ_VERSION >= Gem::Version.new('5.2.0')
-    require_relative './api_5_2'
-  end
-
-  if Api::PROJ_VERSION >= Gem::Version.new('6.0.0')
-    require_relative './api_6_0'
-  end
-
-  if Api::PROJ_VERSION >= Gem::Version.new('6.1.0')
-    require_relative './api_6_1'
-  end
-
-  if Api::PROJ_VERSION >= Gem::Version.new('6.2.0')
-    require_relative './api_6_2'
-  end
-
-  if Api::PROJ_VERSION >= Gem::Version.new('7.1.0')
-    require_relative './api_7_1'
+    if Api::PROJ_VERSION >= api_version
+      require_relative "./api_#{api_version.segments[0]}_#{api_version.segments[1]}"
+    end
   end
 end

@@ -1,8 +1,31 @@
 module Proj
   class Unit
+    # @!attribute [r] auth_name
+    #   @return [String] Authority name
+    # @!attribute [r] code
+    #   @return [String] Object code
+    # @!attribute [r] name
+    #   @return [String] Object name. For example "metre", "US survey foot", etc
+    # @!attribute [r] category
+    #   @return [String] Category of the unit: one of "linear", "linear_per_time", "angular", "angular_per_time", "scale", "scale_per_time" or "time"
+    # @!attribute [r] conv_factor
+    #   @return [String] Conversion factor to apply to transform from that unit to the corresponding SI unit (metre for "linear", radian for "angular", etc.). It might be 0 in some cases to indicate no known conversion factor
+    # @!attribute [r] proj_short_name
+    #   @return [String] PROJ short name, like "m", "ft", "us-ft", etc... Might be nil
+    # @!attribute [r] deprecated
+    #   @return [Boolean] Whether the object is deprecated
     attr_reader :auth_name, :code, :name, :category, :conv_factor, :proj_short_name, :deprecated
 
     if Api.method_defined?(:proj_get_units_from_database)
+      # Returns a list of units from the database
+      #
+      # @see https://proj.org/development/reference/functions.html#c.proj_get_units_from_database proj_get_units_from_database
+      #
+      # @param auth_name [String] Authority name, used to restrict the search. Or nil for all authorities.
+      # @param category [String] Filter by category, if this parameter is not nil. Category is one of "linear", "linear_per_time", "angular", "angular_per_time", "scale", "scale_per_time" or "time
+      # @param allow_deprecated [Boolean] Whether deprecated units should also be returned. Default false.
+      #
+      # @return [Array<Unit>] Array of units
       def self.list(auth_name: nil, category: nil, allow_deprecated: false)
         # Create pointer to read the count output parameter
         p_count = FFI::MemoryPointer.new(:pointer, 1)
@@ -59,6 +82,17 @@ module Proj
       end
     end
 
+    # Create a new Unit
+    # 
+    # @param auth_name [String] Authority name
+    # @param code [String] Object code
+    # @param name [String] Object name. For example "metre", "US survey foot", etc
+    # @param category [String] Category of the unit: one of "linear", "linear_per_time", "angular", "angular_per_time", "scale", "scale_per_time" or "time"
+    # @param conv_factor [String] Conversion factor to apply to transform from that unit to the corresponding SI unit (metre for "linear", radian for "angular", etc.). It might be 0 in some cases to indicate no known conversion factor
+    # @param proj_short_name [String] PROJ short name, like "m", "ft", "us-ft", etc... Might be nil
+    # @param deprecated [Boolean] Whether the object is deprecated
+    #
+    # @return [Unit]
     def initialize(auth_name, code, name, category, conv_factor, proj_short_name, deprecated)
       @auth_name = auth_name
       @code = code
@@ -82,7 +116,7 @@ module Proj
     end
     
     def inspect
-      "#<#{self.class} auth_name=\"#{auth_name}\", code=\"#{code}\", name=\"#{name}\">"
+      "#<#{self.class} authority=\"#{auth_name}\", code=\"#{code}\", name=\"#{name}\">"
     end
   end
 end

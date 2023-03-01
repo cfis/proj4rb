@@ -74,6 +74,10 @@ module Proj
       @coord[:v][0]
     end
 
+    def xyzt
+      @coord[:xyzt]
+    end
+
     # Returns y coordinate
     #
     # @return [Float]

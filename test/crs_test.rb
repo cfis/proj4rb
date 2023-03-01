@@ -47,9 +47,93 @@ class CrsTest < AbstractTest
     assert_equal('+proj=longlat +datum=WGS84 +no_defs +type=crs', crs.to_proj_string)
   end
 
+  def test_create_from_wkt_2
+    wkt = <<~EOS
+      GEOGCRS["WGS 84",
+          DATUM["World Geodetic System 1984",
+              ELLIPSOID["WGS 84",6378137,298.257223563,
+                  LENGTHUNIT["metre",1]]],
+          PRIMEM["Greenwich",0,
+              ANGLEUNIT["degree",0.0174532925199433]],
+          CS[ellipsoidal,2],
+              AXIS["geodetic latitude (Lat)",north,
+                  ORDER[1],
+                  ANGLEUNIT["degree",0.0174532925199433]],
+              AXIS["geodetic longitude (Lon)",east,
+                  ORDER[2],
+                  ANGLEUNIT["degree",0.0174532925199433]],
+          USAGE[
+              SCOPE["unknown"],
+              AREA["World"],
+              BBOX[-90,-180,90,180]],
+          ID["EPSG",4326]]
+    EOS
+    wkt.strip!
+
+    crs = Proj::Crs.create_from_wkt(wkt)
+
+    assert_equal(:PJ_TYPE_GEOGRAPHIC_2D_CRS, crs.proj_type)
+    assert_equal(wkt, crs.to_wkt)
+  end
+
+  def test_create_from_wkt_warning
+    wkt = <<~EOS
+          PROJCS["test",
+            GEOGCS["WGS 84",
+              DATUM["WGS_1984",
+                  SPHEROID["WGS 84",6378137,298.257223563]],
+              PRIMEM["Greenwich",0],
+              UNIT["degree",0.0174532925199433]],
+            PROJECTION["Transverse_Mercator"],
+            PARAMETER["latitude_of_origi",31],
+            UNIT["metre",1]]"
+          EOS
+    wkt.strip!
+
+    crs = nil
+    out, err = capture_io do
+      crs = Proj::Crs.create_from_wkt(wkt)
+    end
+
+    expected = "Cannot find expected parameter Latitude of natural origin. Cannot find expected parameter Longitude of natural origin. Cannot find expected parameter False easting. Cannot find expected parameter False northing. Parameter latitude_of_origi found but not expected for this method. The WKT string lacks a value for Scale factor at natural origin. Default it to 1."
+    assert_equal(expected, err.strip)
+
+    assert_equal(:PJ_TYPE_PROJECTED_CRS, crs.proj_type)
+  end
+
+  def test_create_from_wkt_error
+    wkt = <<~EOS
+      GEOGCS[test,
+           DATUM[test,
+              SPHEROID[test,0,298.257223563,unused]],
+          PRIMEM[Greenwich,0],
+          UNIT[degree,0.0174532925199433]]
+    EOS
+    wkt.strip!
+
+    error = assert_raises(RuntimeError) do
+      Proj::Crs.create_from_wkt(wkt)
+    end
+
+    expected = <<~EOS
+                 Parsing error : syntax error, unexpected identifier, expecting string. Error occurred around:
+                 GEOGCS[test,
+                        ^
+               EOS
+
+    assert_equal(expected.strip, error.to_s)
+  end
+
   def test_create_from_proj4
     crs = Proj::Crs.new('+proj=longlat +datum=WGS84 +no_defs +type=crs')
     assert_equal(:PJ_TYPE_GEOGRAPHIC_2D_CRS, crs.proj_type)
+    assert_equal('+proj=longlat +datum=WGS84 +no_defs +type=crs', crs.to_proj_string)
+  end
+
+  def test_create_from_database
+    crs = Proj::Crs.create_from_database("EPSG", "4326", :PJ_CATEGORY_CRS)
+    assert_equal(:PJ_TYPE_GEOGRAPHIC_2D_CRS, crs.proj_type)
+    assert_equal("4326", crs.id_code)
     assert_equal('+proj=longlat +datum=WGS84 +no_defs +type=crs', crs.to_proj_string)
   end
 
@@ -87,54 +171,45 @@ class CrsTest < AbstractTest
   end
 
   def test_datum
-    crs = Proj::Crs.new('EPSG:4326')
+    wkt = <<~EOS
+      PROJCS["WGS 84 / UTM zone 31N",
+          GEOGCS["WGS 84",
+              DATUM["WGS_1984",
+                  SPHEROID["WGS 84",6378137,298.257223563,
+                      AUTHORITY["EPSG","7030"]],
+                  AUTHORITY["EPSG","6326"]],
+              PRIMEM["Greenwich",0,
+                  AUTHORITY["EPSG","8901"]],
+              UNIT["degree",0.0174532925199433,
+                  AUTHORITY["EPSG","9122"]],
+              AUTHORITY["EPSG","4326"]],
+          PROJECTION["Transverse_Mercator"],
+          PARAMETER["latitude_of_origin",0],
+          PARAMETER["central_meridian",3],
+          PARAMETER["scale_factor",0.9996],
+          PARAMETER["false_easting",500000],
+          PARAMETER["false_northing",0],
+          UNIT["metre",1,
+              AUTHORITY["EPSG","9001"]],
+          AXIS["Easting",EAST],
+          AXIS["Northing",NORTH],
+          AUTHORITY["EPSG","32631"]]
+  EOS
+    crs = Proj::Crs.create_from_wkt(wkt)
     datum = crs.datum
-    assert_equal(:PJ_TYPE_UNKNOWN, datum.proj_type)
+    assert_equal(:PJ_TYPE_GEODETIC_REFERENCE_FRAME, datum.proj_type)
   end
 
   def test_horizontal_datum
     crs = Proj::Crs.new('EPSG:4326')
     datum = crs.horizontal_datum
     assert_equal(:PJ_TYPE_DATUM_ENSEMBLE, datum.proj_type)
+    assert_equal("World Geodetic System 1984 ensemble", datum.name)
   end
 
   def test_coordinate_system
     crs = Proj::Crs.new('EPSG:4326')
-    cs = crs.coordinate_system
-    assert_equal(:PJ_TYPE_UNKNOWN, cs.proj_type)
-  end
-
-  def test_axis_count
-    crs = Proj::Crs.new('EPSG:4326')
-    count = crs.axis_count
-    assert_equal(2, count)
-  end
-
-  def test_axis_info
-    crs = Proj::Crs.new('EPSG:4326')
-    info = crs.axis_info
-    expected = [{:name=>"Geodetic latitude",
-                 :abbreviation=>"Lat",
-                 :direction=>"north",
-                 :unit_conv_factor=>0.017453292519943295,
-                 :unit_name=>"degree",
-                 :unit_auth_name=>"EPSG",
-                 :unit_code=>"9122"},
-                {:name=>"Geodetic longitude",
-                 :abbreviation=>"Lon",
-                 :direction=>"east",
-                 :unit_conv_factor=>0.017453292519943295,
-                 :unit_name=>"degree",
-                 :unit_auth_name=>"EPSG",
-                 :unit_code=>"9122"}]
-
-    assert_equal(expected, info)
-  end
-
-  def test_crs_type
-    crs = Proj::Crs.new('EPSG:4326')
-    crs_type = crs.crs_type
-    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, crs_type)
+    assert(crs.coordinate_system)
   end
 
   def test_ellipsoid
@@ -149,20 +224,51 @@ class CrsTest < AbstractTest
     assert_equal('Greenwich', prime_meridian.name)
   end
 
-  #def test_operation
-  #  crs = Proj::Crs.new('EPSG:4326')
-  #  operation = crs.operation
-  #  assert_equal('Greenwich', operation.name)
-  #end
+  def test_coordinate_operation
+    crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
 
-  def test_area
+    conversion_1 = crs.coordinate_operation
+    assert_equal("UTM zone 31N", conversion_1.name)
+  end
+
+  def test_area_of_use
     crs = Proj::Crs.new('EPSG:4326')
-    assert_kind_of(Proj::Area, crs.area)
-    assert_equal('World.', crs.area.name)
-    assert_in_delta(-180.0, crs.area.west_lon_degree, 0.1)
-    assert_in_delta(-90.0, crs.area.south_lat_degree, 0.1)
-    assert_in_delta(180.0, crs.area.east_lon_degree, 0.1)
-    assert_in_delta(90.0, crs.area.north_lat_degree, 0.1)
+    assert_kind_of(Proj::Bounds, crs.area_of_use)
+    assert_equal('World.', crs.area_of_use.name)
+    assert_in_delta(-180.0, crs.area_of_use.xmin, 0.1)
+    assert_in_delta(-90.0, crs.area_of_use.ymin, 0.1)
+    assert_in_delta(180.0, crs.area_of_use.xmax, 0.1)
+    assert_in_delta(90.0, crs.area_of_use.ymax, 0.1)
+  end
+
+  def test_derived
+    crs = Proj::Crs.new('EPSG:4326')
+    refute(crs.derived?)
+  end
+
+  def test_non_deprecated
+    crs = Proj::Crs.new('EPSG:4226')
+    objects = crs.non_deprecated
+    assert_equal(2, objects.count)
+
+    object = objects[0]
+    assert_equal("#<PJ_TYPE_GEOGRAPHIC_2D_CRS: Locodjo 1965>", object.to_s)
+
+    object = objects[1]
+    assert_equal("#<PJ_TYPE_GEOGRAPHIC_2D_CRS: Abidjan 1987>", object.to_s)
+  end
+
+  def test_identify
+    crs = Proj::Crs.new('OGC:CRS84')
+    objects, confidences = crs.identify('OGC')
+
+    assert_equal(1, objects.count)
+    object = objects[0]
+    assert_equal("#<PJ_TYPE_GEOGRAPHIC_2D_CRS: WGS 84 (CRS84)>", object.to_s)
+
+    assert_equal(1, confidences.count)
+    confidence = confidences[0]
+    assert_equal(100, confidence)
   end
 
   def test_to_proj_string
@@ -362,7 +468,7 @@ class CrsTest < AbstractTest
       - name: North America - between 96°W and 90°W - onshore and offshore. Canada - Manitoba; Nunavut; Ontario. United States (USA) - Arkansas; Illinois; Iowa; Kansas; Louisiana; Michigan; Minnesota; Mississippi; Missouri; Nebraska; Oklahoma; Tennessee; Texas; Wisconsin.
       - bounds: (-96.0, 25.61, -90.0, 84.0)
       Coordinate operation:
-      - name: ?
+      - name: Transverse Mercator
       - method: ?
       Datum: North American Datum 1983
       - Ellipsoid: GRS 1980

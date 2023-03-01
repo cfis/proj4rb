@@ -54,120 +54,101 @@ module Proj
     #
     # @return [Crs]
     def geodetic_crs
-      PjObject.new(Api.proj_crs_get_geodetic_crs(self.context, self))
+      ptr = Api.proj_crs_get_geodetic_crs(self.context, self)
+      PjObject.create_object(ptr, self.context)
     end
 
     # Get a CRS component from a CompoundCRS.
     #
     # @return [Crs]
     def sub_crs(index)
-      PjObject.new(Api.proj_crs_get_sub_crs(self.context, self, index))
+      ptr = Api.proj_crs_get_sub_crs(self.context, self, index)
+      PjObject.create_object(ptr, self.context)
     end
 
     # Returns the datum of a SingleCRS.
     #
-    # @return [Crs]
+    # @return [Datum]
     def datum
-      PjObject.new(Api.proj_crs_get_datum(self.context, self))
+      ptr = Api.proj_crs_get_datum(self.context, self)
+      PjObject.create_object(ptr, self.context)
     end
 
     # Get the horizontal datum from a CRS.
     #
     # @return [Crs]
     def horizontal_datum
-      PjObject.new(Api.proj_crs_get_horizontal_datum(self.context, self))
+      ptr = Api.proj_crs_get_horizontal_datum(self.context, self)
+      PjObject.create_object(ptr, self.context)
     end
 
     # Returns the coordinate system of a SingleCRS.
     #
-    # @return [Crs]
+    # @return [CoordinateSystem]
     def coordinate_system
-      PjObject.new(Api.proj_crs_get_coordinate_system(self.context, self))
-    end
-
-    # Returns the number of axis of the coordinate system.
-    #
-    # @return [Integer]
-    def axis_count
-      result = Api.proj_cs_get_axis_count(self.context, self.coordinate_system)
-      if result == -1
-        Error.check
-      end
-      result
-    end
-
-    # Returns information on an axis.
-    #
-    # @return [Array<Hash>]
-    def axis_info
-      self.axis_count.times.map do |index|
-        p_name = FFI::MemoryPointer.new(:pointer)
-        p_abbreviation = FFI::MemoryPointer.new(:pointer)
-        p_direction = FFI::MemoryPointer.new(:pointer)
-        p_unit_conv_factor = FFI::MemoryPointer.new(:double)
-        p_unit_name = FFI::MemoryPointer.new(:pointer)
-        p_unit_auth_name = FFI::MemoryPointer.new(:pointer)
-        p_unit_code = FFI::MemoryPointer.new(:pointer)
-
-        result = Api.proj_cs_get_axis_info(self.context, self.coordinate_system, index,
-                                           p_name, p_abbreviation, p_direction, p_unit_conv_factor, p_unit_name, p_unit_auth_name, p_unit_code)
-
-        unless result
-          Error.check
-        end
-
-        {:name => p_name.read_pointer.read_string,
-         :abbreviation => p_abbreviation.read_pointer.read_string_to_null,
-         :direction => p_direction.read_pointer.read_string_to_null,
-         :unit_conv_factor => p_unit_conv_factor.read_double,
-         :unit_name => p_unit_name.read_pointer.read_string_to_null,
-         :unit_auth_name => p_unit_auth_name.read_pointer.read_string_to_null,
-         :unit_code => p_unit_code.read_pointer.read_string_to_null}
-      end
-    end
-
-    # Returns the type of the coordinate system.
-    #
-    # @return [:PJ_COORDINATE_SYSTEM_TYPE]
-    def crs_type
-      result = Api.proj_cs_get_type(self.context, self.coordinate_system)
-      if result == :PJ_CS_TYPE_UNKNOWN
-        Error.check
-      end
-      result
+      ptr = Api.proj_crs_get_coordinate_system(self.context, self)
+      CoordinateSystem.new(ptr, self.context)
     end
 
     # Return the area of use of an object.
     #
     # @return [Area]
     def area
-      @area ||= Area.for_object(self)
+      self.area_of_use
     end
 
     # Get the ellipsoid from a CRS or a GeodeticReferenceFrame.
     #
     # @return [PjObject]
     def ellipsoid
-      PjObject.new(Api.proj_get_ellipsoid(self.context, self))
+      ptr = Api.proj_get_ellipsoid(self.context, self)
+      PjObject.create_object(ptr, self.context)
+    end
+
+    # Returns whether a CRS is a derived CRS.
+    #
+    # @return [Boolean]
+    def derived?
+      result = Api.proj_crs_is_derived(self.context, self)
+      result == 1 ? true : false
     end
 
     # Return the Conversion of a DerivedCRS (such as a ProjectedCRS), or the Transformation from
     # the baseCRS to the hubCRS of a BoundCRS.
     #
     # @return [PjObject]
-    def operation
+    def coordinate_operation
       pointer = Api.proj_crs_get_coordoperation(self.context, self)
       if pointer.null?
         Error.check
       end
-      PjObject.new(pointer)
+      PjObject.create_object(pointer, self.context)
     end
 
     # Get the prime meridian of a CRS or a GeodeticReferenceFrame.
     #
     # @return [PjObject]
     def prime_meridian
-      PjObject.new(Api.proj_get_prime_meridian(self.context, self))
+      ptr = Api.proj_get_prime_meridian(self.context, self)
+      PjObject.create_object(ptr, self.context)
+    end
+
+    # Returns a list of matching reference CRS, and the percentage (0-100) of confidence in the match.
+    #
+    # @param auth_name [string] - Authority name, or nil for all authorities
+    #
+    # @return [Array] - Array of CRS objects sorted by decreasing confidence.
+    def identify(auth_name)
+      confidences_out_ptr = FFI::MemoryPointer.new(:pointer)
+      ptr = Api.proj_identify(self.context, self, auth_name, nil, confidences_out_ptr)
+      objects = PjObjects.new(ptr, self.context)
+
+      # Get confidences and free the list
+      confidences_ptr = confidences_out_ptr.read_pointer
+      confidences = confidences_ptr.read_array_of_type(:int, :read_int, objects.count)
+      Api.proj_int_list_destroy(confidences_ptr)
+
+      return objects, confidences
     end
 
     # A nicely printed out description
@@ -179,21 +160,21 @@ module Proj
       result << <<~EOS
                   <#{self.class.name}>: #{self.auth(0)}
                   #{self.description}
-                  Axis Info [#{self.crs_type}]:
+                  Axis Info [#{self.coordinate_system.type}]:
                 EOS
 
-      self.axis_info.each do |axis_info|
-        result << "- #{axis_info[:abbreviation]}[#{axis_info[:direction]}]: #{axis_info[:name]} (#{axis_info[:unit_name]})" << "\n"
+      self.coordinate_system.axes.each do |axis_info|
+        result << "- #{axis_info.abbreviation}[#{axis_info.direction}]: #{axis_info.name} (#{axis_info.unit_name})" << "\n"
       end
 
       result << <<~EOS
                   Area of Use:
                   - name: #{self.area.name}
-                  - bounds: (#{self.area.west_lon_degree}, #{self.area.south_lat_degree}, #{self.area.east_lon_degree}, #{self.area.north_lat_degree})
+                  - bounds: (#{self.area_of_use.xmin}, #{self.area_of_use.ymin}, #{self.area_of_use.xmax}, #{self.area_of_use.ymax})
                   Coordinate operation:
-                  - name: ?
+                  - name: #{self.coordinate_operation.method_name}
                   - method: ?
-                  Datum: #{self.datum.name}
+                  Datum: #{self.datum&.name}
                   - Ellipsoid: #{self.ellipsoid.name}
                   - Prime Meridian: #{self.prime_meridian.name}
                 EOS

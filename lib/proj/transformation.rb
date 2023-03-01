@@ -1,6 +1,11 @@
 module Proj
-  # Transformation objects convert {Coordinate Coordinates} from one {Crs} to another.
+  # Transformations are {CoordinateOperationMix coordinate operations} that
+  # convert {Coordinate coordinates} from one {Crs} to another.
+  # In Proj they are defined as operations that exert a change in reference frame
+  # while {Conversion conversions } do not.
   class Transformation < PjObject
+    include CoordinateOperationMixin
+
     # Transforms a {Coordinate} from the source {Crs} to the target {Crs}. Coordinates should be expressed in
     # the units and axis order of the definition of the source CRS. The returned transformed coordinate will
     # be in the units and axis order of the definition of the target CRS.
@@ -15,9 +20,14 @@ module Proj
     # easting first, northing second, or the reverse. When using a PROJ string, the order will be
     # easting first, northing second, except if the +axis parameter modifies it.
     #
+    # @see https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs_from_pj proj_create_crs_to_crs_from_pj and
+    #     {}https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs proj_create_crs_to_crs}
+    #
     # @param source [Crs | String] - The source Crs. See the Crs documentation for the string format
     # @param target [Crs | String] - The target Crs. See the Crs documentation for the string format
     # @param context [Context]
+    #
+    # @return [Transformation] A new transformation
     def initialize(source, target, context=nil)
       pointer = if source.is_a?(Crs) && target.is_a?(Crs)
                   if Api.method_defined?(:proj_create_crs_to_crs_from_pj)
@@ -34,28 +44,6 @@ module Proj
       end
 
       super(pointer, context)
-    end
-
-    # Transforms a {Coordinate} from the source {Crs} to the target {Crs}. Coordinates should be expressed in
-    # the units and axis order of the definition of the source CRS. The returned transformed coordinate will
-    # be in the units and axis order of the definition of the target CRS.
-    #
-    # @param coord [Coordinate]
-    # @return [Coordinate]
-    def forward(coord)
-      struct = Api.proj_trans(self, :PJ_FWD, coord)
-      Coordinate.from_coord(struct)
-    end
-
-    # Transforms a {Coordinate} from the target {Crs} to the source {Crs}. Coordinates should be expressed in
-    # the units and axis order of the definition of the source CRS. The returned transformed coordinate will
-    # be in the units and axis order of the definition of the target CRS.
-    #
-    # @param coord [Coordinate]
-    # @return [Coordinate]
-    def inverse(coord)
-      struct = Api.proj_trans(self, :PJ_INV, coord)
-      Coordinate.from_coord(struct)
     end
   end
 end

@@ -22,7 +22,7 @@ module Proj
              :dy_dphi, :double
     end
 
-    # Data types for list of operations, ellipsoids, datums and units used in PROJ.4 */
+    # Data types for list of operations, ellipsoids, datums and units used in PROJ.4
     class PJ_LIST < FFI::Struct
       layout :id,    :string,   # projection keyword
              :PJ,    :pointer,  # projection entry point
@@ -186,79 +186,85 @@ module Proj
              :lastupdate, [:string, 16] # Date of last update in YYYY-MM-DD format
     end
 
-    enum :PJ_LOG_LEVEL, [:PJ_LOG_NONE , 0,
-                         :PJ_LOG_ERROR, 1,
-                         :PJ_LOG_DEBUG, 2,
-                         :PJ_LOG_TRACE, 3,
-                         :PJ_LOG_TELL , 4,
-                         :PJ_LOG_DEBUG_MAJOR, 2, # for proj_api.h compatibility
-                         :PJ_LOG_DEBUG_MINOR, 3] # for proj_api.h compatibility
+    PJ_LOG_LEVEL = enum(:PJ_LOG_NONE , 0,
+                        :PJ_LOG_ERROR, 1,
+                        :PJ_LOG_DEBUG, 2,
+                        :PJ_LOG_TRACE, 3,
+                        :PJ_LOG_TELL , 4,
+                        :PJ_LOG_DEBUG_MAJOR, 2, # for proj_api.h compatibility
+                        :PJ_LOG_DEBUG_MINOR, 3) # for proj_api.h compatibility
 
     # Apply transformation to observation - in forward or inverse direction
-    enum :PJ_DIRECTION, [:PJ_FWD, 1,   # Forward
-                         :PJ_IDENT, 0, # Do nothing
-                         :PJ_INV, -1]   # Inverse
+    PJ_DIRECTION = enum(:PJ_FWD, 1,   # Forward
+                        :PJ_IDENT, 0, # Do nothing
+                        :PJ_INV, -1)  # Inverse
 
-    enum :PJ_CATEGORY, [:PJ_CATEGORY_ELLIPSOID,
-                        :PJ_CATEGORY_PRIME_MERIDIAN,
-                        :PJ_CATEGORY_DATUM,
-                        :PJ_CATEGORY_CRS,
-                        :PJ_CATEGORY_COORDINATE_OPERATION]
+    # Object category
+    PJ_CATEGORY = enum(:PJ_CATEGORY_ELLIPSOID,
+                       :PJ_CATEGORY_PRIME_MERIDIAN,
+                       :PJ_CATEGORY_DATUM,
+                       :PJ_CATEGORY_CRS,
+                       :PJ_CATEGORY_COORDINATE_OPERATION,
+                       :PJ_CATEGORY_DATUM_ENSEMBLE)
 
-    enum :PJ_TYPE, [:PJ_TYPE_UNKNOWN,
-                    :PJ_TYPE_ELLIPSOID,
-                    :PJ_TYPE_PRIME_MERIDIAN,
-                    :PJ_TYPE_GEODETIC_REFERENCE_FRAME,
-                    :PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME,
-                    :PJ_TYPE_VERTICAL_REFERENCE_FRAME,
-                    :PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME,
-                    :PJ_TYPE_DATUM_ENSEMBLE,
+    PJ_TYPE = enum(:PJ_TYPE_UNKNOWN,
+                   :PJ_TYPE_ELLIPSOID,
+                   :PJ_TYPE_PRIME_MERIDIAN,
+                   :PJ_TYPE_GEODETIC_REFERENCE_FRAME,
+                   :PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME,
+                   :PJ_TYPE_VERTICAL_REFERENCE_FRAME,
+                   :PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME,
+                   :PJ_TYPE_DATUM_ENSEMBLE,
 
-                    # Abstract type, not returned by proj_get_type()
-                    :PJ_TYPE_CRS,
+                   # Abstract type, not returned by proj_get_type()
+                   :PJ_TYPE_CRS,
 
-                    :PJ_TYPE_GEODETIC_CRS,
-                    :PJ_TYPE_GEOCENTRIC_CRS,
+                   :PJ_TYPE_GEODETIC_CRS,
+                   :PJ_TYPE_GEOCENTRIC_CRS,
+                   :PJ_TYPE_GEOGRAPHIC_CRS,
+                   :PJ_TYPE_GEOGRAPHIC_2D_CRS,
+                   :PJ_TYPE_GEOGRAPHIC_3D_CRS,
+                   :PJ_TYPE_VERTICAL_CRS,
+                   :PJ_TYPE_PROJECTED_CRS,
+                   :PJ_TYPE_COMPOUND_CRS,
+                   :PJ_TYPE_TEMPORAL_CRS,
+                   :PJ_TYPE_ENGINEERING_CRS,
+                   :PJ_TYPE_BOUND_CRS,
+                   :PJ_TYPE_OTHER_CRS,
 
-                    # proj_get_type() will never return that type, but
-                    # :PJ_TYPE_GEOGRAPHIC_2D_CRS or :PJ_TYPE_GEOGRAPHIC_3D_CRS.
-                    :PJ_TYPE_GEOGRAPHIC_CRS,
+                   :PJ_TYPE_CONVERSION,
+                   :PJ_TYPE_TRANSFORMATION,
+                   :PJ_TYPE_CONCATENATED_OPERATION,
+                   :PJ_TYPE_OTHER_COORDINATE_OPERATION,
 
-                    :PJ_TYPE_GEOGRAPHIC_2D_CRS,
-                    :PJ_TYPE_GEOGRAPHIC_3D_CRS,
-                    :PJ_TYPE_VERTICAL_CRS,
-                    :PJ_TYPE_PROJECTED_CRS,
-                    :PJ_TYPE_COMPOUND_CRS,
-                    :PJ_TYPE_TEMPORAL_CRS,
-                    :PJ_TYPE_ENGINEERING_CRS,
-                    :PJ_TYPE_BOUND_CRS,
-                    :PJ_TYPE_OTHER_CRS,
+                   :PJ_TYPE_TEMPORAL_DATUM,
+                   :PJ_TYPE_ENGINEERING_DATUM,
+                   :PJ_TYPE_PARAMETRIC_DATUM,
 
-                    :PJ_TYPE_CONVERSION,
-                    :PJ_TYPE_TRANSFORMATION,
-                    :PJ_TYPE_CONCATENATED_OPERATION,
-                    :PJ_TYPE_OTHER_COORDINATE_OPERATION]
+                   :PJ_TYPE_DERIVED_PROJECTED_CRS,
 
-    enum :PJ_PROJ_STRING_TYPE, [:PJ_PROJ_5,
-                                :PJ_PROJ_4]
+                   :PJ_TYPE_COORDINATE_METADATA)
 
-    enum :PJ_COORDINATE_SYSTEM_TYPE, [:PJ_CS_TYPE_UNKNOWN,
-                                      :PJ_CS_TYPE_CARTESIAN,
-                                      :PJ_CS_TYPE_ELLIPSOIDAL,
-                                      :PJ_CS_TYPE_VERTICAL,
-                                      :PJ_CS_TYPE_SPHERICAL,
-                                      :PJ_CS_TYPE_ORDINAL,
-                                      :PJ_CS_TYPE_PARAMETRIC,
-                                      :PJ_CS_TYPE_DATETIMETEMPORAL,
-                                      :PJ_CS_TYPE_TEMPORALCOUNT,
-                                      :PJ_CS_TYPE_TEMPORALMEASURE]
+    PJ_PROJ_STRING_TYPE = enum(:PJ_PROJ_5,
+                               :PJ_PROJ_4)
 
-    enum :PJ_WKT_TYPE, [:PJ_WKT2_2015,
-                        :PJ_WKT2_2015_SIMPLIFIED,
-                        :PJ_WKT2_2018,
-                        :PJ_WKT2_2018_SIMPLIFIED,
-                        :PJ_WKT1_GDAL,
-                        :PJ_WKT1_ESRI]
+    PJ_COORDINATE_SYSTEM_TYPE = enum(:PJ_CS_TYPE_UNKNOWN,
+                                     :PJ_CS_TYPE_CARTESIAN,
+                                     :PJ_CS_TYPE_ELLIPSOIDAL,
+                                     :PJ_CS_TYPE_VERTICAL,
+                                     :PJ_CS_TYPE_SPHERICAL,
+                                     :PJ_CS_TYPE_ORDINAL,
+                                     :PJ_CS_TYPE_PARAMETRIC,
+                                     :PJ_CS_TYPE_DATETIMETEMPORAL,
+                                     :PJ_CS_TYPE_TEMPORALCOUNT,
+                                     :PJ_CS_TYPE_TEMPORALMEASURE)
+
+    PJ_WKT_TYPE = enum(:PJ_WKT2_2015,
+                       :PJ_WKT2_2015_SIMPLIFIED,
+                       :PJ_WKT2_2018,
+                       :PJ_WKT2_2018_SIMPLIFIED,
+                       :PJ_WKT1_GDAL,
+                       :PJ_WKT1_ESRI)
 
     attach_function :proj_info, [], PJ_INFO.by_value
     attach_function :proj_pj_info, [:PJ], PJ_PROJ_INFO.by_value
@@ -282,7 +288,7 @@ module Proj
     attach_function :proj_create_crs_to_crs, [:PJ_CONTEXT, :string, :string, :PJ_AREA], :PJ
     attach_function :proj_destroy, [:PJ], :PJ
 
-    attach_function :proj_trans, [:PJ, :PJ_DIRECTION, PJ_COORD.by_value], PJ_COORD.by_value
+    attach_function :proj_trans, [:PJ, PJ_DIRECTION, PJ_COORD.by_value], PJ_COORD.by_value
 
     # Get lists of operations, ellipsoids, units and prime meridians
     attach_function :proj_list_operations, [], :pointer #PJ_LIST
@@ -295,7 +301,7 @@ module Proj
     attach_function :proj_todeg, [:double], :double
     attach_function :proj_dmstor, [:string, :pointer], :double
     attach_function :proj_rtodms, [:string, :double, :int, :int], :string
-    attach_function :proj_angular_input, [:PJ, :PJ_DIRECTION], :bool
-    attach_function :proj_angular_output, [:PJ, :PJ_DIRECTION], :bool
+    attach_function :proj_angular_input, [:PJ, PJ_DIRECTION], :bool
+    attach_function :proj_angular_output, [:PJ, PJ_DIRECTION], :bool
   end
 end
