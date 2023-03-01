@@ -47,12 +47,6 @@ class DatabaseTest < AbstractTest
     assert_equal('3.1.0', metadata)
   end
 
-  def test_metadata_invalid
-    database = Proj::Database.new(Proj::Context.current)
-    metadata = database.metadata('foo')
-    refute(metadata)
-  end
-
   def test_codes
     types_with_no_codes = [:PJ_TYPE_TEMPORAL_CRS, :PJ_TYPE_BOUND_CRS, :PJ_TYPE_UNKNOWN, :PJ_TYPE_ENGINEERING_CRS,
                            :PJ_TYPE_TEMPORAL_DATUM, :PJ_TYPE_ENGINEERING_DATUM, :PJ_TYPE_PARAMETRIC_DATUM,
@@ -295,5 +289,14 @@ class DatabaseTest < AbstractTest
     database = Proj::Database.new(crs.context)
     name = database.celestial_body_name(crs)
     refute(name)
+  end
+
+  if proj7?
+    # This test causes a segmentation fault on proj6
+    def test_metadata_invalid
+      database = Proj::Database.new(Proj::Context.current)
+      metadata = database.metadata('foo')
+      refute(metadata)
+    end
   end
 end

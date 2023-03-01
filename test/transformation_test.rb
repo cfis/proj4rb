@@ -66,56 +66,58 @@ class TransformationTest < AbstractTest
     assert_in_delta(0, to.t, PRECISION)
   end
 
-  def test_transform_bounds
-    transform = Proj::Transformation.new("EPSG:4326",
-                                         "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
+  if proj8?
+    def test_transform_bounds
+      transform = Proj::Transformation.new("EPSG:4326",
+                                           "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
 
-    start_bounds = Proj::Bounds.new(40, -120, 64, -80)
-    end_bounds = transform.transform_bounds(start_bounds, :PJ_FWD, 0)
+      start_bounds = Proj::Bounds.new(40, -120, 64, -80)
+      end_bounds = transform.transform_bounds(start_bounds, :PJ_FWD, 0)
 
-    assert_equal(-1684649.4133828662, end_bounds.xmin)
-    assert_equal(-350356.8137658477, end_bounds.ymin)
-    assert_equal(1684649.4133828674, end_bounds.xmax)
-    assert_equal(2234551.1855909275, end_bounds.ymax)
-  end
+      assert_equal(-1684649.4133828662, end_bounds.xmin)
+      assert_equal(-350356.8137658477, end_bounds.ymin)
+      assert_equal(1684649.4133828674, end_bounds.xmax)
+      assert_equal(2234551.1855909275, end_bounds.ymax)
+    end
 
-  def test_transform_bounds_densify
-    transform = Proj::Transformation.new("EPSG:4326",
-                                         "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
+    def test_transform_bounds_normalized
+      transform = Proj::Transformation.new("EPSG:4326",
+                                           "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
 
-    puts transform.to_wkt
+      normalized = transform.normalize_for_visualization
 
-    start_bounds = Proj::Bounds.new(40, -120, 64, -80)
-    end_bounds = transform.transform_bounds(start_bounds, :PJ_FWD, 100)
+      start_bounds = Proj::Bounds.new(-120, 40, -80, 64)
+      end_bounds = normalized.transform_bounds(start_bounds, :PJ_FWD, 100)
 
-    assert_equal(-1684649.4133828662, end_bounds.xmin)
-    assert_equal(-555777.7923351025, end_bounds.ymin)
-    assert_equal(1684649.4133828674, end_bounds.xmax)
-    assert_equal(2234551.1855909275, end_bounds.ymax)
-  end
+      assert_equal(-1684649.4133828662, end_bounds.xmin)
+      assert_equal(-555777.7923351025, end_bounds.ymin)
+      assert_equal(1684649.4133828674, end_bounds.xmax)
+      assert_equal(2234551.1855909275, end_bounds.ymax)
+    end
 
-  def test_transform_bounds_normalized
-    transform = Proj::Transformation.new("EPSG:4326",
-                                         "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
+    def test_transform_bounds_densify
+      transform = Proj::Transformation.new("EPSG:4326",
+                                           "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
 
-    normalized = transform.normalize_for_visualization
+      puts transform.to_wkt
 
-    start_bounds = Proj::Bounds.new(-120, 40, -80, 64)
-    end_bounds = normalized.transform_bounds(start_bounds, :PJ_FWD, 100)
+      start_bounds = Proj::Bounds.new(40, -120, 64, -80)
+      end_bounds = transform.transform_bounds(start_bounds, :PJ_FWD, 100)
 
-    assert_equal(-1684649.4133828662, end_bounds.xmin)
-    assert_equal(-555777.7923351025, end_bounds.ymin)
-    assert_equal(1684649.4133828674, end_bounds.xmax)
-    assert_equal(2234551.1855909275, end_bounds.ymax)
-  end
+      assert_equal(-1684649.4133828662, end_bounds.xmin)
+      assert_equal(-555777.7923351025, end_bounds.ymin)
+      assert_equal(1684649.4133828674, end_bounds.xmax)
+      assert_equal(2234551.1855909275, end_bounds.ymax)
+    end
 
-  def test_instantiable
-    operation = Proj::Conversion.create_from_database("EPSG", "1671", :PJ_CATEGORY_COORDINATE_OPERATION)
-    assert(operation.instantiable?)
-  end
+    def test_instantiable
+      operation = Proj::Conversion.create_from_database("EPSG", "1671", :PJ_CATEGORY_COORDINATE_OPERATION)
+      assert(operation.instantiable?)
+    end
 
-  def test_grid_count
-    operation = Proj::Conversion.create_from_database("EPSG", "1312", :PJ_CATEGORY_COORDINATE_OPERATION)
-    assert_equal(1, operation.grid_count)
+    def test_grid_count
+      operation = Proj::Conversion.create_from_database("EPSG", "1312", :PJ_CATEGORY_COORDINATE_OPERATION)
+      assert_equal(1, operation.grid_count)
+    end
   end
 end
