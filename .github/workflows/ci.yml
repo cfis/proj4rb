@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Proj
-        run: sudo apt-get install libproj19
+        run: sudo apt-get install libproj22
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
