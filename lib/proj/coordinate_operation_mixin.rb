@@ -2,9 +2,6 @@
 require 'stringio'
 
 module Proj
-  Grid = Struct.new(:short_name, :full_name, :package_name, :url, :direct_download, :open_license, :availabel,
-                    keyword_init: true)
-
   Param = Struct.new(:name, :auth_name, :code, :value, :value_string,
                      :unit_conv_factor, :unit_name, :unit_auth_name, :unit_code, :unit_category,
                      keyword_init: true)
@@ -30,7 +27,7 @@ module Proj
       result = Api.proj_coordoperation_get_method_info(self.context, self, out_method_name, out_method_auth_name, out_method_code)
 
       if result != 1
-        Error.check
+        Error.check(self.context)
       end
 
       {:method_name => out_method_name.read_pointer.read_string_to_null,
@@ -111,7 +108,7 @@ module Proj
                                                  out_unit_name, out_unit_auth_name,out_unit_code,
                                                  out_unit_category)
       if result != 1
-        Error.check
+        Error.check(self.context)
       end
 
       name_ptr = out_name.read_pointer
@@ -184,7 +181,7 @@ module Proj
                                      out_xmin, out_ymin, out_xmax, out_ymax, densify_points)
 
       unless result == 0
-        Error.check(self.context.errno)
+        Error.check(self.context)
       end
 
       Bounds.new(out_xmin.read_double, out_ymin.read_double, out_xmax.read_double, out_ymax.read_double)
@@ -250,34 +247,36 @@ module Proj
       out_full_name = FFI::MemoryPointer.new(:string)
       out_package_name = FFI::MemoryPointer.new(:string)
       out_url = FFI::MemoryPointer.new(:string)
-      out_direct_download = FFI::MemoryPointer.new(:integer)
-      out_open_license = FFI::MemoryPointer.new(:integer)
-      out_available = FFI::MemoryPointer.new(:integer)
+      out_direct_download  = FFI::MemoryPointer.new(:int)
+      out_open_license = FFI::MemoryPointer.new(:int)
+      out_available = FFI::MemoryPointer.new(:int)
 
       result = Api.proj_coordoperation_get_grid_used(self.context, self, index,
                                                      out_short_name, out_full_name, out_package_name,
-                                                     out_url, out_direct_download,
+                                                     out_url, out_direct_download ,
                                                      out_open_license, out_available)
 
       if result != 1
-        Error.check
+        Error.check(self.context)
       end
 
-      short_name_ptr = out_short_name.read_pointer
+      name_ptr = out_short_name.read_pointer
       full_name_ptr = out_full_name.read_pointer
       package_name_ptr = out_package_name.read_pointer
       url_ptr = out_url.read_pointer
-      direct_download_ptr = out_direct_download
+      downloadable_ptr = out_direct_download 
       open_license_ptr = out_open_license
       available_ptr = out_available
 
-      Grid.new(short_name: short_name_ptr.null? ? nil : short_name_ptr.read_string_to_null,
-               full_name: full_name_ptr.null? ? nil : full_name_ptr.read_string_to_null,
-               package_name: package_name_ptr.null? ? nil : package_name_ptr.read_string_to_null,
-               url: url_ptr.null? ? nil : url_ptr.read_string_to_null,
-               direct_download: direct_download_ptr.null? ? nil : direct_download_ptr.read_integer == 1 ? true : false,
-               open_license: open_license_ptr.null? ? nil : open_license_ptr.read_integer == 1 ? true : false,
-               available: available_ptr.null? ? nil : available_ptr.read_integer == 1 ? true : false)
+      unless name_ptr.null?
+        Grid.new(name: name_ptr.null? ? nil : name_ptr.read_string_to_null,
+                 full_name: full_name_ptr.null? ? nil : full_name_ptr.read_string_to_null,
+                 package_name: package_name_ptr.null? ? nil : package_name_ptr.read_string_to_null,
+                 url: url_ptr.null? ? nil : url_ptr.read_string_to_null,
+                 downloadable: downloadable_ptr.null? ? nil : downloadable_ptr.read_int == 1 ? true : false,
+                 open_license: open_license_ptr.null? ? nil : open_license_ptr.read_int == 1 ? true : false,
+                 available: available_ptr.null? ? nil : available_ptr.read_int == 1 ? true : false)
+      end
     end
   end
 end

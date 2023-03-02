@@ -40,7 +40,7 @@ module Proj
                 end
 
       if pointer.null?
-        Error.check
+        Error.check(self.context)
       end
 
       super(pointer, context)

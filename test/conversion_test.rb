@@ -42,99 +42,153 @@ class ConversionTest < AbstractTest
     assert_equal(expected.strip, proj_string)
   end
 
-  if proj7?
-    def test_accuracy_coordinate_operation
-      object = Proj::Conversion.create_from_database("EPSG", "1170", :PJ_CATEGORY_COORDINATE_OPERATION)
-      assert_equal(16.0, object.accuracy)
+  def test_accuracy_coordinate_operation
+    object = Proj::Conversion.create_from_database("EPSG", "1170", :PJ_CATEGORY_COORDINATE_OPERATION)
+    assert_equal(16.0, object.accuracy)
+  end
+
+  def test_accuracy_projection
+    object = Proj::Conversion.create("+proj=helmert")
+    assert_equal(-1.0, object.accuracy)
+  end
+
+  def test_method_info
+    crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
+    operation = crs.coordinate_operation
+    assert_equal("Transverse Mercator", operation.method_name)
+    assert_equal("EPSG", operation.method_auth_name)
+    assert_equal("9807", operation.method_code)
+  end
+
+  def test_ballpark_transformation
+    crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
+    operation = crs.coordinate_operation
+    refute(operation.ballpark_transformation?)
+  end
+
+  def test_param_count
+    crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
+    operation = crs.coordinate_operation
+    assert_equal(5, operation.param_count)
+  end
+
+  def test_param
+    crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
+    operation = crs.coordinate_operation
+
+    param = operation.param(3)
+    assert_equal("False easting", param.name)
+    assert_equal("EPSG", param.auth_name)
+    assert_equal("8806", param.code)
+    assert_equal(500000.0, param.value)
+    refute(param.value_string)
+    assert_equal(1.0, param.unit_conv_factor)
+    assert_equal("metre", param.unit_name)
+    assert_equal("EPSG", param.unit_auth_name)
+    assert_equal("9001", param.unit_code)
+    assert_equal("linear", param.unit_category)
+  end
+
+  def test_grid_count
+    operation = Proj::Conversion.create_from_database("EPSG", "1312", :PJ_CATEGORY_COORDINATE_OPERATION)
+    assert_equal(1, operation.grid_count)
+  end
+
+  def test_grid_url_invalid_index
+    context = Proj::Context.new
+    conversion = Proj::Conversion.create_from_database("EPSG", "1312", :PJ_CATEGORY_COORDINATE_OPERATION, false, context)
+
+    error = assert_raises(Proj::Error) do
+      conversion.grid(-1)
     end
+    assert_equal("File not found or invalid", error.to_s)
+  end
 
-    def test_accuracy_projection
-      object = Proj::Conversion.create("+proj=helmert")
-      assert_equal(-1.0, object.accuracy)
-    end
+  def test_grid_url
+    context = Proj::Context.new
+    manager = Proj::GridManager.new(context)
 
-    def test_method_info
-      crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
-      operation = crs.coordinate_operation
-      assert_equal("Transverse Mercator", operation.method_name)
-      assert_equal("EPSG", operation.method_auth_name)
-      assert_equal("9807", operation.method_code)
-    end
+    conversion = Proj::Conversion.create_from_database("EPSG", "1312", :PJ_CATEGORY_COORDINATE_OPERATION, true, context)
+    grid = conversion.grid(0)
 
-    def test_ballpark_transformation
-      crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
-      operation = crs.coordinate_operation
-      refute(operation.ballpark_transformation?)
-    end
+    assert_equal("ca_nrc_ntv1_can.tif", grid.name)
+    assert(grid.full_name.empty?)
+    assert(grid.package_name.empty?)
+    assert_equal("https://cdn.proj.org/ca_nrc_ntv1_can.tif", grid.url)
+    assert(grid.downloadable)
+    assert(grid.open_license)
+    refute(grid.available)
+  end
+  #   EXPECT_EQ(proj_coordoperation_get_grid_used(m_ctxt, op, -1, nullptr,
+  #                                               nullptr, nullptr, nullptr,
+  #                                               nullptr, nullptr, nullptr),
+  #             0);
+  #   EXPECT_EQ(proj_coordoperation_get_grid_used(m_ctxt, op, 1, nullptr, nullptr,
+  #                                               nullptr, nullptr, nullptr,
+  #                                               nullptr, nullptr),
+  #             0);
+  #   EXPECT_EQ(proj_coordoperation_get_grid_used(
+  #               m_ctxt, op, 0, &shortName, &fullName, &packageName, &url,
+  #   &directDownload, &openLicense, &available),
+  #     1);
+  #   ASSERT_NE(shortName, nullptr);
+  #   ASSERT_NE(fullName, nullptr);
+  #   ASSERT_NE(packageName, nullptr);
+  #   ASSERT_NE(url, nullptr);
+  #   EXPECT_EQ(shortName, std::string("ca_nrc_ntv1_can.tif"));
+  #   // EXPECT_EQ(fullName, std::string(""));
+  #   EXPECT_EQ(packageName, std::string(""));
+  #   EXPECT_EQ(std::string(url), "https://example.com/ca_nrc_ntv1_can.tif");
+  #   EXPECT_EQ(directDownload, 1);
+  #   EXPECT_EQ(openLicense, 1);
+  #
+  #   proj_context_set_url_endpoint(m_ctxt, old_endpoint.c_str());
+  # }
 
-    def test_param_count
-      crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
-      operation = crs.coordinate_operation
-      assert_equal(5, operation.param_count)
-    end
+  if proj9?
+    def test_last_used_operation
+      wkt = <<~EOS
+      CONVERSION["UTM zone 31N",
+          METHOD["Transverse Mercator",
+              ID["EPSG",9807]],
+          PARAMETER["Latitude of natural origin",0,
+              ANGLEUNIT["degree",0.0174532925199433],
+              ID["EPSG",8801]],
+          PARAMETER["Longitude of natural origin",3,
+              ANGLEUNIT["degree",0.0174532925199433],
+              ID["EPSG",8802]],
+          PARAMETER["Scale factor at natural origin",0.9996,
+              SCALEUNIT["unity",1],
+              ID["EPSG",8805]],
+          PARAMETER["False easting",500000,
+              LENGTHUNIT["metre",1],
+              ID["EPSG",8806]],
+          PARAMETER["False northing",0,
+              LENGTHUNIT["metre",1],
+              ID["EPSG",8807]],
+          ID["EPSG",16031]]
+      EOS
 
-    def test_param
-      crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
-      operation = crs.coordinate_operation
+      operation = Proj::Conversion.create_from_wkt(wkt)
+      puts operation.to_wkt
 
-      param = operation.param(3)
-      assert_equal("False easting", param.name)
-      assert_equal("EPSG", param.auth_name)
-      assert_equal("8806", param.code)
-      assert_equal(500000.0, param.value)
-      refute(param.value_string)
-      assert_equal(1.0, param.unit_conv_factor)
-      assert_equal("metre", param.unit_name)
-      assert_equal("EPSG", param.unit_auth_name)
-      assert_equal("9001", param.unit_code)
-      assert_equal("linear", param.unit_category)
-    end
+      operation = Proj::Conversion.create_from_database("EPSG", "16031", :PJ_CATEGORY_COORDINATE_OPERATION)
+      puts operation.to_wkt
 
-    if proj9?
-      def test_last_used_operation
-        wkt = <<~EOS
-        CONVERSION["UTM zone 31N",
-            METHOD["Transverse Mercator",
-                ID["EPSG",9807]],
-            PARAMETER["Latitude of natural origin",0,
-                ANGLEUNIT["degree",0.0174532925199433],
-                ID["EPSG",8801]],
-            PARAMETER["Longitude of natural origin",3,
-                ANGLEUNIT["degree",0.0174532925199433],
-                ID["EPSG",8802]],
-            PARAMETER["Scale factor at natural origin",0.9996,
-                SCALEUNIT["unity",1],
-                ID["EPSG",8805]],
-            PARAMETER["False easting",500000,
-                LENGTHUNIT["metre",1],
-                ID["EPSG",8806]],
-            PARAMETER["False northing",0,
-                LENGTHUNIT["metre",1],
-                ID["EPSG",8807]],
-            ID["EPSG",16031]]
-        EOS
+      last = operation.last_used_operation
+      refute(last)
 
-        operation = Proj::Conversion.create_from_wkt(wkt)
-        puts operation.to_wkt
+      coord = Proj::Coordinate.new(x: Proj::Api.proj_torad(3.0), y: 0, z: 0, t: 0)
+      new_coord = operation.forward(coord)
 
-        operation = Proj::Conversion.create_from_database("EPSG", "16031", :PJ_CATEGORY_COORDINATE_OPERATION)
-        puts operation.to_wkt
+      assert_equal(0.05235987755982988, new_coord.x)
+      assert_equal(0.0, new_coord.y)
+      assert_equal(0.0, new_coord.z)
+      assert_equal(0.0, new_coord.t)
 
-        last = operation.last_used_operation
-        refute(last)
-
-        coord = Proj::Coordinate.new(x: Proj::Api.proj_torad(3.0), y: 0, z: 0, t: 0)
-        new_coord = operation.forward(coord)
-
-        assert_equal(0.05235987755982988, new_coord.x)
-        assert_equal(0.0, new_coord.y)
-        assert_equal(0.0, new_coord.z)
-        assert_equal(0.0, new_coord.t)
-
-        last = operation.last_used_operation
-        assert(last)
-        assert(last.equivalent_to?(operation, :PJ_COMP_STRICT))
-      end
+      last = operation.last_used_operation
+      assert(last)
+      assert(last.equivalent_to?(operation, :PJ_COMP_STRICT))
     end
   end
 end

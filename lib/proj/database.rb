@@ -1,6 +1,10 @@
 module Proj
   CelestialBody = Struct.new(:auth_name, :name)
 
+  # This class provides access the Proj SQLite database called proj.db. The database
+  # stores transformation information that must be accessible for the library to work properly.
+  #
+  # @see https://proj.org/resource_files.html#proj-db
   class Database
     attr_reader :context
 
@@ -42,7 +46,7 @@ module Proj
     def path=(value)
       result = Api.proj_context_set_database_path(self.context, value, nil, nil)
       unless result == 1
-        Error.check(self.context.errno)
+        Error.check(self.context)
       end
       self
     end
@@ -127,6 +131,52 @@ module Proj
 
       Api.proj_crs_info_list_destroy(ptr)
       result
+    end
+
+    # Returns information about a Grid from the database
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_grid_get_info_from_database proj_grid_get_info_from_database
+    #
+    # @param name [String] The name of the grid
+    #
+    # @return [Grid]
+    def grid(name)
+      out_full_name = FFI::MemoryPointer.new(:string)
+      out_package_name = FFI::MemoryPointer.new(:string)
+      out_url = FFI::MemoryPointer.new(:string)
+      out_downloadable = FFI::MemoryPointer.new(:int)
+      out_open_license = FFI::MemoryPointer.new(:int)
+      out_available = FFI::MemoryPointer.new(:int)
+
+      result = Api.proj_grid_get_info_from_database(self.context, name,
+                                                    out_full_name, out_package_name, out_url,
+                                                    out_downloadable, out_open_license, out_available)
+
+      if result != 1
+        Error.check(self.context)
+      end
+
+      full_name_ptr = out_full_name.read_pointer
+      package_name_ptr = out_package_name.read_pointer
+      url_ptr = out_url.read_string_to_null
+
+      downloadable_ptr = out_downloadable
+      open_license_ptr = out_open_license
+      available_ptr = out_available
+
+
+      unless full_name.null?
+        full_name = full_name.read_string_to_null
+        package_name = package_name.read_string_to_null
+        url = url.read_string_to_null
+
+        downloadable = downloadable_ptr.read_int == 1 ? true : false
+        open_license = open_license_ptr.read_int == 1 ? true : false
+        available = available_ptr.read_int == 1 ? true : false
+
+        Grid.new(name: name, full_name: full_name, package_name: package_name,
+                 url: url, downloadable: downloadable, open_license: open_license, available: available)
+      end
     end
 
     # Returns a list of geoid models available

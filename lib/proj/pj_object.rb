@@ -98,7 +98,7 @@ module Proj
       ptr = Api.proj_create(context || Context.current, value)
 
       if ptr.null?
-        Error.check
+        Error.check(self.context)
       end
 
       create_object(ptr, context)
@@ -286,7 +286,7 @@ module Proj
                                         p_west_lon_degree, p_south_lat_degree, p_east_lon_degree, p_north_lat_degree,
                                         p_name)
       if result != 0
-        Error.check(self.context.errno)
+        Error.check(self.context)
       end
 
       name = p_name.read_pointer.read_string_to_null.force_encoding('utf-8')

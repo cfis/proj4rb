@@ -114,10 +114,5 @@ class TransformationTest < AbstractTest
       operation = Proj::Conversion.create_from_database("EPSG", "1671", :PJ_CATEGORY_COORDINATE_OPERATION)
       assert(operation.instantiable?)
     end
-
-    def test_grid_count
-      operation = Proj::Conversion.create_from_database("EPSG", "1312", :PJ_CATEGORY_COORDINATE_OPERATION)
-      assert_equal(1, operation.grid_count)
-    end
   end
 end

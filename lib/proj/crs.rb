@@ -40,7 +40,7 @@ module Proj
       pointer = Api.proj_create(context || Context.current, value)
 
       if pointer.null?
-        Error.check
+        Error.check(self.context)
       end
 
       super(pointer, context)
@@ -120,7 +120,7 @@ module Proj
     def coordinate_operation
       pointer = Api.proj_crs_get_coordoperation(self.context, self)
       if pointer.null?
-        Error.check
+        Error.check(self.context)
       end
       PjObject.create_object(pointer, self.context)
     end

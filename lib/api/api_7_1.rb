@@ -63,7 +63,6 @@ module Proj
     attach_function :proj_operation_factory_context_set_use_proj_alternative_grid_names, [:PJ_CONTEXT, :pointer, :int], :void
     attach_function :proj_operation_factory_context_set_allow_use_intermediate_crs, [:PJ_CONTEXT, :pointer, :PROJ_INTERMEDIATE_CRS_USE], :void
     attach_function :proj_operation_factory_context_set_allowed_intermediate_crs, [:PJ_CONTEXT, :pointer, :pointer], :void
-    attach_function :proj_operation_factory_context_set_discard_superseded, [:PJ_CONTEXT, :pointer, :int], :void
 
     # Operations
     attach_function :proj_coordoperation_has_ballpark_transformation, [:PJ_CONTEXT, :PJ], :int
@@ -75,7 +74,7 @@ module Proj
     attach_function :proj_coordoperation_is_instantiable, [:PJ_CONTEXT, :PJ], :int
     attach_function :proj_coordoperation_get_grid_used_count, [:PJ_CONTEXT, :PJ], :int
     attach_function :proj_coordoperation_get_grid_used, [:PJ_CONTEXT, :PJ, :int,
-                                                         :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :int
+                                                         :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :int
 
     # Network
     attach_function :proj_context_get_url_endpoint, [:PJ_CONTEXT], :string
