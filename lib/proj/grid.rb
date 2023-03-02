@@ -1,4 +1,11 @@
 module Proj
+  # Grids define models that are used to perform dimension shifts.
+  #
+  # Grid files can be quite large and may not be included with Proj depending on how
+  # it was packaged and any grid licensing requirements. Therefore, Proj has the ability
+  # to download grids on the fly if {Context#network_enabled? networking} is enabled.
+  #
+  # @see https://proj.org/community/rfc/rfc-4.html#rfc4
   class Grid
     # @!attribute [r] context
     #   @return [Context] The grid context
