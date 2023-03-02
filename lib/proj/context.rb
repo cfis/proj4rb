@@ -39,7 +39,9 @@ module Proj
       @pointer
     end
 
-    # Get the last error number
+    # Returns the current error-state of the context. An non-zero error codes indicates an error.
+    #
+    # See https://proj.org/development/reference/functions.html#c.proj_context_errno proj_context_errno
     #
     # return [Integer]
     def errno
@@ -102,54 +104,6 @@ module Proj
     def ca_bundle_path(path)
       path = path.encode!(:utf8)
       Api.proj_context_set_ca_bundle_path(self, path)
-    end
-
-    # Returns if network access is enabled
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_is_network_enabled proj_context_is_network_enabled
-    #
-    # @return [Boolean] True if network access is enabled, otherwise false
-    def network_enabled?
-      result = Api.proj_context_is_network_enabled(self)
-      result == 1 ? true : false
-    end
-
-    # Enable or disable network access
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_enable_network proj_context_set_enable_network
-    #
-    # @param value [Boolean] Specifies if network access should be enabled or disabled
-    def network_enabled=(value)
-      Api.proj_context_set_enable_network(self, value ? 1 : 0)
-    end
-
-    # Returns the URL endpoint to query for remote grids
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_url_endpoint proj_context_get_url_endpoint
-    #
-    # @return [String] Endpoint URL
-    def url_endpoint
-      Api.proj_context_get_url_endpoint(self)
-    end
-
-    # Sets the URL endpoint to query for remote grids. This overrides the default endpoint in the PROJ configuration file or with the PROJ_NETWORK_ENDPOINT environment variable.
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_url_endpoint proj_context_set_url_endpoint
-    #
-    # @param value [String] Endpoint URL
-    def url_endpoint=(value)
-      Api.proj_context_set_url_endpoint(self, value)
-    end
-
-    # Returns the PROJ user writable directory for datumgrid files.
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_user_writable_directory proj_context_get_user_writable_directory
-    #
-    # @param [Boolean] If set to TRUE, create the directory if it does not exist already. Defaults to false
-    #
-    # @return [String] Directory
-    def user_writable_directory(create = false)
-      Api.proj_context_get_user_writable_directory(self, create ? 1 : 0)
     end
 
     # ---  Deprecated -------

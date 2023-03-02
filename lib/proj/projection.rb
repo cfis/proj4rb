@@ -61,7 +61,7 @@ module Proj
       if errno != 0
         # If we don't reset the error code it hangs around. This doesn't seem documented anyplace?
         ptr.write_int(0)
-        Error.check(errno)
+        Api.pj_strerrno(errno)
       end
     end
 
