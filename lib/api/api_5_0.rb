@@ -167,9 +167,9 @@ module Proj
     end
 
     class PJ_GRID_INFO < FFI::Struct
-      layout :gridname, [:string, 32],  # name of grid
-             :filename, [:string, 260], # full path to grid
-             :format, [:string, 8],     # file format of grid
+      layout :gridname, [:char, 32],  # name of grid
+             :filename, [:char, 260], # full path to grid
+             :format, [:char, 8],     # file format of grid
              :lowerleft, PJ_LP,         # Coordinates of lower left corner
              :upperright, PJ_LP,        # Coordinates of upper right corner
              :n_lon, :int,              # Grid size

@@ -269,7 +269,7 @@ module Proj
       available_ptr = out_available
 
       unless name_ptr.null?
-        Grid.new(name: name_ptr.null? ? nil : name_ptr.read_string_to_null,
+        Grid.new(name_ptr.read_string_to_null, self.context,
                  full_name: full_name_ptr.null? ? nil : full_name_ptr.read_string_to_null,
                  package_name: package_name_ptr.null? ? nil : package_name_ptr.read_string_to_null,
                  url: url_ptr.null? ? nil : url_ptr.read_string_to_null,

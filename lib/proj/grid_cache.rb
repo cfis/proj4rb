@@ -29,8 +29,9 @@ module Proj
     # @param value [String] - Full path to the cache. If set to nil then caching will be disabled.
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_filename proj_grid_cache_set_filename
-    def filename=(value)
-      Api.proj_grid_cache_set_filename(self.context, value.encode(:utf8))
+    def path=(value)
+      Api.proj_grid_cache_set_filename(self.context, value.encode('UTF-8'))
+      value
     end
 
     # Sets the cache size
@@ -40,6 +41,7 @@ module Proj
     # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_max_size proj_grid_cache_set_max_size
     def max_size=(value)
       Api.proj_grid_cache_set_max_size(self.context, value)
+      value
     end
 
     # Specifies the time-to-live delay for re-checking if the cached properties of files are still up-to-date.
@@ -47,8 +49,9 @@ module Proj
     # @param value [Integer] Delay in seconds. Use negative value for no expiration.
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_ttl proj_grid_cache_set_ttl
-    def ttl(value)
+    def ttl=(value)
       Api.proj_grid_cache_set_ttl(self.context, value)
+      value
     end
 
     # Clears the cache

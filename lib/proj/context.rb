@@ -4,9 +4,21 @@ module Proj
   class Context
     attr_reader :database
 
-    # The context for the current thread
+    # Returns the default Proj context. This context *must* only be used in the main thread
+    # In general it is better to create new contexts
     #
-    # @return [Context]
+    # @return [Context] The default context
+    def self.default
+      result = Context.allocate
+      # The default Proj Context is reprsented by a null pointer
+      result.instance_variable_set(:@pointer, FFI::Pointer::NULL)
+      result
+    end
+
+    # The context for the current thread. If a context does not exist
+    # a new one is created
+    #
+    # @return [Context] The context for the current thread
     def self.current
       Thread.current[:proj_context] ||= Context.new
     end
@@ -104,6 +116,61 @@ module Proj
     def ca_bundle_path(path)
       path = path.encode!(:utf8)
       Api.proj_context_set_ca_bundle_path(self, path)
+    end
+
+    # Returns the cache used to store grid files locally
+    #
+    # @return [GridCache]
+    def cache
+      GridCache.new(self)
+    end
+
+    # Returns if network access is enabled allowing {Grid} files to be downloaded
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_is_network_enabled proj_context_is_network_enabled
+    #
+    # @return [Boolean] True if network access is enabled, otherwise false
+    def network_enabled?
+      result = Api.proj_context_is_network_enabled(self)
+      result == 1 ? true : false
+    end
+
+    # Enable or disable network access for downloading grid files
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_enable_network proj_context_set_enable_network
+    #
+    # @param value [Boolean] Specifies if network access should be enabled or disabled
+    def network_enabled=(value)
+      Api.proj_context_set_enable_network(self, value ? 1 : 0)
+    end
+
+    # Returns the URL endpoint to query for remote grids
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_url_endpoint proj_context_get_url_endpoint
+    #
+    # @return [String] Endpoint URL
+    def url
+      Api.proj_context_get_url_endpoint(self)
+    end
+
+    # Sets the URL endpoint to query for remote grids. This overrides the default endpoint in the PROJ configuration file or with the PROJ_NETWORK_ENDPOINT environment variable.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_url_endpoint proj_context_set_url_endpoint
+    #
+    # @param value [String] Endpoint URL
+    def url=(value)
+      Api.proj_context_set_url_endpoint(self, value)
+    end
+
+    # Returns the user directory used to save grid files.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_user_writable_directory proj_context_get_user_writable_directory
+    #
+    # @param [Boolean] If set to TRUE, create the directory if it does not exist already. Defaults to false
+    #
+    # @return [String] Directory
+    def user_directory(create = false)
+      Api.proj_context_get_user_writable_directory(self, create ? 1 : 0)
     end
 
     # ---  Deprecated -------

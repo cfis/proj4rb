@@ -27,6 +27,16 @@ class ContextTest < AbstractTest
     assert(clone.use_proj4_init_rules)
   end
 
+  def test_clone_default
+    context = Proj::Context.default
+    refute(context.use_proj4_init_rules)
+    context.use_proj4_init_rules = true
+    assert(context.use_proj4_init_rules)
+
+    clone = context.clone
+    assert(clone.use_proj4_init_rules)
+  end
+
   def test_dup
     context = Proj::Context.new
     refute(context.use_proj4_init_rules)
@@ -116,24 +126,24 @@ class ContextTest < AbstractTest
     refute(context.network_enabled?)
   end
 
-  def test_url_endpoint
+  def test_url
     context = Proj::Context.new
-    assert_equal("https://cdn.proj.org", context.url_endpoint)
+    assert_equal("https://cdn.proj.org", context.url)
   end
 
-  def test_url_endpoint_set
+  def test_url_set
     context = Proj::Context.new
-    assert_equal("https://cdn.proj.org", context.url_endpoint)
+    assert_equal("https://cdn.proj.org", context.url)
 
-    context.url_endpoint = "https://cdn.proj.org/changed"
-    assert_equal("https://cdn.proj.org/changed", context.url_endpoint)
+    context.url = "https://cdn.proj.org/changed"
+    assert_equal("https://cdn.proj.org/changed", context.url)
 
-    context.url_endpoint = "https://cdn.proj.org"
-    assert_equal("https://cdn.proj.org", context.url_endpoint)
+    context.url = "https://cdn.proj.org"
+    assert_equal("https://cdn.proj.org", context.url)
   end
 
-  def test_user_writable_directory
+  def test_user_directory
     context = Proj::Context.new
-    assert_match(/proj$/, context.user_writable_directory)
+    assert_match(/proj$/, context.user_directory)
   end
 end

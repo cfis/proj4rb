@@ -158,24 +158,25 @@ module Proj
 
       full_name_ptr = out_full_name.read_pointer
       package_name_ptr = out_package_name.read_pointer
-      url_ptr = out_url.read_string_to_null
+      url_ptr = out_url.read_pointer
 
       downloadable_ptr = out_downloadable
       open_license_ptr = out_open_license
       available_ptr = out_available
 
-
-      unless full_name.null?
-        full_name = full_name.read_string_to_null
-        package_name = package_name.read_string_to_null
-        url = url.read_string_to_null
+      unless full_name_ptr.null?
+        full_name = full_name_ptr.read_string_to_null
+        package_name = package_name_ptr.read_string_to_null
+        url = url_ptr.read_string_to_null
 
         downloadable = downloadable_ptr.read_int == 1 ? true : false
         open_license = open_license_ptr.read_int == 1 ? true : false
         available = available_ptr.read_int == 1 ? true : false
 
-        Grid.new(name: name, full_name: full_name, package_name: package_name,
-                 url: url, downloadable: downloadable, open_license: open_license, available: available)
+        Grid.new(name, self.context,
+                 full_name: full_name, package_name: package_name,
+                 url: url ? URI(url) : nil,
+                 downloadable: downloadable, open_license: open_license, available: available)
       end
     end
 
