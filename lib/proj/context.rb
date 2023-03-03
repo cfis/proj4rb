@@ -195,6 +195,26 @@ module Proj
       end
     end
 
+    def set_file_api(file_api_klass)
+      unless file_api_klass.kind_of?(Class)
+        raise("#{file_api_klass} must be a class whose initializer has single argument which is a context")
+      end
+
+      # There is no API to "uninstall" a FileApi. Thus it needs to stay alive
+      # until the context is GCed
+      @file_api = file_api_klass.new(self)
+    end
+
+    def set_nework_api(network_api_klass)
+      unless network_api_klass.kind_of?(Class)
+        raise("#{network_api_klass} must be a class whose initializer has single argument which is a context")
+      end
+
+      # There is no API to "uninstall" a FileApi. Thus it needs to stay alive
+      # until the context is GCed
+      @network_api = network_api_klass.new(self)
+    end
+
     # ---  Deprecated -------
     def database_path
       self.database.path

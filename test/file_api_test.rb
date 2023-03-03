@@ -2,11 +2,11 @@
 
 require_relative './abstract_test'
 
-class GridDownloaderTest < AbstractTest
+class FileApiTest < AbstractTest
   def setup
     super
     # Make sure downloader callbacks are not GCed
-    #    GC.stress = true
+    GC.stress = true
   end
 
   def teardown
@@ -20,8 +20,6 @@ class GridDownloaderTest < AbstractTest
 
     # Create a grid
     grid = Proj::Grid.new("dk_sdfe_dvr90.tif", context)
-    puts grid.path
-    puts context.user_directory
 
     begin
       grid.download
@@ -36,7 +34,7 @@ class GridDownloaderTest < AbstractTest
           EOS
 
       # Create custom downloader to download the grid
-      downloader = Proj::GridDownloader.new(context)
+      downloader = Proj::FileApiImpl.new(context)
 
       coord = Proj::Coordinate.new(long: 12, lat: 56, z: 0)
       new_coord = conversion.forward(coord)
@@ -57,8 +55,7 @@ class GridDownloaderTest < AbstractTest
     grid.delete
 
     begin
-      # Create custom downloader to download the grid
-      downloader = Proj::GridDownloader.new(context)
+      context.set_file_api(Proj::FileApiImpl)
       grid.download
 
       assert(grid.downloaded?)
