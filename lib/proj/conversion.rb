@@ -23,7 +23,7 @@ module Proj
     #
     # @param value [String]. See above
     #
-    # @return [Converstion]
+    # @return [Conversion]
     def initialize(value, context=nil)
       ptr = Api.proj_create(context || Context.current, value)
 
