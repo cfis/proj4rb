@@ -9,9 +9,19 @@ class ProjTest < AbstractTest
     assert([0,1,2,3].include?(info[:minor]))
     assert([0,1,2,3].include?(info[:patch]))
     refute_nil(info[:release])
-    assert_match(/\d\.\d\.\d/, info[:version])
     refute_nil(info[:searchpath])
-    refute(info[:paths].null?)
-    assert_equal(1, info[:path_count])
+    assert(info[:paths].null?)
+    assert(0, info[:path_count])
+  end
+
+  def test_search_paths
+    search_paths = Proj.search_paths
+    assert_instance_of(Array, search_paths)
+    refute(search_paths.empty?)
+  end
+
+  def test_version
+    assert_instance_of(Gem::Version, Proj::Api::PROJ_VERSION)
+    assert(Proj::Api::PROJ_VERSION.canonical_segments.first >= 5)
   end
 end

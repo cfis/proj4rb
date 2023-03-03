@@ -97,9 +97,9 @@ class DatabaseTest < AbstractTest
 
     expected = case
                when proj8?
-                 12609
-               else
                  13107
+               else
+                 12609
                end
     assert_equal(expected, crs_infos.count)
 
@@ -125,9 +125,9 @@ class DatabaseTest < AbstractTest
 
     expected = case
                when proj8?
-                 7056
-               else
                  7251
+               else
+                 7056
                end
     assert_equal(expected, crs_infos.count)
   end
@@ -140,9 +140,9 @@ class DatabaseTest < AbstractTest
 
     expected = case
                when proj8?
-                 930
-               else
                  943
+               else
+                 930
                end
 
     assert_equal(expected, crs_infos.count)
@@ -156,9 +156,9 @@ class DatabaseTest < AbstractTest
 
     expected = case
                when proj8?
-                 5534
-               else
                  5689
+               else
+                 5534
                end
 
     assert_equal(expected, crs_infos.count)
@@ -180,9 +180,9 @@ class DatabaseTest < AbstractTest
 
     expected = case
                when proj8?
-                 170
-               else
                  176
+               else
+                 170
                end
 
     assert_equal(expected, bodies.size)
@@ -198,9 +198,9 @@ class DatabaseTest < AbstractTest
 
     expected = case
                when proj8?
-                 72
-               else
                  78
+               else
+                 72
                end
 
     assert_equal(expected, bodies.size)

@@ -8,7 +8,7 @@ class SessionTest < AbstractTest
   end
 
   def create_crs
-    Proj::Crs.new(<<~EOS)
+    Proj::Crs.new(<<~EOS, Proj::Context.new)
       GEOGCRS["myGDA2020",
         DATUM["GDA2020",
             ELLIPSOID["GRS_1980",6378137,298.257222101,

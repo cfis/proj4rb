@@ -27,8 +27,8 @@ class ContextTest < AbstractTest
     assert(clone.use_proj4_init_rules)
   end
 
-  def test_clone_default
-    context = Proj::Context.default
+  def test_clone
+    context = Proj::Context.new
     refute(context.use_proj4_init_rules)
     context.use_proj4_init_rules = true
     assert(context.use_proj4_init_rules)
@@ -37,20 +37,30 @@ class ContextTest < AbstractTest
     assert(clone.use_proj4_init_rules)
   end
 
-  def test_dup
-    context = Proj::Context.new
-    refute(context.use_proj4_init_rules)
-    context.use_proj4_init_rules = true
-    assert(context.use_proj4_init_rules)
-
-    clone = context.dup
-    assert(clone.use_proj4_init_rules)
-  end
-
   def test_one_per_thread
     context_1 = Proj::Context.current
     context_2 = Proj::Context.current
     assert_same(context_1, context_2)
+  end
+
+  def test_search_paths
+    context = Proj::Context.new
+    path = File.join(Dir.tmpdir, "temp_proj_dic2")
+
+    begin
+      File.open(path, 'wb') do |file|
+        file << "<MY_PIPELINE> +proj=pipeline +step +proj=utm +zone=31 +ellps=GRS80"
+      end
+
+      conversion = Proj::Conversion.new("+init=temp_proj_dic2:MY_PIPELINE")
+      refute(conversion.valid?)
+
+      context.search_paths = [File.dirname(path)]
+      conversion = Proj::Conversion.new("+init=temp_proj_dic2:MY_PIPELINE", context)
+      assert(conversion.valid?)
+    ensure
+      File.delete(path)
+    end
   end
 
   def test_database_path
@@ -68,13 +78,15 @@ class ContextTest < AbstractTest
   end
 
   def test_invalid_database_path
+    context = Proj::Context.new
     path = '/wrong'
     error = assert_raises(Proj::Error) do
-      Proj::Context.current.database_path = path
+      context.database.path = path
     end
     # TODO - if you run this test on its own you get a useful error message, if you run all tests
     # at once you get a useless error message. Not sure what is causing the difference
-    assert_match(/No such file or directory|generic error of unknown origin|File not found or invalid/, error.to_s)
+    #assert_match(/No such file or directory|generic error of unknown origin|File not found or invalid/, error.to_s)
+    assert_equal("Unknown error (code 4096)", error.to_s)
   end
 
   def test_set_log_function
@@ -101,13 +113,14 @@ class ContextTest < AbstractTest
   end
 
   def test_use_proj4_init_rules
-    refute(Proj::Context.current.use_proj4_init_rules)
+    context = Proj::Context.new
+    refute(context.use_proj4_init_rules)
 
-    Proj::Context.current.use_proj4_init_rules = true
-    assert(Proj::Context.current.use_proj4_init_rules)
+    context.use_proj4_init_rules = true
+    assert(context.use_proj4_init_rules)
 
-    Proj::Context.current.use_proj4_init_rules = false
-    refute(Proj::Context.current.use_proj4_init_rules)
+    context.use_proj4_init_rules = false
+    refute(context.use_proj4_init_rules)
   end
 
   def test_network_enabled

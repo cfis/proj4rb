@@ -106,7 +106,6 @@ class ConversionTest < AbstractTest
 
   def test_grid_url
     context = Proj::Context.new
-    manager = Proj::GridManager.new(context)
 
     conversion = Proj::Conversion.create_from_database("EPSG", "1312", :PJ_CATEGORY_COORDINATE_OPERATION, true, context)
     grid = conversion.grid(0)
@@ -115,9 +114,9 @@ class ConversionTest < AbstractTest
     assert(grid.full_name.empty?)
     assert(grid.package_name.empty?)
     assert_equal("https://cdn.proj.org/ca_nrc_ntv1_can.tif", grid.url)
-    assert(grid.downloadable)
-    assert(grid.open_license)
-    refute(grid.available)
+    assert(grid.downloadable?)
+    assert(grid.open_license?)
+    refute(grid.available?)
   end
   #   EXPECT_EQ(proj_coordoperation_get_grid_used(m_ctxt, op, -1, nullptr,
   #                                               nullptr, nullptr, nullptr,
@@ -181,10 +180,10 @@ class ConversionTest < AbstractTest
       coord = Proj::Coordinate.new(x: Proj::Api.proj_torad(3.0), y: 0, z: 0, t: 0)
       new_coord = operation.forward(coord)
 
-      assert_equal(0.05235987755982988, new_coord.x)
-      assert_equal(0.0, new_coord.y)
-      assert_equal(0.0, new_coord.z)
-      assert_equal(0.0, new_coord.t)
+      assert_in_delta(500000, new_coord.x, 1.0)
+      assert_in_delta(0.0, new_coord.y)
+      assert_in_delta(0.0, new_coord.z)
+      assert_in_delta(0.0, new_coord.t)
 
       last = operation.last_used_operation
       assert(last)

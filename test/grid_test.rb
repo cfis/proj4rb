@@ -16,7 +16,7 @@ class GridTest < AbstractTest
     assert_equal("au_icsm_GDA94_GDA2020_conformal.tif", grid.name)
     assert(grid.full_name.empty?)
     assert(grid.package_name.empty?)
-    assert_equal("https://cdn.proj.org/au_icsm_GDA94_GDA2020_conformal.tif", grid.url)
+    assert_equal("https://cdn.proj.org/au_icsm_GDA94_GDA2020_conformal.tif", grid.url.to_s)
     assert(grid.downloadable?)
     assert(grid.open_license?)
     refute(grid.available?)

@@ -27,4 +27,3 @@ class AbstractTest < Minitest::Test
     self.class.proj9?
   end
 end
-
