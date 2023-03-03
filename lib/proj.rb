@@ -1,7 +1,6 @@
 # encoding: UTF-8
 
 require_relative 'api/api'
-require_relative 'proj/config'
 
 require_relative 'proj/bounds'
 require_relative 'proj/coordinate_system'
@@ -34,16 +33,27 @@ require_relative 'proj/projection'
 require_relative 'proj/transformation'
 
 module Proj
+  # Returns information about the Proj library
+  #
+  # @see https://proj.org/development/reference/functions.html#c.proj_info proj_info
   def self.info
     Api.proj_info
   end
 
+  # Returns the Proj version
+  #
+  # @see https://proj.org/development/reference/functions.html#c.proj_info proj_info
   def self.version
     self.info[:version]
   end
-end
 
-Proj::Config.instance.set_search_paths
+  # Returns default search paths
+  #
+  # @see https://proj.org/development/reference/functions.html#c.proj_info proj_info
+  def self.search_paths
+    self.info[:searchpath].split(";")
+  end
+end
 
 at_exit do
   # Clean up any Proj allocated resources on exit. See https://proj.org/development/reference/functions.html#c.proj_cleanup

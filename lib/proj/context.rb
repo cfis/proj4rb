@@ -173,6 +173,28 @@ module Proj
       Api.proj_context_get_user_writable_directory(self, create ? 1 : 0)
     end
 
+    # Sets the paths that Proj will search when opening one of its resource files
+    # such as the proj.db database, grids, etc.
+    #
+    # If set on the default context, they will be inherited by contexts created later.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_search_paths proj_context_set_search_paths
+    def search_paths=(paths)
+      # Convert paths to C chars
+      paths_ptr = paths.map do |path|
+        FFI::MemoryPointer.from_string(path)
+      end
+
+      pointer = FFI::MemoryPointer.new(:pointer, paths.size)
+      pointer.write_array_of_pointer(paths_ptr)
+
+      if Api.method_defined?(:proj_context_set_search_paths)
+        Api.proj_context_set_search_paths(self, paths.size, pointer)
+      elsif Api.method_defined?(:pj_set_searchpath)
+        Api.pj_set_searchpath(paths.size, pointer)
+      end
+    end
+
     # ---  Deprecated -------
     def database_path
       self.database.path
