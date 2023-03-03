@@ -134,6 +134,10 @@ module Proj
       @context || Context.current
     end
 
+    def valid?
+      !@pointer.null?
+    end
+
     # Return whether two objects are equivalent. For versions 6.3.0 and higher
     # the check may use using the proj database to check for name aliases
     #
