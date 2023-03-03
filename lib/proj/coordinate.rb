@@ -18,6 +18,7 @@ module Proj
     #    coord = Proj::Coordinate.new(:x => 1, :y => 2, :z => 3, :t => 4)
     #    coord = Proj::Coordinate.new(:u => 5, :v => 6, :w => 7, :t => 8)
     #    coord = Proj::Coordinate.new(:lam => 9, :phi => 10, :z => 11, :t => 12)
+    #    coord = Proj::Coordinate.new(:lon => 9, :lat => 10, :z => 11, :t => 12)
     #    coord = Proj::Coordinate.new(:s => 13, :a1 => 14, :a2 => 15)
     #    coord = Proj::Coordinate.new(:o => 16, :p => 17, :k => 18)
     #    coord = Proj::Coordinate.new(:e => 19, :n => 20, :u => 21)
@@ -25,6 +26,7 @@ module Proj
     def initialize(x: nil, y: nil, z: nil, t: nil,
                    u: nil, v: nil, w: nil, # t: nil
                    lam: nil, phi: nil, # z: nil, t: nil,
+                   lat: nil, long: nil, # z: nil, t: nil,
                    s: nil, a1: nil, a2: nil,
                    o: nil, p: nil, k: nil,
                    e: nil, n: nil) #u: nil
@@ -49,6 +51,12 @@ module Proj
                [:lam, :phi, :z]
              elsif lam && phi
                [:lam, :phi]
+             elsif long && lat && z && t
+               [:long, :lat, :z, :t]
+             elsif long && lat && z
+               [:long, :lat, :z]
+             elsif long && lat
+               [:long, :lat]
              elsif s && a1 && a2
                [:s, :a1, :a2]
              elsif e && n && u
@@ -119,6 +127,20 @@ module Proj
     # @return [Float]
     def w
       @coord[:v][2]
+    end
+
+    # Returns long coordinate
+    #
+    # @return [Float]
+    def long
+      @coord[:v][0]
+    end
+
+    # Returns lat coordinate
+    #
+    # @return [Float]
+    def lat
+      @coord[:v][1]
     end
 
     # Returns lam coordinate
