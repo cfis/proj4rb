@@ -327,7 +327,7 @@ class CrsTest < AbstractTest
     crs = Proj::Crs.new('EPSG:26915')
     expected = <<~EOS
       {
-        "$schema": "https://proj.org/schemas/#{proj8? ? 'v0.5' : 'v0.4'}/projjson.schema.json",
+        "$schema": "https://proj.org/schemas/#{proj9? ? 'v0.5' : 'v0.4'}/projjson.schema.json",
         "type": "ProjectedCRS",
         "name": "NAD83 / UTM zone 15N",
         "base_crs": {

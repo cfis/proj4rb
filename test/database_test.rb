@@ -96,7 +96,7 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info
 
     expected = case
-               when proj8?
+               when proj9?
                  13107
                else
                  12609
@@ -124,7 +124,7 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG")
 
     expected = case
-               when proj8?
+               when proj9?
                  7251
                else
                  7056
@@ -139,7 +139,7 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
-               when proj8?
+               when proj9?
                  943
                else
                  930
@@ -155,7 +155,7 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
-               when proj8?
+               when proj9?
                  5689
                else
                  5534
@@ -179,7 +179,7 @@ class DatabaseTest < AbstractTest
     bodies = database.celestial_bodies
 
     expected = case
-               when proj8?
+               when proj9?
                  176
                else
                  170
@@ -197,7 +197,7 @@ class DatabaseTest < AbstractTest
     bodies = database.celestial_bodies('ESRI')
 
     expected = case
-               when proj8?
+               when proj9?
                  78
                else
                  72

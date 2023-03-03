@@ -118,31 +118,6 @@ class ConversionTest < AbstractTest
     assert(grid.open_license?)
     refute(grid.available?)
   end
-  #   EXPECT_EQ(proj_coordoperation_get_grid_used(m_ctxt, op, -1, nullptr,
-  #                                               nullptr, nullptr, nullptr,
-  #                                               nullptr, nullptr, nullptr),
-  #             0);
-  #   EXPECT_EQ(proj_coordoperation_get_grid_used(m_ctxt, op, 1, nullptr, nullptr,
-  #                                               nullptr, nullptr, nullptr,
-  #                                               nullptr, nullptr),
-  #             0);
-  #   EXPECT_EQ(proj_coordoperation_get_grid_used(
-  #               m_ctxt, op, 0, &shortName, &fullName, &packageName, &url,
-  #   &directDownload, &openLicense, &available),
-  #     1);
-  #   ASSERT_NE(shortName, nullptr);
-  #   ASSERT_NE(fullName, nullptr);
-  #   ASSERT_NE(packageName, nullptr);
-  #   ASSERT_NE(url, nullptr);
-  #   EXPECT_EQ(shortName, std::string("ca_nrc_ntv1_can.tif"));
-  #   // EXPECT_EQ(fullName, std::string(""));
-  #   EXPECT_EQ(packageName, std::string(""));
-  #   EXPECT_EQ(std::string(url), "https://example.com/ca_nrc_ntv1_can.tif");
-  #   EXPECT_EQ(directDownload, 1);
-  #   EXPECT_EQ(openLicense, 1);
-  #
-  #   proj_context_set_url_endpoint(m_ctxt, old_endpoint.c_str());
-  # }
 
   if proj9?
     def test_last_used_operation

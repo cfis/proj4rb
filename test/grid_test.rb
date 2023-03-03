@@ -3,12 +3,6 @@
 require_relative './abstract_test'
 
 class GridTest < AbstractTest
-  def test_grid_invalid
-    database = Proj::Database.new(Proj::Context.current)
-    grid = database.grid("invalid")
-    refute(grid)
-  end
-
   def test_grid
     database = Proj::Database.new(Proj::Context.current)
     grid = database.grid("au_icsm_GDA94_GDA2020_conformal.tif")
@@ -131,6 +125,23 @@ class GridTest < AbstractTest
       # assert_in_delta(0, grid.info.cell_size_lat)
     ensure
       grid.delete
+    end
+  end
+
+  if proj9?
+    def test_grid_invalid
+      database = Proj::Database.new(Proj::Context.current)
+      grid = database.grid("invalid")
+      refute(grid)
+    end
+  else
+    def test_grid_invalid
+      database = Proj::Database.new(Proj::Context.current)
+      error = assert_raises(Proj::Error) do
+        database.grid("invalid")
+      end
+      assert_equal("Invalid value for an argument", error.to_s)
+      refute(grid)
     end
   end
 end
