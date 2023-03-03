@@ -15,14 +15,6 @@ module Proj
     # @return [Database]
     def initialize(context)
       @context = context
-      figure_path
-    end
-
-    # Helper method that tries to locate the Proj coordinate database (proj.db)
-    def figure_path
-      if !path
-        self.database_path = Config.instance.db_path
-      end
     end
 
     # Returns the path the Proj database
