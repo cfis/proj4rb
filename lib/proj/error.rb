@@ -1,4 +1,7 @@
 module Proj
+  # Represents error thrown by Proj
+  #
+  # @see https://proj.org/development/errorhandling.html Error Handling
   class Error < StandardError
     # Error codes typically related to coordinate operation initialization
     PROJ_ERR_INVALID_OP = 1024 # Other/unspecified error related to coordinate operation initialization
@@ -22,6 +25,8 @@ module Proj
     PROJ_ERR_OTHER_NO_INVERSE_OP = PROJ_ERR_OTHER + 2 # No inverse method available
     PROJ_ERR_OTHER_NETWORK_ERROR = PROJ_ERR_OTHER + 3 # Failure when accessing a network resource
 
+    # Check the context to see if an error occurred. If an error has happened will
+    # raise an exception.
     def self.check(context)
       unless context.errno == 0
         # raise(self, "#{self.category(context.errno)}: #{self.message(context)}")

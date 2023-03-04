@@ -3,6 +3,7 @@ module Proj
     attach_function :proj_context_clone, [:PJ_CONTEXT], :PJ_CONTEXT
     attach_function :proj_context_set_ca_bundle_path, [:PJ_CONTEXT, :string], :void
 
+    # Datum ensembles
     attach_function :proj_crs_get_datum_ensemble, [:PJ_CONTEXT, :PJ], :PJ
     attach_function :proj_crs_get_datum_forced, [:PJ_CONTEXT, :PJ], :PJ
     attach_function :proj_datum_ensemble_get_member_count, [:PJ_CONTEXT, :PJ], :int
