@@ -1,89 +1,46 @@
+require 'net/http'
+
 module Proj
   module NetworkApiCallbacks
     def install_callbacks(context)
-      proj_file_api = Api::PROJ_FILE_API.new
-      proj_file_api[:version] = 1
+      @open_cbk = self.method(:open_callback)
+      @close_cbk = self.method(:close_callback)
+      @header_value_cbk = self.method(:header_value_callback)
+      @read_range_cbk = self.method(:read_range_callback)
 
-      # Store proces to instance variables so they don't get garbage collected
-      @open_cbk = proj_file_api[:open_cbk] = self.method(:open_callback)
-      @read_cbk = proj_file_api[:read_cbk] = self.method(:read_callback)
-      @write_cbk = proj_file_api[:write_cbk] = self.method(:write_callback)
-      @seek_cbk = proj_file_api[:seek_cbk] = self.method(:seek_callback)
-      @tell_cbk = proj_file_api[:tell_cbk] = self.method(:tell_callback)
-      @close_cbk = proj_file_api[:close_cbk] = self.method(:close_callback)
-      @exists_cbk = proj_file_api[:exists_cbk] = self.method(:exists_callback)
-      @mkdir_cbk = proj_file_api[:mkdir_cbk] = self.method(:mkdir_callback)
-      @unlink_cbk = proj_file_api[:unlink_cbk] = self.method(:unlink_callback)
-      @rename_cbk = proj_file_api[:rename_cbk] = self.method(:rename_callback)
-
-      result = Api.proj_context_set_fileapi(context, proj_file_api, nil)
+      result = Api.proj_context_set_network_callbacks(context, @open_cbk, @close_cbk, @header_value_cbk, @read_range_cbk, nil)
 
       if result != 1
         Error.check(self.context)
       end
-
-      true
     end
 
-    def open_callback(context, path, access_mode, user_data)
-      result = self.open(path, access_mode)
-      result ?  FFI::MemoryPointer.new(:size_t) : nil
-    end
+    def open_callback(context, url, offset, size_to_read, buffer, out_size_read, error_string_max_size, out_error_string, user_data)
+      uri = URI.parse(url)
+      data = self.open(uri, offset, size_to_read)
+      out_size = [size_to_read, data.size].min
+      out_size_read.write(:size_t, out_size)
+      buffer.write_bytes(data, 0, out_size)
 
-    def read_callback(context, handle, buffer, size_bytes, user_data)
-      bytes = self.read(size_bytes)
-      buffer.put_bytes(0, bytes, 0, bytes.size)
-      bytes.size
-    end
-
-    def write_callback(context, handle, buffer, size_bytes, user_data)
-      data = buffer.get_bytes(0, size_bytes)
-      self.write(data)
-    end
-
-    def seek_callback(context, handle, offset, whence, user_data)
-      self.seek(offset, whence)
-      return 1 # True
-    end
-
-    def tell_callback(context, handle, user_data)
-      self.tell
+      # Return fake handle
+      FFI::MemoryPointer.new(:size_t)
     end
 
     def close_callback(context, handle, user_data)
       self.close
     end
 
-    def exists_callback(context, path, user_data)
-      if self.exists(path)
-        1
-      else
-        0
-      end
+    def header_value_callback(context, handle, header_name_ptr, user_data)
+      header_name = header_name_ptr.read_string_to_null
+      value = self.header_value(header_name)
+      FFI::MemoryPointer.from_string(value)
     end
 
-    def mkdir_callback(context, path, user_data)
-      if self.mdkir(path)
-        1
-      else
-        0
-      end
-    end
-
-    def unlink_callback(context, path, user_data)
-      if self.unlink(path)
-        1
-      else
-        0
-      end
-    end
-
-    def rename_callback(context, original_path, new_path, user_data)
-      if self.rename(original_path, new_path)
-        1
-      else
-        0
-      end
+    def read_range_callback(context, handle, offset, size_to_read, buffer, error_string_max_size, out_error_string, user_data)
+      data = self.read_range(offset, size_to_read)
+      out_size = [size_to_read, data.size].min
+      buffer.write_bytes(data, 0, out_size)
+      out_size
     end
   end
 
@@ -91,7 +48,9 @@ module Proj
   # done by calling Context#set_network_api with a user defined Class that includes the
   # NetworkApiCallbacks module and implements its required methods.
   #
-  # The FileApiImpl class is a simple example file api implementation.
+  # @see https://proj.org/usage/network.html Network capabilities
+  #
+  # The NetworkApiImpl class is a simple example of a network api implementation.
   class NetworkApiImpl
     include NetworkApiCallbacks
 
@@ -99,59 +58,35 @@ module Proj
       install_callbacks(context)
     end
 
-    def open(path, access_mode)
-      case access_mode
-      when :PROJ_OPEN_ACCESS_READ_ONLY
-        if File.exist?(path)
-          @file = File.open(path, :mode => 'rb')
-        else
-          nil # False
-        end
-      when :PROJ_OPEN_ACCESS_READ_UPDATE
-        if File.exist?(path)
-          @file = File.open(path, :mode => 'r+b')
-        else
-          nil # False
-        end
-      when :PROJ_OPEN_ACCESS_CREATE
-        @file = File.open(path, :mode => 'wb')
+    def open(uri, offset, size_to_read)
+      @uri = uri
+      @http = Net::HTTP.new(@uri.host, @uri.port)
+      if uri.scheme == "https"
+        @http.use_ssl = true
+        @http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       end
-    end
+      @http.start
 
-    def read(buffer, size_bytes)
-      @file.read(size_bytes)
-    end
-
-    def write(data)
-      @file.write(data)
-    end
-
-    def seek(context, handle, offset, whence, user_data)
-      @file.seek(offset, whence)
-    end
-
-    def tell
-      @file.tell
+      read_data(offset, size_to_read)
     end
 
     def close
-      @file.close
+      @http.finish
     end
 
-    def exists(path)
-      File.exist?(path)
+    def header_value(name)
+      @response.header[name]
     end
 
-    def mkdir(path)
-      Dir.mkdir(path)
+    def read_range(offset, size_to_read)
+      read_data(offset, size_to_read)
     end
 
-    def unlink(path)
-      File.unlink(path) if File.exist?(path)
-    end
-
-    def rename(original_path, new_path)
-      File.rename(original_path, new_path)
+    def read_data(offset, size_to_read)
+      headers = {"Range": "bytes=#{offset}-#{offset + size_to_read - 1}"}
+      request = Net::HTTP::Get.new(@uri.request_uri, headers)
+      @response = @http.request(request)
+      @response.body.force_encoding("ASCII-8BIT")
     end
   end
 end

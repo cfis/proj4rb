@@ -195,6 +195,9 @@ module Proj
       end
     end
 
+    # Installs a new {FileApi FileApiImpl}
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_fileapi proj_context_set_fileapi
     def set_file_api(file_api_klass)
       unless file_api_klass.kind_of?(Class)
         raise("#{file_api_klass} must be a class whose initializer has single argument which is a context")
@@ -205,7 +208,10 @@ module Proj
       @file_api = file_api_klass.new(self)
     end
 
-    def set_nework_api(network_api_klass)
+    # Installs a new {NetworkApi NetworkApiImpl}
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_network_callbacks proj_context_set_network_callbacks
+    def set_network_api(network_api_klass)
       unless network_api_klass.kind_of?(Class)
         raise("#{network_api_klass} must be a class whose initializer has single argument which is a context")
       end

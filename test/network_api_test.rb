@@ -6,7 +6,7 @@ class NetworkApiTest < AbstractTest
   def setup
     super
     # Make sure downloader callbacks are not GCed
-    #GC.stress = true
+    GC.stress = true
   end
 
   def teardown
@@ -14,39 +14,7 @@ class NetworkApiTest < AbstractTest
     GC.stress = false
   end
 
-  def test_read
-    context = Proj::Context.new
-    context.network_enabled = true
-
-    # Create a grid
-    grid = Proj::Grid.new("dk_sdfe_dvr90.tif", context)
-
-    begin
-      grid.download
-      assert(grid.downloaded?)
-      context.network_enabled = false
-
-      conversion = Proj::Conversion.new(<<~EOS, context)
-            +proj=pipeline
-            +step +proj=unitconvert +xy_in=deg +xy_out=rad
-            +step +proj=vgridshift +grids=dk_sdfe_dvr90.tif +multiplier=1
-            +step +proj=unitconvert +xy_in=rad +xy_out=deg
-          EOS
-
-      # Create custom downloader to download the grid
-      downloader = Proj::FileApiImpl.new(context)
-
-      coord = Proj::Coordinate.new(long: 12, lat: 56, z: 0)
-      new_coord = conversion.forward(coord)
-      assert_in_delta(12, coord.long)
-      assert_in_delta(56, coord.lat)
-      assert_in_delta(0, coord.z)
-    ensure
-      # grid.delete
-    end
-  end
-
-  def test_write
+  def test_download
     context = Proj::Context.new
     context.network_enabled = true
 
@@ -54,13 +22,24 @@ class NetworkApiTest < AbstractTest
     grid = Proj::Grid.new("dk_sdfe_dvr90.tif", context)
     grid.delete
 
-    begin
-      context.set_file_api(Proj::FileApiImpl)
-      grid.download
+    context.cache.clear
 
-      assert(grid.downloaded?)
-    ensure
-      # grid.delete
-    end
+    # Install custom network api
+    context.set_network_api(Proj::NetworkApiImpl)
+
+    conversion = Proj::Conversion.new(<<~EOS, context)
+          +proj=pipeline
+          +step +proj=unitconvert +xy_in=deg +xy_out=rad
+          +step +proj=vgridshift +grids=dk_sdfe_dvr90.tif +multiplier=1
+          +step +proj=unitconvert +xy_in=rad +xy_out=deg
+        EOS
+
+    assert(conversion.valid?)
+
+    coord = Proj::Coordinate.new(long: 12, lat: 56, z: 0)
+    new_coord = conversion.forward(coord)
+    assert_in_delta(12, new_coord.long)
+    assert_in_delta(56, new_coord.lat)
+    assert_in_delta(36.5909996032715, new_coord.z, 1e-10)
   end
 end

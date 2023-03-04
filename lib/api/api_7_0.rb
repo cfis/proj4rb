@@ -47,7 +47,7 @@ module Proj
     callback :close_network_cbk, [:PJ_CONTEXT, :PROJ_NETWORK_HANDLE, :USER_DATA], :void
     callback :header_value_cbk, [:PJ_CONTEXT, :PROJ_NETWORK_HANDLE, :pointer, :USER_DATA], :pointer
     callback :read_range_cbk, [:PJ_CONTEXT, :PROJ_NETWORK_HANDLE, :ulong_long, :size_t, :pointer, :size_t, :string, :USER_DATA], :size_t
-    attach_function :proj_context_set_network_callbacks, [:PJ_CONTEXT, :open_network_cbk, :close_network_cbk, :header_value_cbk, :read_range_cbk], :int
+    attach_function :proj_context_set_network_callbacks, [:PJ_CONTEXT, :open_network_cbk, :close_network_cbk, :header_value_cbk, :read_range_cbk, :pointer], :int
 
     attach_function :proj_context_is_network_enabled, [:PJ_CONTEXT], :int
     attach_function :proj_context_set_enable_network, [:PJ_CONTEXT, :int], :int

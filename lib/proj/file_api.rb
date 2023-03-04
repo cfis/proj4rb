@@ -21,8 +21,6 @@ module Proj
       if result != 1
         Error.check(self.context)
       end
-
-      true
     end
 
     # Open file. Return NULL if error
@@ -33,9 +31,10 @@ module Proj
 
     # Read sizeBytes into buffer from current position and return number of bytes read
     def read_callback(context, handle, buffer, size_bytes, user_data)
-      bytes = self.read(size_bytes)
-      buffer.put_bytes(0, bytes, 0, bytes.size)
-      bytes.size
+      data = self.read(size_bytes)
+      read_bytes = [size_bytes, data.size].min
+      buffer.write_bytes(data, 0, read_bytes)
+      read_bytes
     end
 
     # Write sizeBytes into buffer from current position and return number of bytes written
@@ -128,7 +127,7 @@ module Proj
       end
     end
 
-    def read(buffer, size_bytes)
+    def read(size_bytes)
       @file.read(size_bytes)
     end
 
@@ -136,7 +135,7 @@ module Proj
       @file.write(data)
     end
 
-    def seek(context, handle, offset, whence, user_data)
+    def seek(offset, whence)
       @file.seek(offset, whence)
     end
 
