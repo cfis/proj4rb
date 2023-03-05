@@ -28,12 +28,12 @@ module Proj
     # @param context [Context]
     #
     # @return [Transformation] A new transformation
-    def initialize(source, target, context=nil)
+    def initialize(source, target, area=nil, options=nil, context=nil)
       pointer = if source.is_a?(Crs) && target.is_a?(Crs)
                   if Api.method_defined?(:proj_create_crs_to_crs_from_pj)
-                    Api.proj_create_crs_to_crs_from_pj(context, source, target, nil, nil)
+                    Api.proj_create_crs_to_crs_from_pj(context, source, target, area, nil)
                   else
-                    Api.proj_create_crs_to_crs(context, source.definition, target.definition, nil)
+                    Api.proj_create_crs_to_crs(context, source.definition, target.definition, area)
                   end
                 else
                   Api.proj_create_crs_to_crs(context, source, target, nil)

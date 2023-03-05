@@ -48,9 +48,9 @@ class OperationFactoryContextTest < AbstractTest
 
     expected = case
                when proj8?
-                 7
-               else
                  2
+               else
+                 7
                end
     assert_equal(expected, index)
 
@@ -58,9 +58,9 @@ class OperationFactoryContextTest < AbstractTest
 
     expected = case
                when proj8?
-                 "Ballpark geographic offset from NAD27 to NAD83"
-               else
                  "NAD27 to NAD83 (1)"
+               else
+                 "Ballpark geographic offset from NAD27 to NAD83"
                end
 
     assert_equal(expected, operation.name)

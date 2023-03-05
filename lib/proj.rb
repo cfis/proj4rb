@@ -4,6 +4,7 @@ require_relative 'api/api'
 
 require_relative 'proj/pj_object'
 
+require_relative 'proj/area'
 require_relative 'proj/bounds'
 require_relative 'proj/coordinate_system'
 require_relative 'proj/crs_info'

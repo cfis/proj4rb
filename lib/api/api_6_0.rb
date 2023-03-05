@@ -15,8 +15,14 @@ module Proj
     attach_function :proj_get_type, [:PJ], PJ_TYPE
     attach_function :proj_is_deprecated, [:PJ], :bool
     attach_function :proj_is_crs, [:PJ], :bool
-    attach_function :proj_get_area_of_use, [:PJ_CONTEXT, :PJ, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
     attach_function :proj_is_equivalent_to, [:PJ, :PJ, PJ_COMPARISON_CRITERION], :int
+
+    # Area
+    attach_function :proj_area_create, [], :PJ_AREA
+    attach_function :proj_area_set_name, [:PJ_AREA, :string], :void
+    attach_function :proj_area_set_bbox, [:PJ_AREA, :double, :double, :double, :double], :void
+    attach_function :proj_get_area_of_use, [:PJ_CONTEXT, :PJ, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
+    attach_function :proj_area_destroy, [:PJ_AREA], :void
 
     # Export to various formats
     attach_function :proj_as_wkt, [:PJ_CONTEXT, :PJ, PJ_WKT_TYPE, :pointer], :string

@@ -287,7 +287,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_get_area_of_use proj_get_area_of_use
     #
-    # @return [Bounds] In case of multiple usages, this will be the one of first usage.
+    # @return [Area] In case of multiple usages, this will be the one of first usage.
     def area_of_use
       p_name = FFI::MemoryPointer.new(:pointer)
       p_west_lon_degree = FFI::MemoryPointer.new(:double)
@@ -303,8 +303,11 @@ module Proj
       end
 
       name = p_name.read_pointer.read_string_to_null.force_encoding('utf-8')
-      Bounds.new(p_west_lon_degree.read_double, p_south_lat_degree.read_double,
-                 p_east_lon_degree.read_double, p_north_lat_degree.read_double, name)
+      Area.new(west_lon_degree: p_west_lon_degree.read_double,
+               south_lat_degree: p_south_lat_degree.read_double,
+               east_lon_degree: p_east_lon_degree.read_double,
+               north_lat_degree: p_north_lat_degree.read_double,
+               name: name)
     end
 
     # Return whether a coordinate operation can be instantiated as a PROJ pipeline, checking in particular that referenced grids are available.

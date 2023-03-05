@@ -114,5 +114,17 @@ class TransformationTest < AbstractTest
       operation = Proj::Conversion.create_from_database("EPSG", "1671", :PJ_CATEGORY_COORDINATE_OPERATION)
       assert(operation.instantiable?)
     end
+
+    def test_with_area
+      area = Proj::Area.new(west_lon_degree: -114.1324, south_lat_degree: 49.5614,
+                            east_lon_degree: 3.76488, north_lat_degree: 62.1463)
+      transformation = Proj::Transformation.new("EPSG:4277", "EPSG:4326", area)
+
+      coordinate1 = Proj::Coordinate.new(x: 50, y: -2, z: 0, t: Float::INFINITY)
+      coordinate2 = transformation.forward(coordinate1)
+
+      assert_in_delta(50.00065628, coordinate2.x, 1e-8)
+      assert_in_delta(-2.00133989, coordinate2.y, 1e-8)
+    end
   end
 end
