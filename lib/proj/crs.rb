@@ -76,6 +76,18 @@ module Proj
       PjObject.create_object(ptr, self.context)
     end
 
+    # Returns a datum for a SingleCRS. If the SingleCRS has a datum, then this datum is returned.
+    # Otherwise, the SingleCRS has a datum ensemble, and this datum ensemble is returned as
+    # a regular datum instead of a datum ensemble.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_datum_forced proj_crs_get_datum_forced
+    #
+    # @return [Datum]
+    def datum_forced
+      ptr = Api.proj_crs_get_datum_forced(self.context, self)
+      PjObject.create_object(ptr, self.context)
+    end
+
     # Get the horizontal datum from a CRS.
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_horizontal_datum proj_crs_get_horizontal_datum

@@ -301,7 +301,17 @@ module Proj
     attach_function :proj_todeg, [:double], :double
     attach_function :proj_dmstor, [:string, :pointer], :double
     attach_function :proj_rtodms, [:pointer, :double, :int, :int], :string
-    attach_function :proj_angular_input, [:PJ, PJ_DIRECTION], :bool
-    attach_function :proj_angular_output, [:PJ, PJ_DIRECTION], :bool
+
+    attach_function :proj_angular_input, [:PJ, PJ_DIRECTION], :int
+    attach_function :proj_angular_output, [:PJ, PJ_DIRECTION], :int
+    attach_function :proj_degree_input, [:PJ, PJ_DIRECTION], :int
+    attach_function :proj_degree_output, [:PJ, PJ_DIRECTION], :int
+
+    # Distances
+    attach_function :proj_lp_dist, [:PJ, PJ_COORD.by_value, PJ_COORD.by_value], :double
+    attach_function :proj_lpz_dist, [:PJ, PJ_COORD.by_value, PJ_COORD.by_value], :double
+    attach_function :proj_geod, [:PJ, PJ_COORD.by_value, PJ_COORD.by_value], PJ_COORD.by_value
+    attach_function :proj_xy_dist, [PJ_COORD.by_value, PJ_COORD.by_value], :double
+    attach_function :proj_xyz_dist, [PJ_COORD.by_value, PJ_COORD.by_value], :double
   end
 end

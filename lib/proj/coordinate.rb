@@ -3,7 +3,7 @@
 module Proj
   # A four dimensional coordinate of double values.
   #
-  # For most geographic Crses, the units will be in degrees.
+  # For most geographic CRSes, the units will be in degrees.
   class Coordinate
     def self.from_coord(pj_coord)
       result = self.allocate

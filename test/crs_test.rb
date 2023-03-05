@@ -200,6 +200,40 @@ class CrsTest < AbstractTest
     assert_equal(:PJ_TYPE_GEODETIC_REFERENCE_FRAME, datum.proj_type)
   end
 
+  def test_datum_forced
+    wkt = <<~EOS
+           GEOGCRS["ETRS89",
+             ENSEMBLE["European Terrestrial Reference System 1989 ensemble",
+                 MEMBER["European Terrestrial Reference Frame 1989"],
+                 MEMBER["European Terrestrial Reference Frame 1990"],
+                 MEMBER["European Terrestrial Reference Frame 1991"],
+                 MEMBER["European Terrestrial Reference Frame 1992"],
+                 MEMBER["European Terrestrial Reference Frame 1993"],
+                 MEMBER["European Terrestrial Reference Frame 1994"],
+                 MEMBER["European Terrestrial Reference Frame 1996"],
+                 MEMBER["European Terrestrial Reference Frame 1997"],
+                 MEMBER["European Terrestrial Reference Frame 2000"],
+                 MEMBER["European Terrestrial Reference Frame 2005"],
+                 MEMBER["European Terrestrial Reference Frame 2014"],
+                 ELLIPSOID["GRS 1980",6378137,298.257222101,
+                     LENGTHUNIT["metre",1]],
+                 ENSEMBLEACCURACY[0.1]],  
+             PRIMEM["Greenwich",0,
+                 ANGLEUNIT["degree",0.0174532925199433]],
+             CS[ellipsoidal,2],
+                 AXIS["geodetic latitude (Lat)",north,
+                     ORDER[1],
+                     ANGLEUNIT["degree",0.0174532925199433]],
+                 AXIS["geodetic longitude (Lon)",east,
+                     ORDER[2],
+                     ANGLEUNIT["degree",0.0174532925199433]]]
+    EOS
+
+    crs = Proj::Crs.create(wkt)
+    datum = crs.datum_forced
+    assert_equal("European Terrestrial Reference System 1989", datum.name)
+  end
+
   def test_horizontal_datum
     crs = Proj::Crs.new('EPSG:4326')
     datum = crs.horizontal_datum
@@ -269,6 +303,66 @@ class CrsTest < AbstractTest
     assert_equal(1, confidences.count)
     confidence = confidences[0]
     assert_equal(100, confidence)
+  end
+
+  def test_lp_distance
+    wkt = <<~EOS
+      GEODCRS["WGS 84",
+            DATUM["World Geodetic System 1984",
+                  ELLIPSOID["WGS 84",6378137,298.257223563,
+                            LENGTHUNIT["metre",1]]],
+            PRIMEM["Greenwich",0,
+                   ANGLEUNIT["degree",0.0174532925199433]],
+            CS[ellipsoidal,2],
+            AXIS["latitude",north,
+                 ORDER[1],
+                 ANGLEUNIT["degree",0.0174532925199433]],
+            AXIS["longitude",east,
+                 ORDER[2],
+                 ANGLEUNIT["degree",0.0174532925199433]],
+            ID["EPSG",4326]]
+    EOS
+
+    crs = Proj::Crs.new(wkt)
+    coord1 = Proj::Coordinate.new(x: Proj.degrees_to_radians(2),
+                                  y: Proj.degrees_to_radians(49),
+                                  z: 0, t:0)
+    coord2 = Proj::Coordinate.new(x: Proj.degrees_to_radians(2),
+                                  y: Proj.degrees_to_radians(50),
+                                  z: 0, t:0)
+
+    distance = crs.lp_distance(coord1, coord2)
+    assert_in_delta(111219.409, distance, 1e-3)
+  end
+
+  def test_geod_distance
+    wkt = <<~EOS
+      GEODCRS["WGS 84",
+            DATUM["World Geodetic System 1984",
+                  ELLIPSOID["WGS 84",6378137,298.257223563,
+                            LENGTHUNIT["metre",1]]],
+            PRIMEM["Greenwich",0,
+                   ANGLEUNIT["degree",0.0174532925199433]],
+            CS[ellipsoidal,2],
+            AXIS["latitude",north,
+                 ORDER[1],
+                 ANGLEUNIT["degree",0.0174532925199433]],
+            AXIS["longitude",east,
+                 ORDER[2],
+                 ANGLEUNIT["degree",0.0174532925199433]],
+            ID["EPSG",4326]]
+    EOS
+
+    crs = Proj::Crs.new(wkt)
+    coord1 = Proj::Coordinate.new(x: Proj.degrees_to_radians(2),
+                                  y: Proj.degrees_to_radians(49),
+                                  z: 0, t:0)
+    coord2 = Proj::Coordinate.new(x: Proj.degrees_to_radians(2),
+                                  y: Proj.degrees_to_radians(50),
+                                  z: 0, t:0)
+
+    coord3 = crs.geod_distance(coord1, coord2)
+    assert_in_delta(111219.409, coord3.x, 1e-3)
   end
 
   def test_to_proj_string

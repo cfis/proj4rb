@@ -119,6 +119,63 @@ class ConversionTest < AbstractTest
     refute(grid.available?)
   end
 
+  def test_xy_dist
+    conversion = Proj::Conversion.new("+proj=utm; +zone=32; +ellps=GRS80")
+    coord1 = Proj::Coordinate.new(lam: Proj.degrees_to_radians(12),
+                                  phi: Proj.degrees_to_radians(55))
+
+    coord2 = conversion.forward(coord1)
+    coord1 = conversion.forward(coord1)
+
+    dist = conversion.xy_distance(coord1, coord2)
+    assert(dist < 2e-9)
+  end
+
+  def test_angular_input
+    conversion = Proj::Conversion.new("+proj=cart +ellps=GRS80")
+    assert(conversion.angular_input?(:PJ_FWD))
+    refute(conversion.angular_input?(:PJ_INV))
+  end
+
+  def test_angular_output
+    conversion = Proj::Conversion.new("+proj=cart +ellps=GRS80")
+    refute(conversion.angular_output?(:PJ_FWD))
+    assert(conversion.angular_output?(:PJ_INV))
+  end
+
+  def test_degree_input
+    conversion = Proj::Conversion.new(<<~EOS)
+                    +proj=pipeline
+                    +step +inv +proj=utm +zone=32 +ellps=GRS80
+                    "+step +proj=unitconvert +xy_in=rad +xy_out=deg
+                  EOS
+
+    refute(conversion.degree_input?(:PJ_FWD))
+    assert(conversion.degree_input?(:PJ_INV))
+  end
+
+  def test_degree_output
+    conversion = Proj::Conversion.new(<<~EOS)
+                    +proj=pipeline
+                    +step +inv +proj=utm +zone=32 +ellps=GRS80
+                    "+step +proj=unitconvert +xy_in=rad +xy_out=deg
+    EOS
+
+    assert(conversion.degree_output?(:PJ_FWD))
+    refute(conversion.degree_output?(:PJ_INV))
+  end
+
+  # ASSERT_FALSE(proj_angular_input(P, PJ_INV));
+  # ASSERT_FALSE(proj_angular_output(P, PJ_FWD));
+  # ASSERT_TRUE(proj_angular_output(P, PJ_INV));
+  # P->inverted = 1;
+  # ASSERT_FALSE(proj_angular_input(P, PJ_FWD));
+  # ASSERT_TRUE(proj_angular_input(P, PJ_INV));
+  # ASSERT_TRUE(proj_angular_output(P, PJ_FWD));
+  # ASSERT_FALSE(proj_angular_output(P, PJ_INV));
+
+
+
   if proj9?
     def test_last_used_operation
       wkt = <<~EOS
