@@ -68,6 +68,8 @@ module Proj
 
     # Returns the datum of a SingleCRS.
     #
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_datum proj_crs_get_datum
+    #
     # @return [Datum]
     def datum
       ptr = Api.proj_crs_get_datum(self.context, self)
@@ -76,9 +78,21 @@ module Proj
 
     # Get the horizontal datum from a CRS.
     #
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_horizontal_datum proj_crs_get_horizontal_datum
+    #
     # @return [Crs]
     def horizontal_datum
       ptr = Api.proj_crs_get_horizontal_datum(self.context, self)
+      PjObject.create_object(ptr, self.context)
+    end
+
+    # Returns the {DatumEnsemble datum ensemble} of a SingleCRS.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_datum_ensemble proj_crs_get_datum_ensemble
+    #
+    # @return [DatumEnsemble]
+    def datum_ensemble
+      ptr = Api.proj_crs_get_datum_ensemble(self.context, self)
       PjObject.create_object(ptr, self.context)
     end
 

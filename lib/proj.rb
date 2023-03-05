@@ -2,12 +2,15 @@
 
 require_relative 'api/api'
 
+require_relative 'proj/pj_object'
+
 require_relative 'proj/bounds'
 require_relative 'proj/coordinate_system'
 require_relative 'proj/crs_info'
-require_relative 'proj/database'
 require_relative 'proj/context'
 require_relative 'proj/coordinate'
+require_relative 'proj/database'
+require_relative 'proj/datum_ensemble'
 require_relative 'proj/ellipsoid'
 require_relative 'proj/error'
 require_relative 'proj/file_api'

@@ -21,6 +21,8 @@ module Proj
                      Conversion.allocate
                    when :PJ_TYPE_TRANSFORMATION
                      Transformation.allocate
+                   when :PJ_TYPE_DATUM_ENSEMBLE
+                     DatumEnsemble.allocate
                    else
                      PjObject.allocate
                    end
