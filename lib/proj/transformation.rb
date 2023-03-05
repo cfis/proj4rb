@@ -23,15 +23,36 @@ module Proj
     # @see https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs_from_pj proj_create_crs_to_crs_from_pj and
     #     {}https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs proj_create_crs_to_crs}
     #
-    # @param source [Crs | String] - The source Crs. See the Crs documentation for the string format
-    # @param target [Crs | String] - The target Crs. See the Crs documentation for the string format
+    # @param source [Crs | String] The source Crs. See the Crs documentation for the string format
+    # @param target [Crs | String] The target Crs. See the Crs documentation for the string format
+    # @param area [Area] If an area is specified a more accurate transformation between two given systems can be chosen
     # @param context [Context]
+    # @param authority [String] Restricts the authority of coordinate operations looked up in the database
+    # @param accuracy [Float] Sets the minimum desired accuracy (in metres) of the candidate coordinate operations
+    # @param allow_ballpark [Boolean] Set to false to disallow the use of Ballpark transformation in the candidate coordinate operations.
+    # @param only_best [Boolean] Set to true to cause PROJ to error out if the best transformation cannot be used. Requires Proj 9.2 and higher
     #
     # @return [Transformation] A new transformation
-    def initialize(source, target, area=nil, options=nil, context=nil)
+    def initialize(source, target, area=nil, context=nil,
+                   authority: nil, accuracy: nil, allow_ballpark: nil, only_best: nil, force_over: nil)
+
+      options = {"AUTHORITY": authority,
+                 "ACCURACY": accuracy.nil? ? nil : accuracy.to_s,
+                 "ALLOW_BALLPARK": allow_ballpark.nil? ? nil : (allow_ballpark ? "YES" : "NO"),
+                 "ONLY_BEST": only_best.nil? ? nil : (only_best ? "YES" : "NO"),
+                 "FORCE_OVER": force_over.nil? ? nil : (force_over ? "YES" : "NO")}.compact
+
+      options_ptr_array = options.map do |key, value|
+        FFI::MemoryPointer.from_string("#{key}=#{value}")
+      end
+
+      # Add extra item at end for null pointer
+      options_ptr = FFI::MemoryPointer.new(:pointer, options.size + 1)
+      options_ptr.write_array_of_pointer(options_ptr_array)
+
       pointer = if source.is_a?(Crs) && target.is_a?(Crs)
                   if Api.method_defined?(:proj_create_crs_to_crs_from_pj)
-                    Api.proj_create_crs_to_crs_from_pj(context, source, target, area, nil)
+                    Api.proj_create_crs_to_crs_from_pj(context, source, target, area, options_ptr)
                   else
                     Api.proj_create_crs_to_crs(context, source.definition, target.definition, area)
                   end
