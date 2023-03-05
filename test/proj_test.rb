@@ -24,4 +24,25 @@ class ProjTest < AbstractTest
     assert_instance_of(Gem::Version, Proj::Api::PROJ_VERSION)
     assert(Proj::Api::PROJ_VERSION.canonical_segments.first >= 5)
   end
+
+  def test_degrees_to_radians
+    radians = Proj.degrees_to_radians(180)
+    assert_equal(Math::PI, radians)
+  end
+
+  def test_radians_to_degrees
+    degrees = Proj.radians_to_degrees(-Math::PI)
+    assert_equal(-180, degrees)
+  end
+
+  def test_degrees_minutes_seconds_to_radians
+    value = "19°46'27\"E"
+    radians = Proj.degrees_minutes_seconds_to_radians(value)
+    assert_in_delta(0.34512432, radians, 1e-7)
+  end
+
+  def test_radians_to_degrees_minutes_seconds
+    result = Proj.radians_to_degrees_minutes_seconds(Math::PI)
+    assert_equal("180dN", result)
+  end
 end

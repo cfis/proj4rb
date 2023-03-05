@@ -1,6 +1,16 @@
 # encoding: UTF-8
 
 module Proj
+  if Api::PROJ_VERSION < Gem::Version.new('5.0.0')
+    def Api.proj_torad(value)
+      value * 0.017453292519943296
+    end
+
+    def Api.proj_todeg(value)
+      value * 57.295779513082321
+    end
+  end
+
   # @deprecated This class is *DEPRECATED.* It will be removed when Proj 7 is released and removes the
   #   underlying API's this class uses. Code should be ported to use Coordinate objects.
   class Point

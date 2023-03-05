@@ -57,6 +57,60 @@ module Proj
   def self.search_paths
     self.info[:searchpath].split(";")
   end
+
+  # Converts degrees to radians
+  #
+  # see https://proj.org/development/reference/functions.html#c.proj_torad proj_torad
+  #
+  # @param value [Double] Value in degrees to convert
+  #
+  # @return [Double]
+  def self.degrees_to_radians(value)
+    Api.proj_torad(value)
+  end
+
+  # Converts radians degrees
+  #
+  # see https://proj.org/development/reference/functions.html#c.proj_todeg proj_todeg
+  #
+  # @param value [Double] Value in radians to convert
+  #
+  # @return [Double]
+  def self.radians_to_degrees(value)
+    Api.proj_todeg(value)
+  end
+
+  # Convert string of degrees, minutes and seconds to radians.
+  #
+  # see https://proj.org/development/reference/functions.html#c.proj_dmstor proj_dmstor
+  #
+  # @param value [String] Value to be converted to radians
+  #
+  # @return [Double]
+  def self.degrees_minutes_seconds_to_radians(value)
+    ptr = FFI::MemoryPointer.new(:string)
+    Api.proj_dmstor(value, ptr)
+  end
+
+  # Convert radians to a string representation of degrees, minutes and seconds
+  #
+  # @see https://proj.org/development/reference/functions.html#c.proj_rtodms proj_rtodms
+  # @see https://proj.org/development/reference/functions.html#c.proj_rtodms2 proj_rtodms2
+  #
+  # @param value [Double] Value to be converted in radians
+  # @param positive [String] Character denoting positive direction, typically 'N' or 'E'. Default 'N'
+  # @param negative [String] Character denoting negative direction, typically 'S' or 'W'. Default 'S'
+  #
+  # @return [String]
+  def self.radians_to_degrees_minutes_seconds(value, positive='N', negative='S')
+    ptr = FFI::MemoryPointer.new(:char, 100)
+    if Api::PROJ_VERSION < Gem::Version.new('9.2.0')
+      Api.proj_rtodms(ptr, value, positive.ord, negative.ord)
+    else
+      Api.proj_rtodms2(ptr, ptr.size, value, positive.ord, negative.ord)
+    end
+    ptr.read_string_to_null
+  end
 end
 
 at_exit do

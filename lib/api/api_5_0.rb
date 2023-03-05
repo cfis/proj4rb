@@ -300,7 +300,7 @@ module Proj
     attach_function :proj_torad, [:double], :double
     attach_function :proj_todeg, [:double], :double
     attach_function :proj_dmstor, [:string, :pointer], :double
-    attach_function :proj_rtodms, [:string, :double, :int, :int], :string
+    attach_function :proj_rtodms, [:pointer, :double, :int, :int], :string
     attach_function :proj_angular_input, [:PJ, PJ_DIRECTION], :bool
     attach_function :proj_angular_output, [:PJ, PJ_DIRECTION], :bool
   end

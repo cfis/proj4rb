@@ -82,16 +82,6 @@ module Proj
     end
   end
 
-  if Api::PROJ_VERSION < Gem::Version.new('5.0.0')
-    def Api.proj_torad(value)
-      value * 0.017453292519943296
-    end
-
-    def Api.proj_todeg(value)
-      value * 57.295779513082321
-    end
-  end
-
   # Load the old deprecated API for versions before version 8
   if Api::PROJ_VERSION < Gem::Version.new('8.0.0')
     require_relative './api_4_9'
@@ -101,7 +91,7 @@ module Proj
               '6.0.0', '6.1.0', '6.2.0', '6.3.0',
               '7.0.0', '7.1.0', '7.2.0',
               '8.0.0', '8.1.0', '8.2.0',
-              '9.1.0']
+              '9.1.0', '9.2.0']
   versions.each do |version|
     api_version = Gem::Version.new(version)
 
