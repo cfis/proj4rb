@@ -659,4 +659,67 @@ class CrsTest < AbstractTest
 
     assert_equal(expected, crs.inspect)
   end
+
+  def test_to_wgs84
+    wkt = <<~EOS
+      BOUNDCRS[
+          SOURCECRS[
+              GEOGCRS["NTF (Paris)",
+                  DATUM["Nouvelle Triangulation Francaise (Paris)",
+                      ELLIPSOID["Clarke 1880 (IGN)",6378249.2,293.466021293627,
+                          LENGTHUNIT["metre",1]]],
+                  PRIMEM["Paris",2.5969213,
+                      ANGLEUNIT["grad",0.0157079632679489]],
+                  CS[ellipsoidal,2],
+                      AXIS["geodetic latitude (Lat)",north,
+                          ORDER[1],
+                          ANGLEUNIT["grad",0.0157079632679489]],
+                      AXIS["geodetic longitude (Lon)",east,
+                          ORDER[2],
+                          ANGLEUNIT["grad",0.0157079632679489]],
+                  USAGE[
+                      SCOPE["Geodesy."],
+                      AREA["France - onshore - mainland and Corsica."],
+                      BBOX[41.31,-4.87,51.14,9.63]],
+                  ID["EPSG",4807]]],
+          TARGETCRS[
+              GEOGCRS["WGS 84",
+                  DATUM["World Geodetic System 1984",
+                      ELLIPSOID["WGS 84",6378137,298.257223563,
+                          LENGTHUNIT["metre",1]]],
+                  PRIMEM["Greenwich",0,
+                      ANGLEUNIT["degree",0.0174532925199433]],
+                  CS[ellipsoidal,2],
+                      AXIS["latitude",north,
+                          ORDER[1],
+                          ANGLEUNIT["degree",0.0174532925199433]],
+                      AXIS["longitude",east,
+                          ORDER[2],
+                          ANGLEUNIT["degree",0.0174532925199433]],
+                  ID["EPSG",4326]]],
+          ABRIDGEDTRANSFORMATION["NTF to WGS 84 (1)",
+              VERSION["IGN-Fra"],
+              METHOD["Geocentric translations (geog2D domain)",
+                  ID["EPSG",9603]],
+              PARAMETER["X-axis translation",-168,
+                  ID["EPSG",8605]],
+              PARAMETER["Y-axis translation",-60,
+                  ID["EPSG",8606]],
+              PARAMETER["Z-axis translation",320,
+                  ID["EPSG",8607]],
+              USAGE[
+                  SCOPE["(null/copy) Approximation for medium and low accuracy applications assuming equality between plate-fixed static and earth-fixed dynamic CRSs, ignoring static/dynamic CRS differences."],
+                  AREA["France - onshore - mainland and Corsica."],
+                  BBOX[41.31,-4.87,51.14,9.63]],
+              ID["EPSG",1193],
+              REMARK["These same parameter values are used to transform to ETRS89. See NTF to ETRS89 (1) (code 1651)."]]]
+    EOS
+
+    crs = Proj::Crs.new(wkt)
+    operation = crs.coordinate_operation
+    values = operation.to_wgs84
+
+    expected = [-168.0, -60.0, 320.0, 0.0, 0.0, 0.0, 0.0]
+    assert_equal(expected, values)
+  end
 end

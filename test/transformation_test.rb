@@ -148,5 +148,14 @@ class TransformationTest < AbstractTest
       operation = Proj::Conversion.create_from_database("EPSG", "1671", :PJ_CATEGORY_COORDINATE_OPERATION)
       assert(operation.instantiable?)
     end
+
+    def test_steps_not_concatenated
+      operation = Proj::Conversion.create_from_database("EPSG", "8048", :PJ_CATEGORY_COORDINATE_OPERATION)
+      assert_instance_of(Proj::Transformation, operation)
+      assert_equal(:PJ_TYPE_TRANSFORMATION, operation.proj_type)
+
+      assert_equal(0, operation.step_count)
+      refute(operation.step(0))
+    end
   end
 end

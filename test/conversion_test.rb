@@ -175,16 +175,28 @@ class ConversionTest < AbstractTest
     refute(conversion.degree_output?(:PJ_INV))
   end
 
-  # ASSERT_FALSE(proj_angular_input(P, PJ_INV));
-  # ASSERT_FALSE(proj_angular_output(P, PJ_FWD));
-  # ASSERT_TRUE(proj_angular_output(P, PJ_INV));
-  # P->inverted = 1;
-  # ASSERT_FALSE(proj_angular_input(P, PJ_FWD));
-  # ASSERT_TRUE(proj_angular_input(P, PJ_INV));
-  # ASSERT_TRUE(proj_angular_output(P, PJ_FWD));
-  # ASSERT_FALSE(proj_angular_output(P, PJ_INV));
+  def test_steps_concatenated
+    source_crs = Proj::Conversion.create_from_database("EPSG", "28356", :PJ_CATEGORY_CRS)
+    target_crs = Proj::Conversion.create_from_database("EPSG", "7856", :PJ_CATEGORY_CRS)
 
+    factory_context = Proj::OperationFactoryContext.new
+    factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
+    factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
 
+    operations = factory_context.create_operations(source_crs, target_crs)
+    assert_equal(3, operations.count)
+
+    operation = operations[0]
+    assert_instance_of(Proj::Conversion, operation)
+    assert_equal(:PJ_TYPE_CONCATENATED_OPERATION, operation.proj_type)
+
+    assert_equal(3, operation.step_count)
+    refute(operation.step(-1))
+
+    step = operation.step(1)
+    assert_equal("Transformation of GDA94 coordinates that have been derived through GNSS CORS.", step.scope)
+    assert_equal("Scale difference in ppb where 1/billion = 1E-9. See CT codes 8444-46 for NTv2 method giving equivalent results for Christmas Island, Cocos Islands and Australia respectively. See CT code 8447 for alternative including distortion model for Australia only.", step.remarks)
+  end
 
   if proj9?
     def test_last_used_operation

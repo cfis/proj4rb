@@ -292,5 +292,41 @@ module Proj
                  available: available_ptr.null? ? nil : available_ptr.read_int == 1 ? true : false)
       end
     end
+
+    # Return the parameters of a Helmert transformation as WKT1 TOWGS84 values
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_towgs84_values proj_coordoperation_get_towgs84_values
+    #
+    # @param error_if_incompatible [Boolean] If true an exception is thrown if the coordinate operation is not compatible with a WKT1 TOWGS84 representation
+    #
+    # @return [Array<Double>] Array of 7 numbers that represent translation, rotation and scale parameters.
+    #                          Rotation and scale difference terms might be zero if the transformation only includes translation parameters
+    def to_wgs84(error_if_incompatible = false)
+      parameter_count = 7
+      out_values = FFI::MemoryPointer.new(:double, parameter_count)
+      Api.proj_coordoperation_get_towgs84_values(self.context, self, out_values, parameter_count, error_if_incompatible ? 1 : 0)
+      out_values.read_array_of_double(parameter_count)
+    end
+
+    # Returns the number of steps in a concatenated operation
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_concatoperation_get_step_count proj_concatoperation_get_step_count
+    #
+    # @return [Integer] The number of steps
+    def step_count
+      Api.proj_concatoperation_get_step_count(self.context, self)
+    end
+
+    # Returns a step of a concatenated operation
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_concatoperation_get_step proj_concatoperation_get_step
+    #
+    # @param index [Integer] Index of the step
+    #
+    # @return [PjObject]
+    def step(index)
+      ptr = Api.proj_concatoperation_get_step(self.context, self, index)
+      PjObject.create_object(ptr, self.context)
+    end
   end
 end

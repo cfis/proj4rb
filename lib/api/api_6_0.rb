@@ -114,6 +114,9 @@ module Proj
     attach_function :proj_crs_get_coordoperation, [:PJ_CONTEXT, :PJ], :PJ
     attach_function :proj_coordoperation_get_accuracy, [:PJ_CONTEXT, :PJ], :double
     attach_function :proj_coordoperation_get_method_info, [:PJ_CONTEXT, :PJ, :pointer, :pointer, :pointer], :int
+    attach_function :proj_coordoperation_get_towgs84_values, [:PJ_CONTEXT, :PJ, :pointer, :int, :int], :int
+    attach_function :proj_concatoperation_get_step_count, [:PJ_CONTEXT, :PJ], :int
+    attach_function :proj_concatoperation_get_step, [:PJ_CONTEXT, :PJ, :int], :PJ
 
     attach_function :proj_get_ellipsoid, [:PJ_CONTEXT, :PJ], :PJ
     attach_function :proj_ellipsoid_get_parameters, [:PJ_CONTEXT, :PJ, :pointer, :pointer, :pointer, :pointer], :int
