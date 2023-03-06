@@ -250,12 +250,14 @@ class CrsTest < AbstractTest
   def test_ellipsoid
     crs = Proj::Crs.new('EPSG:4326')
     ellipsoid = crs.ellipsoid
+    assert_instance_of(Proj::Ellipsoid, ellipsoid)
     assert_equal(:PJ_TYPE_ELLIPSOID, ellipsoid.proj_type)
   end
 
   def test_prime_meridian
     crs = Proj::Crs.new('EPSG:4326')
     prime_meridian = crs.prime_meridian
+    assert_instance_of(Proj::PrimeMeridian, prime_meridian)
     assert_equal('Greenwich', prime_meridian.name)
   end
 

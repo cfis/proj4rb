@@ -1,42 +1,78 @@
 module Proj
-  class Ellipsoid
-    attr_reader :id, :major, :ell, :name
-
-    def self.list
+  class Ellipsoid < PjObject
+    # Returns a list of ellipsoids that are built into Proj. A more comprehensive
+    # list is stored in the Proj database and can be queried via PjObject#create_from_database
+    def self.built_in
       pointer_to_array = FFI::Pointer.new(Api::PJ_ELLPS, Api.proj_list_ellps)
+
       result = Array.new
       0.step do |i|
-        ellipse_info = Api::PJ_ELLPS.new(pointer_to_array[i])
-        break result if ellipse_info[:id].nil?
-        result << self.new(ellipse_info[:id], ellipse_info[:major], ellipse_info[:ell], ellipse_info[:name])
+        pj_ellps = Api::PJ_ELLPS.new(pointer_to_array[i])
+        break result if pj_ellps[:id].nil?
+        result << pj_ellps
+      end
+      result
+    end
+
+    # Returns ellipsoid parameters
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    #
+    # @return [Hash] Hash of ellipsoid parameters. Axes are in meters
+    def parameters
+      @parameters ||= begin
+        out_semi_major_metre = FFI::MemoryPointer.new(:double)
+        out_semi_minor_metre = FFI::MemoryPointer.new(:double)
+        out_is_semi_minor_computed = FFI::MemoryPointer.new(:int)
+        out_inv_flattening = FFI::MemoryPointer.new(:double)
+
+        result = Api.proj_ellipsoid_get_parameters(self.context, self, out_semi_major_metre, out_semi_minor_metre, out_is_semi_minor_computed, out_inv_flattening)
+
+        if result != 1
+          Error.check(self.context)
+        end
+
+        {semi_major_axis: out_semi_major_metre.read_double,
+         semi_minor_axis: out_semi_minor_metre.read_double,
+         semi_minor_axis_computed: out_is_semi_minor_computed.read_int == 1 ? true : false,
+         inverse_flattening: out_inv_flattening.null? ? nil : out_inv_flattening.read_double}
       end
     end
 
-    def self.get(id)
-      self.list.find {|ellipsoid| ellipsoid.id == id}
+    # Returns the semi-major axis in meters
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    #
+    # @return [Double]
+    def semi_major_axis
+      self.parameters[:semi_major_axis]
     end
 
-    def initialize(id, major, ell, name)
-      @id = id
-      @major = major
-      @ell = ell
-      @name = name
+    # Returns the semi-minor axis in meters
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    #
+    # @return [Double]
+    def semi_minor_axis
+      self.parameters[:semi_minor_axis]
     end
 
-    def <=>(other)
-      self.id <=> other.id
+    # Returns whether the semi-minor axis is computed
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    #
+    # @return [Boolean]
+    def semi_minor_axis_computed
+      self.parameters[:semi_minor_axis_computed]
     end
 
-    def ==(other)
-      self.id == other.id
-    end
-
-    def to_s
-      self.id
-    end
-    
-    def inspect
-      "#<#{self.class} id=\"#{id}\", major=\"#{major}\", ell=\"#{ell}\", name=\"#{name}\">"
+    # Returns the inverse flattening value
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    #
+    # @return [Double]
+    def inverse_flattening
+      self.parameters[:inverse_flattening]
     end
   end
 end

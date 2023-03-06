@@ -10,7 +10,7 @@ module Proj
     # @return [Context] The default context
     def self.default
       result = Context.allocate
-      # The default Proj Context is reprsented by a null pointer
+      # The default Proj Context is represented by a null pointer
       result.instance_variable_set(:@pointer, FFI::Pointer::NULL)
       result
     end

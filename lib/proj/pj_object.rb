@@ -27,6 +27,10 @@ module Proj
                      Datum.allocate
                    when :PJ_TYPE_DATUM_ENSEMBLE
                      DatumEnsemble.allocate
+                   when :PJ_TYPE_ELLIPSOID
+                     Ellipsoid.allocate
+                   when :PJ_TYPE_PRIME_MERIDIAN
+                     PrimeMeridian.allocate
                    else
                      PjObject.allocate
                    end

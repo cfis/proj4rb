@@ -111,11 +111,15 @@ module Proj
     attach_function :proj_cs_get_type, [:PJ_CONTEXT, :PJ], PJ_COORDINATE_SYSTEM_TYPE
     attach_function :proj_cs_get_axis_count, [:PJ_CONTEXT, :PJ], :int
     attach_function :proj_cs_get_axis_info, [:PJ_CONTEXT, :PJ, :int, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
-    attach_function :proj_get_prime_meridian, [:PJ_CONTEXT, :PJ], :PJ
-    attach_function :proj_get_ellipsoid, [:PJ_CONTEXT, :PJ], :PJ
     attach_function :proj_crs_get_coordoperation, [:PJ_CONTEXT, :PJ], :PJ
     attach_function :proj_coordoperation_get_accuracy, [:PJ_CONTEXT, :PJ], :double
     attach_function :proj_coordoperation_get_method_info, [:PJ_CONTEXT, :PJ, :pointer, :pointer, :pointer], :int
+
+    attach_function :proj_get_ellipsoid, [:PJ_CONTEXT, :PJ], :PJ
+    attach_function :proj_ellipsoid_get_parameters, [:PJ_CONTEXT, :PJ, :pointer, :pointer, :pointer, :pointer], :int
+
+    attach_function :proj_get_prime_meridian, [:PJ_CONTEXT, :PJ], :PJ
+    attach_function :proj_prime_meridian_get_parameters, [:PJ_CONTEXT, :PJ, :pointer, :pointer, :pointer], :int
 
     # ISO-19111
     attach_function :proj_create_from_wkt, [:PJ_CONTEXT, :string, :pointer, :PROJ_STRING_LIST, :PROJ_STRING_LIST], :PJ
