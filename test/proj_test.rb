@@ -20,6 +20,15 @@ class ProjTest < AbstractTest
     refute(search_paths.empty?)
   end
 
+  def test_init_file_info
+    info = Proj.init_file_info("epsg")
+    assert_equal("epsg", info[:name].to_ptr.read_string)
+    assert(info[:filename].to_ptr.read_string.empty?)
+    #assert_equal("epsg", info[:version].to_ptr.read_string)
+    assert(info[:origin].to_ptr.read_string.empty?)
+    assert(info[:lastupdate].to_ptr.read_string.empty?)
+  end
+
   def test_version
     assert_instance_of(Gem::Version, Proj::Api::PROJ_VERSION)
     assert(Proj::Api::PROJ_VERSION.canonical_segments.first >= 5)

@@ -47,6 +47,16 @@ class ConversionTest < AbstractTest
     assert_equal(16.0, object.accuracy)
   end
 
+  def test_roundrip
+    conversion = Proj::Conversion.new("+proj=cart +ellps=GRS80")
+    coord1 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(55), z: 100)
+    coord2 = conversion.forward(coord1)
+
+    dist = conversion.roundtrip(:PJ_FWD, 10000, coord1)
+    dist += conversion.roundtrip(:PJ_INV, 10000, coord2)
+    assert(dist < 4e-9)
+  end
+
   def test_accuracy_projection
     object = Proj::Conversion.create("+proj=helmert")
     assert_equal(-1.0, object.accuracy)

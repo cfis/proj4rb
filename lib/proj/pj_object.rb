@@ -80,6 +80,32 @@ module Proj
       create_object(ptr, context)
     end
 
+    # Return a list of objects by their name
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_create_from_name proj_create_from_name
+    #
+    # @param name [String] Search value, must be at least two characters
+    # @param context [Context] Context. If nil the current context is used
+    # @param auth_name [String] Authority name or nil for all authorities. Default is nil
+    # @param types [Array<PJ_TYPE>] Types of objects to search for or nil for all types. Default is nil
+    # @param approximate_match  [Boolean] Whether approximate name identification is allowed. Default is false
+    # @param limit [Integer] The maximum number of results to return, use 0 for all results. Default is 0
+    #
+    # @return [PjObjects] Found objects
+    def self.create_from_name(name, context, auth_name: nil, types: nil, approximate_match: false, limit: 0)
+      if types
+        types_ptr = FFI::MemoryPointer.new(Api::PJ_TYPE.native_type, types.size)
+        types_ptr.write_array_of_int(types.map { |symbol| Api::PJ_TYPE[symbol]})
+        types_count = types.size
+      else
+        types_ptr = nil
+        types_count = 0
+      end
+
+      ptr = Api.proj_create_from_name(context, auth_name, name, types_ptr, types_count, approximate_match ? 1 : 0, limit, nil)
+      PjObjects.new(ptr, context)
+    end
+
     # Instantiates an conversion from a string. The string can be:
     #
     # * proj-string,
@@ -147,6 +173,16 @@ module Proj
       !@pointer.null?
     end
 
+    # Returns whether an object is deprecated
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_is_deprecated proj_is_deprecated
+    #
+    # @return [Boolean] True if the object is deprecated, otherwise false
+    def deprecated?
+      result = Api.proj_is_deprecated(self)
+      result == 1 ? true : false
+    end
+
     # Return whether two objects are equivalent. For versions 6.3.0 and higher
     # the check may use using the proj database to check for name aliases
     #
@@ -164,6 +200,15 @@ module Proj
                  Api.proj_is_equivalent_to_with_ctx(self.context, self, other, comparison)
                end
       result == 1 ? true : false
+    end
+
+    #  Returns the current error-state of this object
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_errno proj_errno
+    #
+    # @return [Integer] An non-zero error codes indicates an error either with the transformation setup or during a transformation
+    def errorno
+      Api.proj_errno(self)
     end
 
     # Get information about this object
@@ -310,6 +355,41 @@ module Proj
                name: name)
     end
 
+    # Return the base CRS of a BoundCRS or a DerivedCRS/ProjectedCRS, or the source CRS of a
+    # CoordinateOperation, or the CRS of a CoordinateMetadata.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_source_crs proj_get_source_crs
+    #
+    # @return [Crs]
+    def source_crs
+      ptr = Api.proj_get_source_crs(self.context, self)
+      PjObject.create_object(ptr, self.context)
+    end
+
+    # Return the hub CRS of a BoundCRS or the target CRS of a CoordinateOperation
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_target_crs proj_get_target_crs
+    #
+    # @return [Crs]
+    def target_crs
+      ptr = Api.proj_get_target_crs(self.context, self)
+      PjObject.create_object(ptr, self.context)
+    end
+
+    # Calculate various cartographic properties, such as scale factors, angular distortion and
+    # meridian convergence. Depending on the underlying projection values will be
+    # calculated either numerically (default) or analytically. The function also calculates
+    # the partial derivatives of the given coordinate.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_factors proj_factors
+    #
+    # @param coordinate [Coordinate] Input geodetic coordinate in radians
+    #
+    # @return [PJ_FACTORS]
+    def factors(coordinate)
+      Api.proj_factors(self, coordinate)
+    end
+
     # Return whether a coordinate operation can be instantiated as a PROJ pipeline, checking in particular that referenced grids are available.
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_is_instantiable proj_coordoperation_is_instantiable
@@ -321,6 +401,8 @@ module Proj
     end
 
     # Return a list of non-deprecated objects related to the passed one
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_non_deprecated proj_get_non_deprecated
     #
     # @return [Array] Array of objects
     def non_deprecated

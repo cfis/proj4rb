@@ -55,8 +55,21 @@ module Proj
   # Returns default search paths
   #
   # @see https://proj.org/development/reference/functions.html#c.proj_info proj_info
+  #
+  # @return Array<string> List of search paths
   def self.search_paths
     self.info[:searchpath].split(";")
+  end
+
+  # Return information about the specific init file
+  #
+  # @see https://proj.org/development/reference/functions.html#c.proj_init_info proj_init_info
+  #
+  # @param file_name [String] The name of the init file (not the path)
+  #
+  # @return [PJ_INIT_INFO]
+  def self.init_file_info(file_name)
+    Api.proj_init_info(file_name)
   end
 
   # Converts degrees to radians

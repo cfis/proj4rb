@@ -63,6 +63,8 @@ module Proj
                [:e, :n, :u]
              elsif o && p && k
                [:o, :p, :k]
+             else
+               []
              end
 
       coord_struct = @coord[:v]
@@ -73,6 +75,10 @@ module Proj
 
     def to_ptr
       @coord.to_ptr
+    end
+
+    def pj_coord
+      @coord
     end
 
     # Returns x coordinate

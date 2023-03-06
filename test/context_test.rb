@@ -159,4 +159,11 @@ class ContextTest < AbstractTest
     context = Proj::Context.new
     assert_match(/proj$/, context.user_directory)
   end
+
+  def test_wkt_dialect
+    context = Proj::Context.new
+
+    wkt = 'LOCAL_CS["foo"]'
+    assert_equal(:PJ_GUESSED_WKT2_2015, context.wkt_dialect(wkt))
+  end
 end

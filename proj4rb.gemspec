@@ -1,17 +1,17 @@
 Gem::Specification.new do |spec|
   spec.name = 'proj4rb'
   spec.version = '3.0.0'
-  spec.summary = 'Ruby bindings for the Proj.4 Carthographic Projection library'
+  spec.summary = 'Ruby bindings for the Proj coordinate transformation library'
   spec.description = <<-EOF
-    Proj4rb is a ruby binding for the Proj.4 Carthographic Projection library, that supports conversions between a very large number of geographic coordinate systems and datumspec.
+    Ruby bindings for the Proj coordinate transformation library
   EOF
   spec.platform = Gem::Platform::RUBY
   spec.authors = ['Guilhem Vellut', 'Jochen Topf', 'Charlie Savage']
   spec.homepage = 'https://github.com/cfis/proj4rb'
-  spec.required_ruby_version = '>= 2.4.1'
+  spec.required_ruby_version = '>= 2.7'
   spec.license = 'MIT'
 
-  spec.requirements << 'Proj (Proj4) Library'
+  spec.requirements << 'Proj Library'
   spec.require_path = 'lib'
   spec.files = Dir['ChangeLog',
                    'Gemfile',

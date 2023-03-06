@@ -187,6 +187,20 @@ module Proj
       Bounds.new(out_xmin.read_double, out_ymin.read_double, out_xmax.read_double, out_ymax.read_double)
     end
 
+    # Measure the internal consistency of a given transformation. The function performs n round trip
+    # transformations starting in either the forward or reverse direction.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_roundtrip proj_roundtrip
+    #
+    # @param direction [PJ_DIRECTION] The starting direction of transformation
+    # @param iterations [Integer] The number of roundtrip transformations
+    # @param coordinate [Coordinate] The input coordinate
+    #
+    # @return [Double] The euclidean distance of the starting point coordinate and the last coordinate after n iterations back and forth.
+    def roundtrip(direction, iterations, coordinate)
+      Api.proj_roundtrip(self, direction, iterations, coordinate.pj_coord)
+    end
+
     # Returns a new PJ object whose axis order is the one expected for visualization purposes
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_normalize_for_visualization proj_normalize_for_visualization

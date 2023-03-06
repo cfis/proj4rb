@@ -45,6 +45,10 @@ class DatabaseTest < AbstractTest
     database = Proj::Database.new(Proj::Context.current)
     metadata = database.metadata('IGNF.VERSION')
     assert_equal('3.1.0', metadata)
+
+    database = Proj::Database.new(Proj::Context.current)
+    metadata = database.metadata('EPSG.VERSION')
+    assert_equal('v10.076', metadata)
   end
 
   def test_codes
@@ -162,6 +166,18 @@ class DatabaseTest < AbstractTest
                end
 
     assert_equal(expected, crs_infos.count)
+  end
+
+  def test_unit
+    database = Proj::Database.new(Proj::Context.current)
+    unit = database.unit("EPSG", "9001")
+    assert_equal("EPSG", unit.auth_name)
+    assert_equal("9001", unit.code)
+    assert_equal("metre", unit.name)
+    assert_equal("linear", unit.category)
+    assert_equal(1.0, unit.conv_factor)
+    refute(unit.proj_short_name)
+    refute(unit.deprecated)
   end
 
   def test_geoid_models

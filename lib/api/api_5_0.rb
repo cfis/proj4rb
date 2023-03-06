@@ -4,7 +4,7 @@ module Proj
     typedef :pointer, :PJ_CONTEXT
     typedef :pointer, :PJ_AREA
 
-    class P5_FACTORS < FFI::Struct
+    class PJ_FACTORS < FFI::Struct
       layout :meridional_scale, :double,               # h 
              :parallel_scale, :double,                 # k 
              :areal_scale, :double,                    # s 
@@ -267,9 +267,10 @@ module Proj
                        :PJ_WKT1_ESRI)
 
     attach_function :proj_info, [], PJ_INFO.by_value
-    attach_function :proj_pj_info, [:PJ], PJ_PROJ_INFO.by_value
     attach_function :proj_grid_info, [:string], PJ_GRID_INFO.by_value
     attach_function :proj_init_info, [:string], PJ_INIT_INFO.by_value
+
+    attach_function :proj_pj_info, [:PJ], PJ_PROJ_INFO.by_value
 
     # Contexts
     attach_function :proj_context_create, [], :PJ_CONTEXT
@@ -289,6 +290,10 @@ module Proj
     attach_function :proj_destroy, [:PJ], :PJ
 
     attach_function :proj_trans, [:PJ, PJ_DIRECTION, PJ_COORD.by_value], PJ_COORD.by_value
+    attach_function :proj_trans_generic, [:PJ, PJ_DIRECTION, :pointer, :size_t, :size_t, :pointer, :size_t, :size_t, :pointer, :size_t, :size_t, :pointer, :size_t, :size_t], :size_t
+    attach_function :proj_trans_array, [:PJ, PJ_DIRECTION, :size_t, :pointer], :int
+    attach_function :proj_roundtrip, [:PJ, PJ_DIRECTION, :int, PJ_COORD.by_ref], :double
+    attach_function :proj_factors, [:PJ, PJ_COORD.by_value], PJ_FACTORS.by_value
 
     # Get lists of operations, ellipsoids, units and prime meridians
     attach_function :proj_list_operations, [], :pointer #PJ_LIST

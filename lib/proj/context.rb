@@ -69,6 +69,7 @@ module Proj
     #
     # @param pointer [FFI::MemoryPointer] Optional pointer to custom data
     # @param proc [Proc] Custom logging procedure
+    #
     # @return [nil]
     def set_log_function(pointer = nil, &proc)
       Api.proj_log_func(self, pointer, proc)
@@ -104,6 +105,17 @@ module Proj
     # @return [nil]
     def use_proj4_init_rules=(value)
       Api.proj_context_use_proj4_init_rules(self, value ? 1 : 0)
+    end
+
+    # Guess the "dialect" of the specified WKT string
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_guess_wkt_dialect proj_context_guess_wkt_dialect
+    #
+    # @param wkt [String] A WKT string
+    #
+    # @return [PJ_GUESSED_WKT_DIALECT]
+    def wkt_dialect(wkt)
+      Api.proj_context_guess_wkt_dialect(self, wkt)
     end
 
     # Sets the CA Bundle path which will be used by PROJ when curl and PROJ_NETWORK are enabled.

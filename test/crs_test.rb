@@ -365,6 +365,91 @@ class CrsTest < AbstractTest
     assert_in_delta(111219.409, coord3.x, 1e-3)
   end
 
+  def test_source_crs
+    wkt = <<~EOS
+            PROJCRS["WGS 84 / UTM zone 31N",
+                BASEGEODCRS["WGS 84",
+                    DATUM["World Geodetic System 1984",
+                        ELLIPSOID["WGS 84",6378137,298.257223563,
+                            LENGTHUNIT["metre",1]]],
+                    PRIMEM["Greenwich",0,
+                        ANGLEUNIT["degree",0.0174532925199433]]],
+                CONVERSION["UTM zone 31N",
+                    METHOD["Transverse Mercator",
+                        ID["EPSG",9807]],
+                    PARAMETER["Latitude of natural origin",0,
+                        ANGLEUNIT["degree",0.0174532925199433],
+                        ID["EPSG",8801]],
+                    PARAMETER["Longitude of natural origin",3,
+                        ANGLEUNIT["degree",0.0174532925199433],
+                        ID["EPSG",8802]],
+                    PARAMETER["Scale factor at natural origin",0.9996,
+                        SCALEUNIT["unity",1],
+                        ID["EPSG",8805]],
+                    PARAMETER["False easting",500000,
+                        LENGTHUNIT["metre",1],
+                        ID["EPSG",8806]],
+                    PARAMETER["False northing",0,
+                        LENGTHUNIT["metre",1],
+                        ID["EPSG",8807]]],
+                CS[Cartesian,2],
+                    AXIS["(E)",east,
+                        ORDER[1],
+                        LENGTHUNIT["metre",1]],
+                    AXIS["(N)",north,
+                        ORDER[2],
+                        LENGTHUNIT["metre",1]],
+                ID["EPSG",32631]]
+    EOS
+
+    crs = Proj::Crs.new(wkt)
+    source_crs = crs.source_crs
+    assert_equal("WGS 84", source_crs.name)
+  end
+
+  def test_target_crs
+    wkt = <<~EOS
+        BOUNDCRS[
+          SOURCECRS[
+            GEODCRS["NTF (Paris)",
+                    DATUM["Nouvelle Triangulation Francaise (Paris)",
+                          ELLIPSOID["Clarke 1880 (IGN)",6378249.2,293.466021293627,
+                                    LENGTHUNIT["metre",1]]],
+                    PRIMEM["Paris",2.5969213,
+                           ANGLEUNIT["grad",0.015707963267949]],
+                    CS[ellipsoidal,2],
+                    AXIS["latitude",north,
+                         ORDER[1],
+                         ANGLEUNIT["grad",0.015707963267949]],
+                    AXIS["longitude",east,
+                         ORDER[2],
+                         ANGLEUNIT["grad",0.015707963267949]],
+                    ID["EPSG",4807]]],
+          TARGETCRS[
+            GEODCRS["WGS 84",
+                    DATUM["World Geodetic System 1984",
+                          ELLIPSOID["WGS 84",6378137,298.257223563,
+                                    LENGTHUNIT["metre",1]]],
+                    PRIMEM["Greenwich",0,
+                           ANGLEUNIT["degree",0.0174532925199433]],
+                    CS[ellipsoidal,2],
+                    AXIS["latitude",north,
+                         ORDER[1],
+                         ANGLEUNIT["degree",0.0174532925199433]],
+                    AXIS["longitude",east,
+                         ORDER[2],
+                         ANGLEUNIT["degree",0.0174532925199433]],
+                    ID["EPSG",4326]]],
+          ABRIDGEDTRANSFORMATION["",
+                                 METHOD[""],
+                                 PARAMETER["foo",1]]]
+    EOS
+
+    crs = Proj::Crs.new(wkt)
+    target_crs = crs.target_crs
+    assert_equal("WGS 84", target_crs.name)
+  end
+
   def test_to_proj_string
     crs = Proj::Crs.new('EPSG:26915')
     assert_equal('+proj=utm +zone=15 +datum=NAD83 +units=m +no_defs +type=crs', crs.to_proj_string)

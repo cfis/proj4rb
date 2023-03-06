@@ -5,6 +5,14 @@ module Proj
                                    :PJ_COMP_EQUIVALENT, # The objects are equivalent for the purpose of coordinate operations. They can differ by the name of their objects, identifiers, other metadata. Parameters may be expressed in different units, provided that the value is (with some tolerance) the same once expressed in a common unit.
                                    :PJ_COMP_EQUIVALENT_EXCEPT_AXIS_ORDER_GEOGCRS) # Same as EQUIVALENT, relaxed with an exception that the axis order of the base CRS of a DerivedCRS/ProjectedCRS or the axis order of a GeographicCRS is ignored. Only to be used with DerivedCRS/ProjectedCRS/GeographicCRS
 
+    #Guessed WKT "dialect"
+    PJ_GUESSED_WKT_DIALECT = enum(:PJ_GUESSED_WKT2_2019,
+                                  :PJ_GUESSED_WKT2_2018,
+                                  :PJ_GUESSED_WKT2_2015,
+                                  :PJ_GUESSED_WKT1_GDAL,
+                                  :PJ_GUESSED_WKT1_ESRI,
+                                  :PJ_GUESSED_NOT_WKT)
+
     # Base methods
     attach_function :proj_clone, [:PJ_CONTEXT, :PJ], :PJ
     attach_function :proj_get_name, [:PJ], :string
@@ -16,6 +24,9 @@ module Proj
     attach_function :proj_is_deprecated, [:PJ], :bool
     attach_function :proj_is_crs, [:PJ], :bool
     attach_function :proj_is_equivalent_to, [:PJ, :PJ, PJ_COMPARISON_CRITERION], :int
+    attach_function :proj_is_deprecated, [:PJ], :int
+    attach_function :proj_get_source_crs, [:PJ_CONTEXT, :PJ], :PJ
+    attach_function :proj_get_target_crs, [:PJ_CONTEXT, :PJ], :PJ
 
     # Area
     attach_function :proj_area_create, [], :PJ_AREA
@@ -89,6 +100,7 @@ module Proj
     attach_function :proj_get_authorities_from_database, [:PJ_CONTEXT], :PROJ_STRING_LIST
     attach_function :proj_get_codes_from_database, [:PJ_CONTEXT, :string, PJ_TYPE, :int], :PROJ_STRING_LIST
     attach_function :proj_get_crs_info_list_from_database, [:PJ_CONTEXT, :string, PROJ_CRS_LIST_PARAMETERS, :pointer], PROJ_CRS_INFO
+    attach_function :proj_uom_get_info_from_database, [:PJ_CONTEXT, :string, :string, :pointer, :pointer, :pointer], :int
 
     # CRS methods
     attach_function :proj_crs_get_geodetic_crs, [:PJ_CONTEXT, :PJ], :PJ
@@ -108,6 +120,7 @@ module Proj
     # ISO-19111
     attach_function :proj_create_from_wkt, [:PJ_CONTEXT, :string, :pointer, :PROJ_STRING_LIST, :PROJ_STRING_LIST], :PJ
     attach_function :proj_create_from_database, [:PJ_CONTEXT, :string, :string, PJ_CATEGORY, :int, :pointer], :PJ
+    attach_function :proj_context_guess_wkt_dialect, [:PJ_CONTEXT, :string], PJ_GUESSED_WKT_DIALECT
 
     # Undocumented apis
     attach_function :proj_context_use_proj4_init_rules, [:PJ_CONTEXT, :int], :void

@@ -30,7 +30,7 @@ module Proj
     def self.check(context)
       unless context.errno == 0
         # raise(self, "#{self.category(context.errno)}: #{self.message(context)}")
-        raise(self, self.message(context))
+        raise(self, self.message(context, errno))
       end
     end
 
@@ -38,12 +38,15 @@ module Proj
     #
     # See https://proj.org/development/reference/functions.html#c.proj_errno_string proj_errno_string
     #
+    # @param context [Context] The context the error occurred in
+    # @param errno [Integer] The error number
+    #
     # return [String]
-    def self.message(context)
+    def self.message(context, errno)
       if Api.method_defined?(:proj_context_errno_string)
-        Api.proj_context_errno_string(context, context.errno)
+        Api.proj_context_errno_string(context, errno)
       elsif Api.method_defined?(:proj_errno_string)
-        Api.proj_errno_string(context.errno)
+        Api.proj_errno_string(errno)
       end
     end
 

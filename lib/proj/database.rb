@@ -247,5 +247,36 @@ module Proj
     def units(auth_name, category = nil, allow_deprecated = false)
       Unit.list(auth_name: auth_name, category: category, allow_deprecated: allow_deprecated)
     end
+
+    # Returns information for a unit of measure from a database lookup
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_uom_get_info_from_database proj_uom_get_info_from_database
+    #
+    # @param auth_name [String] Authority name
+    # @param code [String] Unit of measure code
+    #
+    # @return [Unit] Unit
+    def unit(auth_name, code)
+      out_name = FFI::MemoryPointer.new(:string)
+      out_conv_factor = FFI::MemoryPointer.new(:double)
+      out_category = FFI::MemoryPointer.new(:string)
+
+      result = Api.proj_uom_get_info_from_database(self.context, auth_name, code,
+                                                    out_name, out_conv_factor , out_category)
+
+      if result == 1
+        name_ptr = out_name.read_pointer
+        conv_factor_ptr = out_conv_factor
+        category_ptr = out_category.read_pointer
+
+        name = name_ptr.read_string_to_null
+        conv_factor = conv_factor_ptr.read_double
+        category = category_ptr.read_string_to_null
+
+        Unit.new(auth_name, code, name, category, conv_factor, nil, false)
+      else
+        Error.check(self.context)
+      end
+    end
   end
 end
