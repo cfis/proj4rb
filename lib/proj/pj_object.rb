@@ -21,6 +21,10 @@ module Proj
                      Conversion.allocate
                    when :PJ_TYPE_TRANSFORMATION
                      Transformation.allocate
+                   when :PJ_TYPE_TEMPORAL_DATUM, :PJ_TYPE_ENGINEERING_DATUM, :PJ_TYPE_PARAMETRIC_DATUM,
+                        :PJ_TYPE_GEODETIC_REFERENCE_FRAME, :PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME,
+                        :PJ_TYPE_VERTICAL_REFERENCE_FRAME, :PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME
+                     Datum.allocate
                    when :PJ_TYPE_DATUM_ENSEMBLE
                      DatumEnsemble.allocate
                    else

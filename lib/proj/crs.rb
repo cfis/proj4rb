@@ -123,7 +123,9 @@ module Proj
       self.area_of_use
     end
 
-    # Get the ellipsoid from a CRS or a GeodeticReferenceFrame.
+    # Returns the ellipsoid
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_ellipsoid proj_get_ellipsoid
     #
     # @return [PjObject]
     def ellipsoid
@@ -151,7 +153,9 @@ module Proj
       PjObject.create_object(pointer, self.context)
     end
 
-    # Get the prime meridian of a CRS or a GeodeticReferenceFrame.
+    # Returns the prime meridian
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_prime_meridian proj_get_prime_meridian
     #
     # @return [PjObject]
     def prime_meridian
