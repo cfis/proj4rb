@@ -147,6 +147,9 @@ module Proj
     end
 
     def initialize(pointer, context=nil)
+      if pointer.null?
+        raise(Error, "Cannot create a PjObject with a null pointer")
+      end
       @pointer = pointer
       @context = context
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
@@ -177,8 +180,8 @@ module Proj
       @context || Context.current
     end
 
-    def valid?
-      !@pointer.null?
+    def errno
+      Api.proj_errno(self)
     end
 
     # Returns whether an object is deprecated

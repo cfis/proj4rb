@@ -27,6 +27,10 @@ module Proj
     def initialize(value, context=nil)
       ptr = Api.proj_create(context || Context.current, value)
 
+      if ptr.null?
+        Error.check(self.context)
+      end
+
       if Api.method_defined?(:proj_is_crs) && Api.proj_is_crs(ptr)
         raise(Error, "Invalid conversion. Proj created an instance of: #{self.proj_type}.")
       end

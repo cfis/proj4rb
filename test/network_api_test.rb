@@ -34,8 +34,6 @@ class NetworkApiTest < AbstractTest
           +step +proj=unitconvert +xy_in=rad +xy_out=deg
         EOS
 
-    assert(conversion.valid?)
-
     coord = Proj::Coordinate.new(long: 12, lat: 56, z: 0)
     new_coord = conversion.forward(coord)
     assert_in_delta(12, new_coord.long)

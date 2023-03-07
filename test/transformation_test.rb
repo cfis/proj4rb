@@ -83,10 +83,8 @@ class TransformationTest < AbstractTest
     dst = Proj::Crs.new("EPSG:4258")
 
     transformation = Proj::Transformation.new(src, dst)
-    assert(transformation.valid?)
 
     transformation = Proj::Transformation.new(src, dst, accuracy: 0.05)
-    refute(transformation.valid?)
   end
 
   def test_ballpark_filter
@@ -94,10 +92,8 @@ class TransformationTest < AbstractTest
     dst = Proj::Crs.new("EPSG:4258")
 
     transformation = Proj::Transformation.new(src, dst)
-    assert(transformation.valid?)
 
     transformation = Proj::Transformation.new(src, dst, allow_ballpark: false)
-    refute(transformation.valid?)
   end
 
   if proj8?

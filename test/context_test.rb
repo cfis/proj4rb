@@ -52,12 +52,15 @@ class ContextTest < AbstractTest
         file << "<MY_PIPELINE> +proj=pipeline +step +proj=utm +zone=31 +ellps=GRS80"
       end
 
-      conversion = Proj::Conversion.new("+init=temp_proj_dic2:MY_PIPELINE")
-      refute(conversion.valid?)
+      # Try to use the pipeline, an error will occur since it is not on the path
+      error = assert_raises(Proj::Error) do
+        Proj::Conversion.new("+init=temp_proj_dic2:MY_PIPELINE")
+      end
+      assert_equal("Invalid value for an argument", error.to_s)
 
+      # Set the path and try again
       context.search_paths = [File.dirname(path)]
       conversion = Proj::Conversion.new("+init=temp_proj_dic2:MY_PIPELINE", context)
-      assert(conversion.valid?)
     ensure
       File.delete(path)
     end
@@ -105,7 +108,7 @@ class ContextTest < AbstractTest
     end
 
     begin
-      context.database_path = '/wrong'
+      context.database.path = '/wrong'
     rescue
     end
 
