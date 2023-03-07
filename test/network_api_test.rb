@@ -6,7 +6,7 @@ class NetworkApiTest < AbstractTest
   def setup
     super
     # Make sure downloader callbacks are not GCed
-    GC.stress = true
+    #GC.stress = true
   end
 
   def teardown

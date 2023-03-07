@@ -75,7 +75,7 @@ module Proj
     end
 
     def header_value(name)
-      @response.header[name]
+      @response[name]
     end
 
     def read_range(offset, size_to_read)

@@ -28,7 +28,7 @@ class EllipsoidTest < AbstractTest
            AXIS["Northing",NORTH],
            AUTHORITY["EPSG","32631"]]
     EOS
-    crs = Proj::Crs.new(wkt)
+    Proj::Crs.new(wkt)
   end
 
   def test_built_in

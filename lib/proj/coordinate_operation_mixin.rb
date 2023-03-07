@@ -209,8 +209,7 @@ module Proj
     def transform_array(coordinates, direction)
       coords_ptr = FFI::MemoryPointer.new(Api::PJ_COORD, coordinates.size)
       coordinates.each_with_index do |coordinate, i|
-        offset = i * Api::PJ_COORD.size
-        pj_coord = Api::PJ_COORD.new(coords_ptr + offset)
+        pj_coord = Api::PJ_COORD.new(coords_ptr[i])
         pj_coord.to_ptr.__copy_from__(coordinate.to_ptr, Api::PJ_COORD.size)
       end
 
@@ -221,7 +220,6 @@ module Proj
 
       result = Array.new(coordinates.size)
       0.upto(coordinates.size) do |i|
-        offset = i * Api::PJ_COORD.size
         pj_coord = Api::PJ_COORD.new(coords_ptr[i])
         result[i] = Coordinate.from_coord(pj_coord)
       end

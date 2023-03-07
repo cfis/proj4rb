@@ -27,7 +27,7 @@ class ContextTest < AbstractTest
     assert(clone.use_proj4_init_rules)
   end
 
-  def test_clone
+  def test_dup
     context = Proj::Context.new
     refute(context.use_proj4_init_rules)
     context.use_proj4_init_rules = true

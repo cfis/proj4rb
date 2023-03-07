@@ -21,7 +21,6 @@ module Proj
     attach_function :proj_get_remarks, [:PJ], :string
     attach_function :proj_get_scope, [:PJ], :string
     attach_function :proj_get_type, [:PJ], PJ_TYPE
-    attach_function :proj_is_deprecated, [:PJ], :bool
     attach_function :proj_is_crs, [:PJ], :bool
     attach_function :proj_is_equivalent_to, [:PJ, :PJ, PJ_COMPARISON_CRITERION], :int
     attach_function :proj_is_deprecated, [:PJ], :int

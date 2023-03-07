@@ -51,7 +51,6 @@ module Proj
 
     attach_function :proj_context_is_network_enabled, [:PJ_CONTEXT], :int
     attach_function :proj_context_set_enable_network, [:PJ_CONTEXT, :int], :int
-    attach_function :proj_is_download_needed, [:PJ_CONTEXT, :string, :int], :int
     attach_function :proj_context_set_url_endpoint, [:PJ_CONTEXT, :string], :void
 
     # --------- Cache ------------
