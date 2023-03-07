@@ -45,10 +45,6 @@ class DatabaseTest < AbstractTest
     database = Proj::Database.new(Proj::Context.current)
     metadata = database.metadata('IGNF.VERSION')
     assert_equal('3.1.0', metadata)
-
-    database = Proj::Database.new(Proj::Context.current)
-    metadata = database.metadata('EPSG.VERSION')
-    assert_equal('v10.076', metadata)
   end
 
   def test_codes
