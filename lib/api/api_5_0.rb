@@ -309,8 +309,6 @@ module Proj
 
     attach_function :proj_angular_input, [:PJ, PJ_DIRECTION], :int
     attach_function :proj_angular_output, [:PJ, PJ_DIRECTION], :int
-    attach_function :proj_degree_input, [:PJ, PJ_DIRECTION], :int
-    attach_function :proj_degree_output, [:PJ, PJ_DIRECTION], :int
 
     # Distances
     attach_function :proj_lp_dist, [:PJ, PJ_COORD.by_value, PJ_COORD.by_value], :double

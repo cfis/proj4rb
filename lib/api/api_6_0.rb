@@ -30,7 +30,6 @@ module Proj
 
     # Area
     attach_function :proj_area_create, [], :PJ_AREA
-    attach_function :proj_area_set_name, [:PJ_AREA, :string], :void
     attach_function :proj_area_set_bbox, [:PJ_AREA, :double, :double, :double, :double], :void
     attach_function :proj_get_area_of_use, [:PJ_CONTEXT, :PJ, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
     attach_function :proj_area_destroy, [:PJ_AREA], :void

@@ -63,5 +63,7 @@ module Proj
 
     # -------- Other ----------
     attach_function :proj_assign_context, [:PJ, :PJ_CONTEXT], :void
+    attach_function :proj_degree_input, [:PJ, PJ_DIRECTION], :int
+    attach_function :proj_degree_output, [:PJ, PJ_DIRECTION], :int
   end
 end
