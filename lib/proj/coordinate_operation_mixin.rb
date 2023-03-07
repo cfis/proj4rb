@@ -142,8 +142,7 @@ module Proj
     #
     # @return [Coordinate]
     def forward(coord)
-      struct = Api.proj_trans(self, :PJ_FWD, coord)
-      Coordinate.from_coord(struct)
+      self.transform(coord, :PJ_FWD)
     end
 
     # Transforms a {Coordinate} from the target {Crs} to the source {Crs}. Coordinates should be expressed in
@@ -156,7 +155,20 @@ module Proj
     #
     # @return [Coordinate]
     def inverse(coord)
-      struct = Api.proj_trans(self, :PJ_INV, coord)
+      self.transform(coord, :PJ_INV)
+    end
+
+    # Transforms a {Coordinate} in the specified direction. See {CoordinateOperation#forward forward} and
+    # {CoordinateOperation#inverse inverse}
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_trans proj_trans
+    #
+    # @param direction [PJ_DIRECTION] Direction of transformation (:PJ_FWD or :PJ_INV)
+    # @param coord [Coordinate]
+    #
+    # @return [Coordinate]
+    def transform(coord, direction)
+      struct = Api.proj_trans(self, direction, coord)
       Coordinate.from_coord(struct)
     end
 
@@ -165,11 +177,11 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_trans_bounds
     #
-    # @param bounds [Area] - Bounding box in source CRS (target CRS if direction is inverse).
-    # @param direction [PJ_DIRECTION] - The direction of the transformation.
-    # @param densify_points [Integer] -  Recommended to use 21. This is the number of points to use to densify the bounding polygon in the transformation.
+    # @param bounds [Area] Bounding box in source CRS (target CRS if direction is inverse).
+    # @param direction [PJ_DIRECTION] The direction of the transformation.
+    # @param densify_points [Integer] Recommended to use 21. This is the number of points to use to densify the bounding polygon in the transformation.
     #
-    # @return [Area] - Bounding box in target CRS (target CRS if direction is inverse).
+    # @return [Area] Bounding box in target CRS (target CRS if direction is inverse).
     def transform_bounds(bounds, direction, densify_points = 21)
       out_xmin = FFI::MemoryPointer.new(:double)
       out_ymin = FFI::MemoryPointer.new(:double)
@@ -185,6 +197,35 @@ module Proj
       end
 
       Bounds.new(out_xmin.read_double, out_ymin.read_double, out_xmax.read_double, out_ymax.read_double)
+    end
+
+    # Transforms an array of {Coordinate coordinates}. Individual points that fail to transform
+    # will have their components set to Infinity.
+    #
+    # @param array [Array<Coordinate>] Coordinates to transform
+    # @param direction [PJ_DIRECTION] The direction of the transformation
+    # 
+    # @return [Array<Coordinate>] Array of transformed coordinates
+    def transform_array(coordinates, direction)
+      coords_ptr = FFI::MemoryPointer.new(Api::PJ_COORD, coordinates.size)
+      coordinates.each_with_index do |coordinate, i|
+        offset = i * Api::PJ_COORD.size
+        pj_coord = Api::PJ_COORD.new(coords_ptr + offset)
+        pj_coord.to_ptr.__copy_from__(coordinate.to_ptr, Api::PJ_COORD.size)
+      end
+
+      int = Api.proj_trans_array(self, direction, coordinates.size, coords_ptr)
+      unless int == 0
+        Error.check(self.context)
+      end
+
+      result = Array.new(coordinates.size)
+      0.upto(coordinates.size) do |i|
+        offset = i * Api::PJ_COORD.size
+        pj_coord = Api::PJ_COORD.new(coords_ptr[i])
+        result[i] = Coordinate.from_coord(pj_coord)
+      end
+      result
     end
 
     # Measure the internal consistency of a given transformation. The function performs n round trip
@@ -215,7 +256,7 @@ module Proj
     #
     # @see }https://proj.org/development/reference/functions.html#c.proj_trans_get_last_used_operation proj_trans_get_last_used_operation
     #
-    # @return [CoordinateOperation] - The last used operation
+    # @return [CoordinateOperation] The last used operation
     def last_used_operation
       ptr = Api.proj_trans_get_last_used_operation(self)
       self.class.create_object(ptr, self.context)
@@ -253,7 +294,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_grid_used proj_coordoperation_get_grid_used
     #
-    # @param index [Integer] - Grid index
+    # @param index [Integer] Grid index
     #
     # @return [Integer]
     def grid(index)

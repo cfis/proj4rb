@@ -30,7 +30,7 @@ module Proj
     def self.check(context)
       unless context.errno == 0
         # raise(self, "#{self.category(context.errno)}: #{self.message(context)}")
-        raise(self, self.message(context, errno))
+        raise(self, self.message(context, context.errno))
       end
     end
 

@@ -198,6 +198,39 @@ class ConversionTest < AbstractTest
     assert_equal("Scale difference in ppb where 1/billion = 1E-9. See CT codes 8444-46 for NTv2 method giving equivalent results for Christmas Island, Cocos Islands and Australia respectively. See CT code 8447 for alternative including distortion model for Australia only.", step.remarks)
   end
 
+  def test_transform_array
+    crs = Proj::Conversion.new("+proj=utm +zone=32 +ellps=GRS80")
+
+    coord1 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(55), z: 45)
+    coord2 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(56), z: 50)
+    new_coords = crs.transform_array([coord1, coord2], :PJ_FWD)
+
+    coord = new_coords[0]
+    assert_equal(691875.6321396607, coord.x)
+    assert_equal(6098907.825005012, coord.y)
+    assert_equal(45, coord.z)
+    assert_equal(0, coord.t)
+
+    coord = new_coords[1]
+    assert_equal(687071.439109443, coord.x)
+    assert_equal(6210141.326748009, coord.y)
+    assert_equal(50, coord.z)
+    assert_equal(0, coord.t)
+  end
+
+  def test_transform_array_invalid
+    crs = Proj::Conversion.new("+proj=utm +zone=32 +ellps=GRS80")
+
+    coord1 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(95), z: 45)
+    coord2 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(56), z: 50)
+
+    error = assert_raises(Proj::Error) do
+      crs.transform_array([coord1, coord2], :PJ_FWD)
+    end
+
+    assert_equal("Invalid coordinate", error.to_s)
+  end
+
   if proj9?
     def test_last_used_operation
       wkt = <<~EOS
