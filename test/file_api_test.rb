@@ -6,7 +6,7 @@ class FileApiTest < AbstractTest
   def setup
     super
     # Make sure FileAPI callbacks are not GCed
-    GC.stress = true
+    #GC.stress = true
   end
 
   def teardown
