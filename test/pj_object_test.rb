@@ -135,7 +135,9 @@ class PjObjectTest < AbstractTest
     context = Proj::Context.new
     objects = Proj::PjObject.create_from_name("WGS 84", context, approximate_match: true,
                                               types: [:PJ_TYPE_GEODETIC_CRS, :PJ_TYPE_PROJECTED_CRS])
-    assert_equal(442, objects.size)
+
+    expected = proj9? ? 442 : 440
+    assert_equal(expected, objects.size)
   end
 
   def test_create_from_name_with_types_and_approximate_match_and_limit

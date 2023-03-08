@@ -21,12 +21,12 @@ class ProjTest < AbstractTest
   end
 
   def test_init_file_info
-    info = Proj.init_file_info(EPSG)
-    assert_equal("epsg", info[:name].to_ptr.read_string)
+    info = Proj.init_file_info("EPSG")
+    assert_equal("EPSG", info[:name].to_ptr.read_string)
     assert(info[:filename].to_ptr.read_string.empty?)
     #assert_equal("epsg", info[:version].to_ptr.read_string)
-    #assert_equal("", info[:origin].to_ptr.read_string)
-    assert(info[:lastupdate].to_ptr.read_string.empty?)
+    assert_equal("", info[:origin].to_ptr.read_string)
+    assert_equal("", info[:lastupdate].to_ptr.read_string)
   end
 
   def test_version

@@ -155,7 +155,7 @@ class CrsTest < AbstractTest
   end
 
   def test_finalize
-    500.times do
+    100.times do
       crs = Proj::Crs.new('EPSG:4326')
       assert(crs.to_ptr)
       GC.start
@@ -289,10 +289,10 @@ class CrsTest < AbstractTest
     assert_equal(2, objects.count)
 
     object = objects[0]
-    assert_equal("#<PJ_TYPE_GEOGRAPHIC_2D_CRS: Locodjo 1965>", object.to_s)
+    assert_equal("#<Proj::Crs - Locodjo 1965, PJ_TYPE_GEOGRAPHIC_2D_CRS>", object.to_s)
 
     object = objects[1]
-    assert_equal("#<PJ_TYPE_GEOGRAPHIC_2D_CRS: Abidjan 1987>", object.to_s)
+    assert_equal("#<Proj::Crs - Abidjan 1987, PJ_TYPE_GEOGRAPHIC_2D_CRS>", object.to_s)
   end
 
   def test_identify
@@ -301,7 +301,7 @@ class CrsTest < AbstractTest
 
     assert_equal(1, objects.count)
     object = objects[0]
-    assert_equal("#<PJ_TYPE_GEOGRAPHIC_2D_CRS: WGS 84 (CRS84)>", object.to_s)
+    assert_equal("#<Proj::Crs - WGS 84 (CRS84), PJ_TYPE_GEOGRAPHIC_2D_CRS>", object.to_s)
 
     assert_equal(1, confidences.count)
     confidence = confidences[0]

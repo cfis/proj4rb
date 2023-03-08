@@ -9,7 +9,7 @@ class OperationFactoryContextTest < AbstractTest
   end
 
   def test_finalize
-    5.times do
+    100.times do
       context = Proj::OperationFactoryContext.new
       assert(context.to_ptr)
       GC.start

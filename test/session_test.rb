@@ -31,7 +31,7 @@ class SessionTest < AbstractTest
   end
 
   def test_finalize
-    50.times do
+    100.times do
       crs = Proj::Session.new(Proj::Context.new)
       assert(crs.to_ptr)
       GC.start

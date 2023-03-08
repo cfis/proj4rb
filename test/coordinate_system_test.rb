@@ -6,7 +6,11 @@ class CoordinateSystemTest < AbstractTest
   def test_type
     crs = Proj::Crs.new('EPSG:4326')
     cs = crs.coordinate_system
+    refute(cs.name)
     assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.type)
+    assert_equal(:PJ_TYPE_UNKNOWN, cs.proj_type)
+    assert_equal("EPSG", cs.auth_name)
+    assert_equal("6422", cs.id_code)
   end
 
   def test_axis_count

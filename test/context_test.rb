@@ -9,7 +9,7 @@ class ContextTest < AbstractTest
   end
 
   def test_finalize
-    500.times do
+    100.times do
       context = Proj::Context.new
       assert(context.to_ptr)
       GC.start

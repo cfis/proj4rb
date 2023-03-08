@@ -129,7 +129,6 @@ class GridTest < AbstractTest
   end
 
   def test_grid_invalid
-    skip "This test result when run independently or part of all test"
     database = Proj::Database.new(Proj::Context.current)
     grid = database.grid("invalid")
     refute(grid)
