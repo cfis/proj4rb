@@ -21,7 +21,7 @@ class ProjTest < AbstractTest
   end
 
   def test_init_file_info
-    info = Proj.init_file_info("epsg")
+    info = Proj.init_file_info(EPSG)
     assert_equal("epsg", info[:name].to_ptr.read_string)
     assert(info[:filename].to_ptr.read_string.empty?)
     #assert_equal("epsg", info[:version].to_ptr.read_string)

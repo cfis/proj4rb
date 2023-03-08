@@ -6,14 +6,12 @@ class TransformationTest < AbstractTest
   PRECISION = 1.5
 
   def setup
-    @crs_wgs84 = Proj::Crs.new('epsg:4326')
-    @crs_wgs84.to_wkt
-    @crs_gk = Proj::Crs.new('epsg:31467')
-    @crs_gk.to_wkt
+    @crs_wgs84 = Proj::Crs.new('EPSG:4326')
+    @crs_gk = Proj::Crs.new('EPSG:31467')
   end
 
   def test_create_from_strings
-    transform = Proj::Transformation.new('epsg:31467', 'epsg:4326')
+    transform = Proj::Transformation.new('EPSG:31467', 'EPSG:4326')
     assert(transform.info)
   end
 

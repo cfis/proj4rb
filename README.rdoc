@@ -64,14 +64,14 @@ After you have created two coordinate systems, you can then create a transformat
 convert coordinates from the "3-degree Gauss-Kruger zone 3" coordinate system to WGS84 (one version of lat-long)
 first create a transformation:
 
-    crs_gk  = Proj::Crs.new('epsg:31467')
-    crs_wgs84 = Proj::Crs.new('epsg:4326')
+    crs_gk  = Proj::Crs.new('EPSG:31467')
+    crs_wgs84 = Proj::Crs.new('EPSG:4326')
     transform = Proj::Transformation.new(crs_gk, crs_wgs84)
 
 Alternatively, or if you are using Proj 5, you can create a transformation without first
 creating Crs instances. Instead, pass the EPSG information directly to the transformation:
 
-    transform = Proj::Transformation.new('epsg:31467', 'epsg:4326')
+    transform = Proj::Transformation.new('EPSG:31467', 'EPSG:4326')
 
 Once you've created the transformation, you can tranform coordinates using either
 the +forward+ or +inverse+ methods. The forward transformation looks like this:
