@@ -270,12 +270,12 @@ class CrsTest < AbstractTest
 
   def test_area_of_use
     crs = Proj::Crs.new('EPSG:4326')
-    assert_kind_of(Proj::Bounds, crs.area_of_use)
+    assert_kind_of(Proj::Area, crs.area_of_use)
     assert_equal('World.', crs.area_of_use.name)
-    assert_in_delta(-180.0, crs.area_of_use.xmin, 0.1)
-    assert_in_delta(-90.0, crs.area_of_use.ymin, 0.1)
-    assert_in_delta(180.0, crs.area_of_use.xmax, 0.1)
-    assert_in_delta(90.0, crs.area_of_use.ymax, 0.1)
+    assert_in_delta(-180.0, crs.area_of_use.west_lon_degree, 0.1)
+    assert_in_delta(-90.0, crs.area_of_use.south_lat_degree, 0.1)
+    assert_in_delta(180.0, crs.area_of_use.east_lon_degree, 0.1)
+    assert_in_delta(90.0, crs.area_of_use.north_lat_degree, 0.1)
   end
 
   def test_derived

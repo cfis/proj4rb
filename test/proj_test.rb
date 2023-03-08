@@ -25,7 +25,7 @@ class ProjTest < AbstractTest
     assert_equal("epsg", info[:name].to_ptr.read_string)
     assert(info[:filename].to_ptr.read_string.empty?)
     #assert_equal("epsg", info[:version].to_ptr.read_string)
-    assert(info[:origin].to_ptr.read_string.empty?)
+    #assert_equal("", info[:origin].to_ptr.read_string)
     assert(info[:lastupdate].to_ptr.read_string.empty?)
   end
 

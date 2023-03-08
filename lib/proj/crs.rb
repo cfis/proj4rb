@@ -200,7 +200,7 @@ module Proj
       result << <<~EOS
                   Area of Use:
                   - name: #{self.area.name}
-                  - bounds: (#{self.area_of_use.xmin}, #{self.area_of_use.ymin}, #{self.area_of_use.xmax}, #{self.area_of_use.ymax})
+                  - bounds: (#{self.area_of_use.west_lon_degree}, #{self.area_of_use.south_lat_degree}, #{self.area_of_use.east_lon_degree}, #{self.area_of_use.north_lat_degree})
                   Coordinate operation:
                   - name: #{self.coordinate_operation.method_name}
                   - method: ?

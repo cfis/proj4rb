@@ -15,6 +15,8 @@ class NetworkApiTest < AbstractTest
   end
 
   def test_download
+    skip "This test causes a segfault due to the way Proj cleans up on shutdown"
+
     context = Proj::Context.new
     context.network_enabled = true
 

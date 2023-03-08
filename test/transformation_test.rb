@@ -82,18 +82,20 @@ class TransformationTest < AbstractTest
     src = Proj::Crs.new("EPSG:4326")
     dst = Proj::Crs.new("EPSG:4258")
 
-    transformation = Proj::Transformation.new(src, dst)
-
-    transformation = Proj::Transformation.new(src, dst, accuracy: 0.05)
+    error = assert_raises(Proj::Error) do
+      Proj::Transformation.new(src, dst, accuracy: 0.05)
+    end
+    assert_equal("No operation found matching criteria", error.to_s)
   end
 
   def test_ballpark_filter
     src = Proj::Crs.new("EPSG:4267")
     dst = Proj::Crs.new("EPSG:4258")
 
-    transformation = Proj::Transformation.new(src, dst)
-
-    transformation = Proj::Transformation.new(src, dst, allow_ballpark: false)
+    error = assert_raises(Proj::Error) do
+      Proj::Transformation.new(src, dst, allow_ballpark: false)
+    end
+    assert_equal("No operation found matching criteria", error.to_s)
   end
 
   if proj8?

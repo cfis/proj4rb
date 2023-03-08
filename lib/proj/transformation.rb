@@ -62,6 +62,8 @@ module Proj
 
       if pointer.null?
         Error.check(self.context)
+        # If that does not raise an error then no operation was found
+        raise(Error, "No operation found matching criteria")
       end
 
       super(pointer, context)
