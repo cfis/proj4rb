@@ -637,29 +637,6 @@ class CrsTest < AbstractTest
     assert_equal(expected.strip, crs.to_json)
   end
 
-  def test_inspect
-    crs = Proj::Crs.new('EPSG:26915')
-
-    expected = <<~EOS
-      <Proj::Crs>: EPSG:26915
-      NAD83 / UTM zone 15N
-      Axis Info [PJ_CS_TYPE_CARTESIAN]:
-      - E[east]: Easting (metre)
-      - N[north]: Northing (metre)
-      Area of Use:
-      - name: North America - between 96°W and 90°W - onshore and offshore. Canada - Manitoba; Nunavut; Ontario. United States (USA) - Arkansas; Illinois; Iowa; Kansas; Louisiana; Michigan; Minnesota; Mississippi; Missouri; Nebraska; Oklahoma; Tennessee; Texas; Wisconsin.
-      - bounds: (-96.0, 25.61, -90.0, 84.0)
-      Coordinate operation:
-      - name: Transverse Mercator
-      - method: ?
-      Datum: North American Datum 1983
-      - Ellipsoid: GRS 1980
-      - Prime Meridian: Greenwich
-    EOS
-
-    assert_equal(expected, crs.inspect)
-  end
-
   def test_to_wgs84
     wkt = <<~EOS
       BOUNDCRS[

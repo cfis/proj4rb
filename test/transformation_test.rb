@@ -7,7 +7,9 @@ class TransformationTest < AbstractTest
 
   def setup
     @crs_wgs84 = Proj::Crs.new('epsg:4326')
-    @crs_gk  = Proj::Crs.new('epsg:31467')
+    @crs_wgs84.to_wkt
+    @crs_gk = Proj::Crs.new('epsg:31467')
+    @crs_gk.to_wkt
   end
 
   def test_create_from_strings
@@ -34,6 +36,7 @@ class TransformationTest < AbstractTest
 
   def test_gk_to_wgs84_inverse
     transform = Proj::Transformation.new(@crs_gk, @crs_wgs84)
+    puts transform.to_wkt
     from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
     to = transform.inverse(from)
 

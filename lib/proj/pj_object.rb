@@ -292,7 +292,7 @@ module Proj
     #
     # @return [String]
     def name
-      Api.proj_get_name(self).force_encoding('UTF-8')
+      Api.proj_get_name(self)&.force_encoding('UTF-8')
     end
 
     # Returns the authority name / codespace of an identifier of an object.
@@ -538,6 +538,8 @@ module Proj
 
     # Returns the proj representation string for this object
     #
+    # @see https://proj.org/development/reference/functions.html#c.proj_as_proj_string proj_as_proj_string
+    #
     # @param proj_version [PJ_PROJ_STRING_TYPE] The proj version. Defaults to :PJ_PROJ_5
     # @param use_approx_tmerc [Boolean] True adds the +approx flag to +proj=tmerc or +proj=utm. Defaults to false
     # @param multiline [Boolean] Specifies if output span multiple lines. Defaults to false.
@@ -549,9 +551,9 @@ module Proj
                                                 indentation_width: 2, max_line_length: 80)
 
       options = ["USE_APPROX_TMERC=#{use_approx_tmerc ? "YES" : "NO"}",
-       "MULTILINE=#{multiline ? "YES" : "NO"}",
-       "INDENTATION_WIDTH=#{indentation_width}",
-       "MAX_LINE_LENGTH=#{max_line_length}"]
+                 "MULTILINE=#{multiline ? "YES" : "NO"}",
+                 "INDENTATION_WIDTH=#{indentation_width}",
+                 "MAX_LINE_LENGTH=#{max_line_length}"]
 
       options_ptr_array = options.map do |option|
         FFI::MemoryPointer.from_string(option)
@@ -566,23 +568,60 @@ module Proj
 
     # Returns the json representation for this object
     #
-    # @return [String] Json
-    def to_json
-      Api.proj_as_projjson(self.context, self, nil).force_encoding('UTF-8')
+    # @see https://proj.org/development/reference/functions.html#c.proj_as_projjson proj_as_projjson
+    #
+    # @param multiline [Boolean] Specifies if output span multiple lines. Defaults to true.
+    # @param indentation_width [Integer] Specifies the indentation level. Defaults to 2.
+    #
+    # @return [String]
+    def to_json(multiline: true, indentation_width: 2)
+      options = ["MULTILINE=#{multiline ? "YES" : "NO"}",
+                 "INDENTATION_WIDTH=#{indentation_width}"]
+
+      options_ptr_array = options.map do |option|
+        FFI::MemoryPointer.from_string(option)
+      end
+
+      # Add extra item at end for null pointer
+      options_ptr = FFI::MemoryPointer.new(:pointer, options.size + 1)
+      options_ptr.write_array_of_pointer(options_ptr_array)
+
+      Api.proj_as_projjson(self.context, self, options_ptr).force_encoding('UTF-8')
     end
 
     # Returns the wkt representation for this object
     #
+    # @see https://proj.org/development/reference/functions.html#c.proj_as_wkt proj_as_wkt
+    #
+    # @param wkt_type [PJ_WKT_TYPE] WKT version to output. Defaults to PJ_WKT2_2018
+    # @param multiline [Boolean] Specifies if output span multiple lines. Defaults to true.
+    # @param indentation_width [Integer] Specifies the indentation level. Defaults to 4.
+    #
     # @return [String] wkt
-    def to_wkt(wkt_type=:PJ_WKT2_2018)
-      Api.proj_as_wkt(self.context, self, wkt_type, nil).force_encoding('UTF-8')
+    def to_wkt(wkt_type=:PJ_WKT2_2018, multiline: true, indentation_width: 4)
+      options = ["MULTILINE=#{multiline ? "YES" : "NO"}",
+                 "INDENTATION_WIDTH=#{indentation_width}",
+                 "OUTPUT_AXIS=AUTO",
+                 "STRICT=YES",
+                 "ALLOW_ELLIPSOIDAL_HEIGHT_AS_VERTICAL_CRS=NO",
+                 "ALLOW_LINUNIT_NODE=YES"]
+
+      options_ptr_array = options.map do |option|
+        FFI::MemoryPointer.from_string(option)
+      end
+
+      # Add extra item at end for null pointer
+      options_ptr = FFI::MemoryPointer.new(:pointer, options.size + 1)
+      options_ptr.write_array_of_pointer(options_ptr_array)
+
+      Api.proj_as_wkt(self.context, self, wkt_type, options_ptr)&.force_encoding('UTF-8')
     end
 
     # Returns the string representation for this object
     #
     # @return [String] String
     def to_s
-      "#<#{proj_type}: #{name}>"
+      "#<#{self.class.name}: Name: #{name} ProjType: #{proj_type}>"
     end
   end
 end

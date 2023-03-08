@@ -180,36 +180,5 @@ module Proj
 
       return objects, confidences
     end
-
-    # A nicely printed out description
-    #
-    # @return [String]
-    def inspect
-      result = StringIO.new
-      result.set_encoding('UTF-8')
-      result << <<~EOS
-                  <#{self.class.name}>: #{self.auth(0)}
-                  #{self.description}
-                  Axis Info [#{self.coordinate_system.type}]:
-                EOS
-
-      self.coordinate_system.axes.each do |axis_info|
-        result << "- #{axis_info.abbreviation}[#{axis_info.direction}]: #{axis_info.name} (#{axis_info.unit_name})" << "\n"
-      end
-
-      result << <<~EOS
-                  Area of Use:
-                  - name: #{self.area.name}
-                  - bounds: (#{self.area_of_use.west_lon_degree}, #{self.area_of_use.south_lat_degree}, #{self.area_of_use.east_lon_degree}, #{self.area_of_use.north_lat_degree})
-                  Coordinate operation:
-                  - name: #{self.coordinate_operation.method_name}
-                  - method: ?
-                  Datum: #{self.datum&.name}
-                  - Ellipsoid: #{self.ellipsoid.name}
-                  - Prime Meridian: #{self.prime_meridian.name}
-                EOS
-
-      result.string
-    end
   end
 end
