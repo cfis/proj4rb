@@ -1,3 +1,11 @@
+4.0.0 (March 9, 2023)
+=========================
+* Support Proj 9 (Charlie Savage)
+* Add support for missing APIs - the gem now provides almost 100% coverage
+* Add/updated support for a number of ISO 19111 classes, including PrimeMeridian, Ellipsoid,
+ Datum, DatumEnsemble, CoordinateOperation and Parameters
+* Greatly improved documentation (https://rubydoc.info/github/cfis/proj4rb)
+
 3.0.0 (September 26, 2021)
 =========================
 * Support Proj 8 which removes the old Proj API (Charlie Savage)

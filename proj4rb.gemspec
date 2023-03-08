@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = 'proj4rb'
-  spec.version = '3.0.0'
+  spec.version = '4.0.0'
   spec.summary = 'Ruby bindings for the Proj coordinate transformation library'
   spec.description = <<-EOF
     Ruby bindings for the Proj coordinate transformation library
