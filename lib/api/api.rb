@@ -64,7 +64,11 @@ module Proj
       paths1 + paths2
     end
 
-    ffi_lib self.search_paths
+    if ENV["PROJ_LIB_PATH"]
+      ffi_lib ENV["PROJ_LIB_PATH"]
+    else
+      ffi_lib self.search_paths
+    end
 
     library = ffi_libraries.first
 
