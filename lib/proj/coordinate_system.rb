@@ -20,30 +20,7 @@ module Proj
                         keyword_init: true)
 
   # Represents a coordinate system for a {Crs CRS}
-  class CoordinateSystem
-    # @!visibility private
-    def self.finalize(pointer)
-      proc do
-        Api.proj_destroy(pointer)
-      end
-    end
-
-    # Creates a new coordinate system
-    def initialize(pointer, context=nil)
-      @pointer = pointer
-      @context = context
-      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
-    end
-
-    # @!visibility private
-    def to_ptr
-      @pointer
-    end
-
-    def context
-      @context
-    end
-
+  class CoordinateSystem < PjObject
     # Returns the type of the coordinate system
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_cs_get_type proj_cs_get_type
