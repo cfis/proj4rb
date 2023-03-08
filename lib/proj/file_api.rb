@@ -4,7 +4,7 @@ module Proj
       proj_file_api = Api::PROJ_FILE_API.new
       proj_file_api[:version] = 1
 
-      # Store proces to instance variables so they don't get garbage collected
+      # Store procs to instance variables so they don't get garbage collected
       @open_cbk = proj_file_api[:open_cbk] = self.method(:open_callback)
       @read_cbk = proj_file_api[:read_cbk] = self.method(:read_callback)
       @write_cbk = proj_file_api[:write_cbk] = self.method(:write_callback)
