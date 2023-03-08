@@ -10,6 +10,16 @@ module Proj
   # can either by {Conversion conversions} that do not exert a change in reference frame
   # or {Transformation transformations} which do.
   module CoordinateOperationMixin
+    # Return whether a coordinate operation can be instantiated as a PROJ pipeline, checking in particular that referenced grids are available.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_is_instantiable proj_coordoperation_is_instantiable
+    #
+    # @return [Boolean]
+    def instantiable?
+      result = Api.proj_coordoperation_is_instantiable(self.context, self)
+      result == 1 ? true : false
+    end
+
     # Returns a coordinate operation that represents the inverse operation of this operation
     #
     # @return [Conversion, Transformation] Returns nil on error
@@ -204,7 +214,7 @@ module Proj
     #
     # @param array [Array<Coordinate>] Coordinates to transform
     # @param direction [PJ_DIRECTION] The direction of the transformation
-    # 
+    #
     # @return [Array<Coordinate>] Array of transformed coordinates
     def transform_array(coordinates, direction)
       coords_ptr = FFI::MemoryPointer.new(Api::PJ_COORD, coordinates.size)

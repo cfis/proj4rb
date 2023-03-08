@@ -401,16 +401,6 @@ module Proj
       Api.proj_factors(self, coordinate)
     end
 
-    # Return whether a coordinate operation can be instantiated as a PROJ pipeline, checking in particular that referenced grids are available.
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_is_instantiable proj_coordoperation_is_instantiable
-    #
-    # @return [Boolean]
-    def instantiable?
-      result = Api.proj_coordoperation_is_instantiable(self.context, self)
-      result == 1 ? true : false
-    end
-
     # Return a list of non-deprecated objects related to the passed one
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_get_non_deprecated proj_get_non_deprecated
@@ -621,7 +611,7 @@ module Proj
     #
     # @return [String] String
     def to_s
-      "#<#{self.class.name}: Name: #{name} ProjType: #{proj_type}>"
+      "#<#{self.class.name} - #{name}, #{proj_type}>"
     end
   end
 end
