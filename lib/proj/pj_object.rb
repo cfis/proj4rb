@@ -134,7 +134,7 @@ module Proj
       ptr = Api.proj_create(context || Context.current, value)
 
       if ptr.null?
-        Error.check(self.context)
+        Error.check_object(self)
       end
 
       create_object(ptr, context)
@@ -354,8 +354,8 @@ module Proj
       result = Api.proj_get_area_of_use(self.context, self,
                                         p_west_lon_degree, p_south_lat_degree, p_east_lon_degree, p_north_lat_degree,
                                         p_name)
-      if result != 0
-        Error.check(self.context)
+      if result != 1
+        Error.check_object(self)
       end
 
       name = p_name.read_pointer.read_string_to_null.force_encoding('utf-8')

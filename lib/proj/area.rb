@@ -42,7 +42,10 @@ module Proj
     # @param value [String] The name of the area
     def name=(value)
       @name = name
-      Api.proj_area_set_name(self, value)
+      # This Api wasn't added until proj 9.1
+      if defined?(Api.proj_area_set_name)
+        Api.proj_area_set_name(self, value)
+      end
     end
 
     # Returns nice printout of an Area

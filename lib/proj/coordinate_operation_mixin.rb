@@ -37,7 +37,7 @@ module Proj
       result = Api.proj_coordoperation_get_method_info(self.context, self, out_method_name, out_method_auth_name, out_method_code)
 
       if result != 1
-        Error.check(self.context)
+        Error.check_object(self)
       end
 
       {:method_name => out_method_name.read_pointer.read_string_to_null,
@@ -118,7 +118,7 @@ module Proj
                                                  out_unit_name, out_unit_auth_name,out_unit_code,
                                                  out_unit_category)
       if result != 1
-        Error.check(self.context)
+        Error.check_object(self)
       end
 
       name_ptr = out_name.read_pointer
@@ -203,7 +203,7 @@ module Proj
                                      out_xmin, out_ymin, out_xmax, out_ymax, densify_points)
 
       unless result == 0
-        Error.check(self.context)
+        Error.check_object(self)
       end
 
       Bounds.new(out_xmin.read_double, out_ymin.read_double, out_xmax.read_double, out_ymax.read_double)
@@ -225,7 +225,7 @@ module Proj
 
       int = Api.proj_trans_array(self, direction, coordinates.size, coords_ptr)
       unless int == 0
-        Error.check(self.context)
+        Error.check_object(self)
       end
 
       result = Array.new(coordinates.size)
@@ -320,7 +320,7 @@ module Proj
                                                      out_open_license, out_available)
 
       if result != 1
-        Error.check(self.context)
+        Error.check_object(self)
       end
 
       name_ptr = out_short_name.read_pointer

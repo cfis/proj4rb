@@ -32,7 +32,7 @@ class DatabaseTest < AbstractTest
     error = assert_raises(Proj::Error) do
       database.path = "test.db"
     end
-    assert_equal("Unknown error (code 4096)", error.to_s)
+    assert_equal("Invalid value for an argument", error.to_s)
   end
 
   def test_structure

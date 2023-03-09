@@ -27,10 +27,21 @@ module Proj
 
     # Check the context to see if an error occurred. If an error has happened will
     # raise an exception.
-    def self.check(context)
+    def self.check_context(context)
       unless context.errno == 0
         # raise(self, "#{self.category(context.errno)}: #{self.message(context)}")
         raise(self, self.message(context, context.errno))
+      end
+    end
+
+    def self.check_object(pj_object)
+      # It would be nice if Proj exposed the proj_context_errno_set method so
+      # we don't need a pj_object
+      context = pj_object.context
+      unless context.errno == 0
+        message = self.message(context, context.errno)
+        Api.proj_errno_reset(pj_object)
+        raise(self, message)
       end
     end
 

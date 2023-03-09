@@ -29,7 +29,7 @@ module Proj
         result = Api.proj_ellipsoid_get_parameters(self.context, self, out_semi_major_metre, out_semi_minor_metre, out_is_semi_minor_computed, out_inv_flattening)
 
         if result != 1
-          Error.check(self.context)
+          Error.check_object(self)
         end
 
         {semi_major_axis: out_semi_major_metre.read_double,

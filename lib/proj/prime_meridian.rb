@@ -27,7 +27,7 @@ module Proj
                         result = Api.proj_prime_meridian_get_parameters(self.context, self, out_longitude, out_unit_conv_factor, out_unit_name)
 
                         if result != 1
-                          Error.check(self.context)
+                          Error.check_object(self)
                         end
 
                         {longitude: out_longitude.read_double,

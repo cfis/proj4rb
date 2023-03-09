@@ -29,7 +29,7 @@ module Proj
     def type
       result = Api.proj_cs_get_type(self.context, self)
       if result == :PJ_CS_TYPE_UNKNOWN
-        Error.check(self.context)
+        Error.check_object(self)
       end
       result
     end
@@ -42,7 +42,7 @@ module Proj
     def axis_count
       result = Api.proj_cs_get_axis_count(self.context, self)
       if result == -1
-        Error.check(self.context)
+        Error.check_object(self)
       end
       result
     end
@@ -67,7 +67,7 @@ module Proj
                                          p_name, p_abbreviation, p_direction, p_unit_conv_factor, p_unit_name, p_unit_auth_name, p_unit_code)
 
       unless result
-        Error.check(self.context)
+        Error.check_object(self)
       end
 
       AxisInfo.new(name: p_name.read_pointer.read_string,

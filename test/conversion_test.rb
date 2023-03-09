@@ -111,7 +111,12 @@ class ConversionTest < AbstractTest
     error = assert_raises(Proj::Error) do
       conversion.grid(-1)
     end
-    assert_equal("File not found or invalid", error.to_s)
+
+    if proj9?
+      assert_equal("File not found or invalid", error.to_s)
+    else
+      assert_equal("Unknown error (code 4096)", error.to_s)
+    end
   end
 
   def test_grid_url

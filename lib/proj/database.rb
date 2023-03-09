@@ -38,7 +38,7 @@ module Proj
     def path=(value)
       result = Api.proj_context_set_database_path(self.context, value, nil, nil)
       unless result == 1
-        Error.check(self.context)
+        Error.check_context(self.context)
       end
       self
     end
@@ -166,7 +166,7 @@ module Proj
                  url: url ? URI(url) : nil,
                  downloadable: downloadable, open_license: open_license, available: available)
       else
-        Error.check(self.context)
+        Error.check_context(self.context)
       end
     end
 
@@ -275,7 +275,7 @@ module Proj
 
         Unit.new(auth_name, code, name, category, conv_factor, nil, false)
       else
-        Error.check(self.context)
+        Error.check_context(self.context)
       end
     end
   end

@@ -36,6 +36,8 @@ module Proj
     def initialize(source, target, area=nil, context=nil,
                    authority: nil, accuracy: nil, allow_ballpark: nil, only_best: nil, force_over: nil)
 
+      context ||= Context.current
+
       options = {"AUTHORITY": authority,
                  "ACCURACY": accuracy.nil? ? nil : accuracy.to_s,
                  "ALLOW_BALLPARK": allow_ballpark.nil? ? nil : (allow_ballpark ? "YES" : "NO"),
@@ -61,7 +63,7 @@ module Proj
                 end
 
       if pointer.null?
-        Error.check(self.context)
+        Error.check_context(context)
         # If that does not raise an error then no operation was found
         raise(Error, "No operation found matching criteria")
       end

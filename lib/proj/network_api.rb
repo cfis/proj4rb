@@ -11,7 +11,7 @@ module Proj
       result = Api.proj_context_set_network_callbacks(context, @open_cbk, @close_cbk, @header_value_cbk, @read_range_cbk, nil)
 
       if result != 1
-        Error.check(self.context)
+        Error.check_object(self)
       end
     end
 

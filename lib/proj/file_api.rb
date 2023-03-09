@@ -19,7 +19,7 @@ module Proj
       result = Api.proj_context_set_fileapi(context, proj_file_api, nil)
 
       if result != 1
-        Error.check(self.context)
+        Error.check_object(self)
       end
     end
 

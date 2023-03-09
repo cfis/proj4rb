@@ -25,10 +25,11 @@ module Proj
     #
     # @return [Conversion]
     def initialize(value, context=nil)
-      ptr = Api.proj_create(context || Context.current, value)
+      context ||= Context.current
+      ptr = Api.proj_create(context, value)
 
       if ptr.null?
-        Error.check(self.context)
+        Error.check_context(context)
       end
 
       if Api.method_defined?(:proj_is_crs) && Api.proj_is_crs(ptr)
