@@ -93,7 +93,7 @@ class PjObjectTest < AbstractTest
 
   def test_factors
     conversion = Proj::Conversion.new("+proj=merc +ellps=WGS84")
-    coord = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(55))
+    coord = Proj::Coordinate.new(lon: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(55))
     factors = conversion.factors(coord)
 
     assert_in_delta(1.739526610076288, factors[:meridional_scale], 1e-7)

@@ -70,7 +70,7 @@ class TransformationTest < AbstractTest
   def test_with_area
     area = Proj::Area.new(west_lon_degree: -114.1324, south_lat_degree: 49.5614,
                           east_lon_degree: 3.76488, north_lat_degree: 62.1463)
-    transformation = Proj::Transformation.new("EPSG:4277", "EPSG:4326", area)
+    transformation = Proj::Transformation.new("EPSG:4277", "EPSG:4326", area: area)
 
     coordinate1 = Proj::Coordinate.new(x: 50, y: -2, z: 0, t: Float::INFINITY)
     coordinate2 = transformation.forward(coordinate1)

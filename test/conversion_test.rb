@@ -49,7 +49,7 @@ class ConversionTest < AbstractTest
 
   def test_roundrip
     conversion = Proj::Conversion.new("+proj=cart +ellps=GRS80")
-    coord1 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(55), z: 100)
+    coord1 = Proj::Coordinate.new(lon: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(55), z: 100)
     coord2 = conversion.forward(coord1)
 
     dist = conversion.roundtrip(:PJ_FWD, 10000, coord1)
@@ -208,8 +208,8 @@ class ConversionTest < AbstractTest
   def test_transform_array
     crs = Proj::Conversion.new("+proj=utm +zone=32 +ellps=GRS80")
 
-    coord1 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(55), z: 45)
-    coord2 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(56), z: 50)
+    coord1 = Proj::Coordinate.new(lon: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(55), z: 45)
+    coord2 = Proj::Coordinate.new(lon: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(56), z: 50)
     new_coords = crs.transform_array([coord1, coord2], :PJ_FWD)
 
     coord = new_coords[0]
@@ -228,8 +228,8 @@ class ConversionTest < AbstractTest
   def test_transform_array_invalid
     crs = Proj::Conversion.new("+proj=utm +zone=32 +ellps=GRS80")
 
-    coord1 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(95), z: 45)
-    coord2 = Proj::Coordinate.new(long: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(56), z: 50)
+    coord1 = Proj::Coordinate.new(lon: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(95), z: 45)
+    coord2 = Proj::Coordinate.new(lon: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(56), z: 50)
 
     error = assert_raises(Proj::Error) do
       crs.transform_array([coord1, coord2], :PJ_FWD)

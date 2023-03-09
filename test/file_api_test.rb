@@ -39,9 +39,9 @@ class FileApiTest < AbstractTest
           +step +proj=unitconvert +xy_in=rad +xy_out=deg
         EOS
 
-    coord = Proj::Coordinate.new(long: 12, lat: 56, z: 0)
+    coord = Proj::Coordinate.new(lon: 12, lat: 56, z: 0)
     new_coord = conversion.forward(coord)
-    assert_in_delta(12, new_coord.long)
+    assert_in_delta(12, new_coord.lon)
     assert_in_delta(56, new_coord.lat)
     assert_in_delta(36.5909996032715, new_coord.z, 1e-10)
 

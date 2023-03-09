@@ -104,6 +104,21 @@ you will need to fill out at least the first two values:
 
 Lam is longitude and phi is latitude.
 
+=== Axis Order
+By default tranformations accept coordinates expressed in the units and axis order of the source CRS and return transformed coordinates in the units and axis order of the target CRS.
+
+For most geographic CRSes, the units will be in degrees. For geographic CRSes defined by the EPSG authority, the order of coordinates is latitude and then longitude.
+
+For projected CRSes, the units will vary (metre, us-foot, etc.). For projected CRS defined by the EPSG authority, and with EAST / NORTH directions, the order might may be east and then north or north and then east.
+
+If you prefer to work with a uniform axis order, regardless of the axis orders mandated by the source and target CRSes, then call the Context#normalize_for_visualization method:
+
+    normalized = transform.normalize_for_visualization
+
+The normalized transformation will return output coordinates in longitude, latitude order for geographic CRSes and easting, northing for most projected CRSes.
+
+For more information see {https://proj.org/faq.html#why-is-the-axis-ordering-in-proj-not-consistent Why Is The Axis Ordering In Proj Not Consistent?}
+
 === Context
 Contexts are used to support multi-threaded programs. The bindings expose this object via Context.current
 and store it using thread local storage. Use the context object to access error codes, set proj4
@@ -112,25 +127,54 @@ compatability settings, set the logging level and to install custom logging code
 Both Crs and Transformation objects take a context object in their constructors. If none is passed, they default
 to using Context.current
 
-=== Projection
-If you are using Proj 4, then instead of using Coordinates, Crses and Tranformations you need to us Points and Projections.
-Those are deprecated classes but will continue to work with Proj version 7 and older.  Please refer to the documentation
-for more information.
+=== Examples
+The proj4b test suite hsa example of calling every API method! More tutorial like examples can be found in the examples folder and include:
+
+* Convert between a CRS and geodetic coordinates for that CRS (from Proj quick start guide)
 
 == Error handling
 When an error occurs, a Proj::Error instance will be thrown with the underlying message provided
 from the Proj library.
 
-== Finding Proj Files (LIB_PROJ)
+== Finding Proj Library (PROJ_LIB_PATH)
+proj4rb will search in a number of well-known locations for the libproj shared library. You
+can override this by specifying the full path to the library using the PROJ_LIB_PATH
+environmental variable.
+
+== Finding Proj Files (PROJ_DATA)
 Starting with version 6, Proj stores its information (datums, ellipsoids, prime meridians, coordinate systems,
-units, etc) in a sqlite file called proj.db. If Proj cannot find its database, then the Ruby bindings will
-search for it in some well-known locations. Failing that, the Ruby bindings will raise an exception.
-In this case, set the environmental variable PROJ_LIB to point at the folder that contains the proj.db file.
-Note PROJ_LIB must be set by whatever launches your Ruby program. The Ruby program itself cannot set this
-variable and have it work correctly (at least not on windows).
+units, etc) in a sqlite file called proj.db. If Proj cannot find its database an exception will be
+raised. In this case, you can set the environmental variable PROJ_DATA to point to the folder that
+contains the proj.db file. Note PROJ_LIB must be set by whatever launches your Ruby program.
+The Ruby program itself cannot set this variable and have it work correctly (at least not on windows).
+
+For more information see https://proj.org/resource_files.html
+
+== Class Hierarchy
+The proj4rb class hierarchy is based on Proj's class hiearchy which, in turn, is derived from {http://docs.opengeospatial.org/as/18-005r5/18-005r5.html ISO 19111:2019}. It is:
+
+   PjObject
+     CoordinateOperationMixin
+       Conversion
+       Transformation
+     CoordinateSystem
+     Crs
+     Datum
+     Ellipsoid
+     PrimeMerdian
+
+The PjObject class defines several methods to create new objects:
+
+* PjObject.create
+* PjObject.create_from_database
+* PjObject.create_from_name
+* PjObject.create_from_wkt
+
+The methods will return instances of the correct subclass.
+
 
 == Backwards Compatibility
-Proj versions 5 and 6 are *very* different than Proj version 4. Changes are documented at
+Proj versions 5 and higher are *very* different than Proj version 4. Changes are documented at
 https://proj.org/development/migration.html. Note that the gem should gracefully degrade
 (as in newer functionality stops working but older functionality keeps working) depending on
 the version of Proj you are using.
@@ -162,7 +206,7 @@ then expect *many* test failures.
 == License
 Proj4rb is released under the MIT license.
 
-==Authors
+== Authors
 The proj4rb Ruby bindings were started by Guilhem Vellut with most of the code 
 written by Jochen Topf.  Charlie Savage ported the code to Windows and added 
 the Windows build infrastructure. Later, he rewrote the code to support
