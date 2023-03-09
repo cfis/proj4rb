@@ -140,6 +140,17 @@ module Proj
              :xy,  PJ_XY,
              :uv, PJ_UV,
              :lp, PJ_LP
+
+      def eql?(other)
+        self[:v][0] == other[:v][0] &&
+        self[:v][1] == other[:v][1] &&
+        self[:v][2] == other[:v][2] &&
+        self[:v][3] == other[:v][3]
+      end
+
+      def ==(other)
+        self.eql?(other)
+      end
     end
 
     class PJ_INFO < FFI::Struct

@@ -26,7 +26,7 @@ module Proj
     def initialize(x: nil, y: nil, z: nil, t: nil,
                    u: nil, v: nil, w: nil, # t: nil
                    lam: nil, phi: nil, # z: nil, t: nil,
-                   lat: nil, long: nil, # z: nil, t: nil,
+                   lat: nil, lon: nil, # z: nil, t: nil,
                    s: nil, a1: nil, a2: nil,
                    o: nil, p: nil, k: nil,
                    e: nil, n: nil) #u: nil
@@ -51,12 +51,12 @@ module Proj
                [:lam, :phi, :z]
              elsif lam && phi
                [:lam, :phi]
-             elsif long && lat && z && t
-               [:long, :lat, :z, :t]
-             elsif long && lat && z
-               [:long, :lat, :z]
-             elsif long && lat
-               [:long, :lat]
+             elsif lon && lat && z && t
+               [:lon, :lat, :z, :t]
+             elsif lon && lat && z
+               [:lon, :lat, :z]
+             elsif lon && lat
+               [:lon, :lat]
              elsif s && a1 && a2
                [:s, :a1, :a2]
              elsif e && n && u
@@ -81,15 +81,67 @@ module Proj
       @coord
     end
 
+    def eql?(other)
+      @coord == other.instance_variable_get(:@coord)
+    end
+
+    def ==(other)
+      @coord.eql?(other.instance_variable_get(:@coord))
+    end
+
+    def enu
+      @coord[:enu]
+    end
+
+    def geod
+      @coord[:geod]
+    end
+
+    def lp
+      @coord[:lp]
+    end
+
+    def lpz
+      @coord[:lpz]
+    end
+
+    def lpzt
+      @coord[:lpzt]
+    end
+
+    def opk
+      @coord[:opk]
+    end
+
+    def uv
+      @coord[:uv]
+    end
+
+    def uvw
+      @coord[:uvw]
+    end
+
+    def uvwt
+      @coord[:uvwt]
+    end
+
+    def xy
+      @coord[:xy]
+    end
+
+    def xyz
+      @coord[:xyz]
+    end
+
+    def xyzt
+      @coord[:xyzt]
+    end
+
     # Returns x coordinate
     #
     # @return [Float]
     def x
       @coord[:v][0]
-    end
-
-    def xyzt
-      @coord[:xyzt]
     end
 
     # Returns y coordinate
@@ -135,14 +187,14 @@ module Proj
       @coord[:v][2]
     end
 
-    # Returns long coordinate
+    # Returns longitude coordinate
     #
     # @return [Float]
-    def long
+    def lon
       @coord[:v][0]
     end
 
-    # Returns lat coordinate
+    # Returns latitude coordinate
     #
     # @return [Float]
     def lat
