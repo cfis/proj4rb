@@ -68,12 +68,10 @@ class CrsTest < AbstractTest
               BBOX[-90,-180,90,180]],
           ID["EPSG",4326]]
     EOS
-    wkt.strip!
 
     crs = Proj::Crs.create_from_wkt(wkt)
-
     assert_equal(:PJ_TYPE_GEOGRAPHIC_2D_CRS, crs.proj_type)
-    assert_equal(wkt, crs.to_wkt)
+    assert_equal(wkt.strip, crs.to_wkt)
   end
 
   def test_create_from_wkt_warning

@@ -132,8 +132,6 @@ class TransformationTest < AbstractTest
       transform = Proj::Transformation.new("EPSG:4326",
                                            "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
 
-      puts transform.to_wkt
-
       start_bounds = Proj::Bounds.new(40, -120, 64, -80)
       end_bounds = transform.transform_bounds(start_bounds, :PJ_FWD, 100)
 

@@ -47,7 +47,7 @@ class OperationFactoryContextTest < AbstractTest
     index = operations.suggested_operation(:PJ_FWD, coord)
 
     expected = case
-               when proj8?
+               when proj9?
                  2
                else
                  7
@@ -57,7 +57,7 @@ class OperationFactoryContextTest < AbstractTest
     operation = operations[index]
 
     expected = case
-               when proj8?
+               when proj9?
                  "NAD27 to NAD83 (1)"
                else
                  "Ballpark geographic offset from NAD27 to NAD83"

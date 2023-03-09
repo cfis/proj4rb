@@ -593,8 +593,7 @@ module Proj
                  "INDENTATION_WIDTH=#{indentation_width}",
                  "OUTPUT_AXIS=AUTO",
                  "STRICT=YES",
-                 "ALLOW_ELLIPSOIDAL_HEIGHT_AS_VERTICAL_CRS=NO",
-                 "ALLOW_LINUNIT_NODE=YES"]
+                 "ALLOW_ELLIPSOIDAL_HEIGHT_AS_VERTICAL_CRS=NO"]
 
       options_ptr_array = options.map do |option|
         FFI::MemoryPointer.from_string(option)
