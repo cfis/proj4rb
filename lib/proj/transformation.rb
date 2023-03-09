@@ -33,8 +33,8 @@ module Proj
     # @param only_best [Boolean] Set to true to cause PROJ to error out if the best transformation cannot be used. Requires Proj 9.2 and higher
     #
     # @return [Transformation] A new transformation
-    def initialize(source, target, area=nil, context=nil,
-                   authority: nil, accuracy: nil, allow_ballpark: nil, only_best: nil, force_over: nil)
+    def initialize(source, target, context=nil,
+                   area: nil, authority: nil, accuracy: nil, allow_ballpark: nil, only_best: nil, force_over: nil)
 
       context ||= Context.current
 
