@@ -58,7 +58,7 @@ module Proj
     #     assert_equal(:PJ_TYPE_GEOGRAPHIC_2D_CRS, geodetic.proj_type)
     #     assert_equal('+proj=longlat +datum=WGS84 +no_defs +type=crs', geodetic.to_proj_string)
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_geodetic_crs proj_crs_get_geodetic_crs
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_geodetic_crs
     #
     # @return [Crs]
     def geodetic_crs
@@ -80,7 +80,7 @@ module Proj
 
     # Returns the datum of a SingleCRS.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_datum proj_crs_get_datum
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_datum
     #
     # @return [Datum]
     def datum
@@ -92,7 +92,7 @@ module Proj
     # Otherwise, the SingleCRS has a datum ensemble, and this datum ensemble is returned as
     # a regular datum instead of a datum ensemble.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_datum_forced proj_crs_get_datum_forced
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_datum_forced
     #
     # @return [Datum]
     def datum_forced
@@ -102,7 +102,7 @@ module Proj
 
     # Get the horizontal datum from a CRS.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_horizontal_datum proj_crs_get_horizontal_datum
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_horizontal_datum
     #
     # @return [Crs]
     def horizontal_datum
@@ -112,7 +112,7 @@ module Proj
 
     # Returns the {DatumEnsemble datum ensemble} of a SingleCRS.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_datum_ensemble proj_crs_get_datum_ensemble
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_datum_ensemble
     #
     # @return [DatumEnsemble]
     def datum_ensemble
@@ -130,7 +130,7 @@ module Proj
 
     # Returns the ellipsoid
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_ellipsoid proj_get_ellipsoid
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_ellipsoid
     #
     # @return [PjObject]
     def ellipsoid
@@ -160,7 +160,7 @@ module Proj
 
     # Returns the prime meridian
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_prime_meridian proj_get_prime_meridian
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_prime_meridian
     #
     # @return [PjObject]
     def prime_meridian

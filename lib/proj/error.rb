@@ -1,7 +1,7 @@
 module Proj
   # Represents error thrown by Proj
   #
-  # @see https://proj.org/development/errorhandling.html Error Handling
+  # @see https://proj.org/development/errorhandling.html
   class Error < StandardError
     # Error codes typically related to coordinate operation initialization
     PROJ_ERR_INVALID_OP = 1024 # Other/unspecified error related to coordinate operation initialization

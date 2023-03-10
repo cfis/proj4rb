@@ -18,7 +18,7 @@ module Proj
     #
     # @param value [Boolean]
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_enable proj_grid_cache_set_enable
+    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_enable
     def enabled=(value)
       Api.proj_grid_cache_set_enable(self.context, value ? 1 : 0)
     end
@@ -28,7 +28,7 @@ module Proj
     #
     # @param value [String] - Full path to the cache. If set to nil then caching will be disabled.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_filename proj_grid_cache_set_filename
+    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_filename
     def path=(value)
       Api.proj_grid_cache_set_filename(self.context, value.encode('UTF-8'))
       value
@@ -38,7 +38,7 @@ module Proj
     #
     # @param value [Integer] Maximum size in Megabytes (1024*1024 bytes), or negative value to set unlimited size.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_max_size proj_grid_cache_set_max_size
+    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_max_size
     def max_size=(value)
       Api.proj_grid_cache_set_max_size(self.context, value)
       value
@@ -48,7 +48,7 @@ module Proj
     #
     # @param value [Integer] Delay in seconds. Use negative value for no expiration.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_ttl proj_grid_cache_set_ttl
+    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_set_ttl
     def ttl=(value)
       Api.proj_grid_cache_set_ttl(self.context, value)
       value
@@ -56,7 +56,7 @@ module Proj
 
     # Clears the cache
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_clear proj_grid_cache_clear
+    # @see https://proj.org/development/reference/functions.html#c.proj_grid_cache_clear
     def clear
       Api.proj_grid_cache_clear(self.context)
     end

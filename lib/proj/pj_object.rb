@@ -91,7 +91,7 @@ module Proj
 
     # Return a list of objects by their name
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_create_from_name proj_create_from_name
+    # @see https://proj.org/development/reference/functions.html#c.proj_create_from_name
     #
     # @param name [String] Search value, must be at least two characters
     # @param context [Context] Context. If nil the current context is used
@@ -186,7 +186,7 @@ module Proj
 
     # Returns whether an object is deprecated
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_is_deprecated proj_is_deprecated
+    # @see https://proj.org/development/reference/functions.html#c.proj_is_deprecated
     #
     # @return [Boolean] True if the object is deprecated, otherwise false
     def deprecated?
@@ -197,8 +197,8 @@ module Proj
     # Return whether two objects are equivalent. For versions 6.3.0 and higher
     # the check may use using the proj database to check for name aliases
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_is_equivalent_to proj_is_equivalent_to
-    # @see https://proj.org/development/reference/functions.html#c.proj_is_equivalent_to_with_ctx proj_is_equivalent_to_with_ctx
+    # @see https://proj.org/development/reference/functions.html#c.proj_is_equivalent_to
+    # @see https://proj.org/development/reference/functions.html#c.proj_is_equivalent_to_with_ctx
     #
     # @param other [PjObject] Object to compare to
     # @param comparison [PJ_COMPARISON_CRITERION] Comparison criterion
@@ -215,7 +215,7 @@ module Proj
 
     #  Returns the current error-state of this object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_errno proj_errno
+    # @see https://proj.org/development/reference/functions.html#c.proj_errno
     #
     # @return [Integer] An non-zero error codes indicates an error either with the transformation setup or during a transformation
     def errorno
@@ -224,7 +224,7 @@ module Proj
 
     # Get information about this object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info proj_pj_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info
     #
     # @return [PJ_PROJ_INFO]
     def info
@@ -234,7 +234,7 @@ module Proj
     # Short ID of the operation the PJ object is based on, that is, what comes after the +proj=
     # in a proj-string, e.g. "merc".
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info proj_pj_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info
     #
     # @return [String]
     def id
@@ -243,7 +243,7 @@ module Proj
 
     # Long description of the operation the PJ object is based on, e.g. "Mercator Cyl, Sph&Ell lat_ts="
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info proj_pj_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info
     #
     # @return [String]
     def description
@@ -252,7 +252,7 @@ module Proj
 
     # The proj-string that was used to create the PJ object with, e.g. "+proj=merc +lat_0=24 +lon_0=53 +ellps=WGS84"
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info proj_pj_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info
     #
     # @return [String]
     def definition
@@ -261,7 +261,7 @@ module Proj
 
     # Returns true if an an inverse mapping of the defined operation exists, otherwise false
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info proj_pj_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info
     #
     # @return [Boolean]
     def has_inverse?
@@ -270,7 +270,7 @@ module Proj
 
     # Expected accuracy of the transformation. -1 if unknown
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info proj_pj_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_pj_info
     #
     # @return [Double]
     def accuracy
@@ -279,7 +279,7 @@ module Proj
 
     # Return the type of an object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_type proj_get_type
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_type
     #
     # @return [PJ_TYPE]
     def proj_type
@@ -288,7 +288,7 @@ module Proj
 
     # Returns the name of an object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_name proj_get_name
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_name
     #
     # @return [String]
     def name
@@ -297,7 +297,7 @@ module Proj
 
     # Returns the authority name / codespace of an identifier of an object.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_id_auth_name proj_get_id_auth_name
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_id_auth_name
     #
     # @param index [Integer] Index of the identifier. 0 is for the first identifier. Default is 0.
     #
@@ -308,7 +308,7 @@ module Proj
 
     # Get the code of an identifier of an object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_id_code proj_get_id_code
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_id_code
     #
     # @param index [Integer] Index of the identifier. 0 is the first identifier. Default is 0
     #
@@ -319,7 +319,7 @@ module Proj
 
     # Get the remarks of an object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_remarks proj_get_remarks
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_remarks
     #
     # @return [String] Remarks  or nil in case of error
     def remarks
@@ -328,7 +328,7 @@ module Proj
 
     # Get the scope of an object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_scope proj_get_scope
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_scope
     #
     # @return [String] Scope or nil in case of error or a missing scope
     def scope
@@ -341,7 +341,7 @@ module Proj
 
     # Return the area of use of an object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_area_of_use proj_get_area_of_use
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_area_of_use
     #
     # @return [Area] In case of multiple usages, this will be the one of first usage.
     def area_of_use
@@ -369,7 +369,7 @@ module Proj
     # Return the base CRS of a BoundCRS or a DerivedCRS/ProjectedCRS, or the source CRS of a
     # CoordinateOperation, or the CRS of a CoordinateMetadata.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_source_crs proj_get_source_crs
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_source_crs
     #
     # @return [Crs]
     def source_crs
@@ -379,7 +379,7 @@ module Proj
 
     # Return the hub CRS of a BoundCRS or the target CRS of a CoordinateOperation
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_target_crs proj_get_target_crs
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_target_crs
     #
     # @return [Crs]
     def target_crs
@@ -392,7 +392,7 @@ module Proj
     # calculated either numerically (default) or analytically. The function also calculates
     # the partial derivatives of the given coordinate.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_factors proj_factors
+    # @see https://proj.org/development/reference/functions.html#c.proj_factors
     #
     # @param coordinate [Coordinate] Input geodetic coordinate in radians
     #
@@ -403,7 +403,7 @@ module Proj
 
     # Return a list of non-deprecated objects related to the passed one
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_non_deprecated proj_get_non_deprecated
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_non_deprecated
     #
     # @return [Array] Array of objects
     def non_deprecated
@@ -416,7 +416,7 @@ module Proj
     # is not taken into account, so even though a CRS object comes with axis ordering
     # latitude/longitude coordinates used in this function should be reordered as longitude/latitude.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_lp_dist proj_lp_dist
+    # @see https://proj.org/development/reference/functions.html#c.proj_lp_dist
     #
     # @param coord1 [Coordinate] Coordinate of first point. Must be lat/long in radians
     # @param coord2 [Coordinate] Coordinate of second point. Must be lat/long in radians
@@ -433,7 +433,7 @@ module Proj
     # a CRS object comes with axis ordering latitude/longitude coordinates used in this function
     # should be reordered as longitude/latitude.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_lpz_dist proj_lpz_dist
+    # @see https://proj.org/development/reference/functions.html#c.proj_lpz_dist
     #
     # @param coord1 [Coordinate] Coordinate of first point. Must be lat/long in radians
     # @param coord2 [Coordinate] Coordinate of second point. Must be lat/long in radians
@@ -445,7 +445,7 @@ module Proj
 
     # Calculate the 2-dimensional euclidean between two projected coordinates
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_xy_dist proj_xy_dist
+    # @see https://proj.org/development/reference/functions.html#c.proj_xy_dist
     #
     # @param coord1 [Coordinate] Coordinate of first point
     # @param coord2 [Coordinate] Coordinate of second point
@@ -458,7 +458,7 @@ module Proj
     # Calculate the 2-dimensional euclidean between two projected coordinates. Similar to
     # PjObject#xy_distance but also takes height into account.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_xyz_dist proj_xyz_dist
+    # @see https://proj.org/development/reference/functions.html#c.proj_xyz_dist
     #
     # @param coord1 [Coordinate] Coordinate of first point
     # @param coord2 [Coordinate] Coordinate of second point
@@ -474,7 +474,7 @@ module Proj
     # a CRS object comes with axis ordering latitude/longitude coordinates used in this function
     # should be reordered as longitude/latitude.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_geod proj_geod
+    # @see https://proj.org/development/reference/functions.html#c.proj_geod
     #
     # @param coord1 [Coordinate] Coordinate of first point. Must be lat/long in radians
     # @param coord2 [Coordinate] Coordinate of first point. Must be lat/long in radians
@@ -488,7 +488,7 @@ module Proj
 
     # Returns if an operation expects input in radians
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_angular_input proj_angular_input
+    # @see https://proj.org/development/reference/functions.html#c.proj_angular_input
     #
     # @param direction []PJ_DIRECTION] Direction of transformation
     def angular_input?(direction)
@@ -498,7 +498,7 @@ module Proj
 
     # Check if an operation returns output in radians
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_angular_output proj_angular_output
+    # @see https://proj.org/development/reference/functions.html#c.proj_angular_output
     #
     # @param direction []PJ_DIRECTION] Direction of transformation
     def angular_output?(direction)
@@ -508,7 +508,7 @@ module Proj
 
     # Returns if an operation expects input in degrees
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_degree_input proj_degree_input
+    # @see https://proj.org/development/reference/functions.html#c.proj_degree_input
     #
     # @param direction []PJ_DIRECTION] Direction of transformation
     def degree_input?(direction)
@@ -518,7 +518,7 @@ module Proj
 
     # Check if an operation returns output in degrees
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_degree_output proj_degree_output
+    # @see https://proj.org/development/reference/functions.html#c.proj_degree_output
     #
     # @param direction []PJ_DIRECTION] Direction of transformation
     def degree_output?(direction)
@@ -528,7 +528,7 @@ module Proj
 
     # Returns the proj representation string for this object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_as_proj_string proj_as_proj_string
+    # @see https://proj.org/development/reference/functions.html#c.proj_as_proj_string
     #
     # @param proj_version [PJ_PROJ_STRING_TYPE] The proj version. Defaults to :PJ_PROJ_5
     # @param use_approx_tmerc [Boolean] True adds the +approx flag to +proj=tmerc or +proj=utm. Defaults to false
@@ -558,7 +558,7 @@ module Proj
 
     # Returns the json representation for this object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_as_projjson proj_as_projjson
+    # @see https://proj.org/development/reference/functions.html#c.proj_as_projjson
     #
     # @param multiline [Boolean] Specifies if output span multiple lines. Defaults to true.
     # @param indentation_width [Integer] Specifies the indentation level. Defaults to 2.
@@ -581,7 +581,7 @@ module Proj
 
     # Returns the wkt representation for this object
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_as_wkt proj_as_wkt
+    # @see https://proj.org/development/reference/functions.html#c.proj_as_wkt
     #
     # @param wkt_type [PJ_WKT_TYPE] WKT version to output. Defaults to PJ_WKT2_2018
     # @param multiline [Boolean] Specifies if output span multiple lines. Defaults to true.

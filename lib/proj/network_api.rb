@@ -48,7 +48,7 @@ module Proj
   # done by calling Context#set_network_api with a user defined Class that includes the
   # NetworkApiCallbacks module and implements its required methods.
   #
-  # @see https://proj.org/usage/network.html Network capabilities
+  # @see https://proj.org/usage/network.html
   #
   # The NetworkApiImpl class is a simple example of a network api implementation.
   class NetworkApiImpl

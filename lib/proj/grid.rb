@@ -65,7 +65,7 @@ module Proj
     # Returns if a grid is available in the PROJ user-writable directory.
     # This method will only return true if Context#network_enabled? is true
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_is_download_needed proj_is_download_needed
+    # @see https://proj.org/development/reference/functions.html#c.proj_is_download_needed
     #
     # @param ignore_ttl [Boolean] If set to FALSE, PROJ will only check the recentness of an already downloaded file, if the delay between the last time it has been verified and the current time exceeds the TTL setting. This can save network accesses. If set to TRUE, PROJ will unconditionally check from the server the recentness of the file.
     #
@@ -82,7 +82,7 @@ module Proj
     # Download a file in the PROJ user-writable directory if has not already been downlaoded.
     # This function can only be used if networking is enabled
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_download_file proj_download_file
+    # @see https://proj.org/development/reference/functions.html#c.proj_download_file
     #
     # @param ignore_ttl [Boolean] If set to FALSE, PROJ will only check the recentness of an already downloaded file, if the delay between the last time it has been verified and the current time exceeds the TTL setting. This can save network accesses. If set to TRUE, PROJ will unconditionally check from the server the recentness of the file.
     # @yieldparam percent [Double] The progress downloading the file in the range of 0 to 1

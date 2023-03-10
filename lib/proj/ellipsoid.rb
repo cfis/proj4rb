@@ -16,7 +16,7 @@ module Proj
 
     # Returns ellipsoid parameters
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters
     #
     # @return [Hash] Hash of ellipsoid parameters. Axes are in meters
     def parameters
@@ -41,7 +41,7 @@ module Proj
 
     # Returns the semi-major axis in meters
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters
     #
     # @return [Double]
     def semi_major_axis
@@ -50,7 +50,7 @@ module Proj
 
     # Returns the semi-minor axis in meters
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters
     #
     # @return [Double]
     def semi_minor_axis
@@ -59,7 +59,7 @@ module Proj
 
     # Returns whether the semi-minor axis is computed
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters
     #
     # @return [Boolean]
     def semi_minor_axis_computed
@@ -68,7 +68,7 @@ module Proj
 
     # Returns the inverse flattening value
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters proj_ellipsoid_get_parameters
+    # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters
     #
     # @return [Double]
     def inverse_flattening

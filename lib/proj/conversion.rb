@@ -19,7 +19,7 @@ module Proj
     # * PROJJSON string. The jsonschema is at https://proj.org/schemas/v0.4/projjson.schema.json (added in 6.2)
     # * compound CRS made from two object names separated with " + ". e.g. "WGS 84 + EGM96 height" (added in 7.1)
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_create proj_create
+    # @see https://proj.org/development/reference/functions.html#c.proj_create
     #
     # @param value [String]. See above
     #

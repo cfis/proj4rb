@@ -12,7 +12,7 @@ module Proj
   module CoordinateOperationMixin
     # Return whether a coordinate operation can be instantiated as a PROJ pipeline, checking in particular that referenced grids are available.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_is_instantiable proj_coordoperation_is_instantiable
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_is_instantiable
     #
     # @return [Boolean]
     def instantiable?
@@ -47,7 +47,7 @@ module Proj
 
     # Returns the operation name
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_method_info proj_coordoperation_get_method_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_method_info
     #
     # @return [String]
     def method_name
@@ -56,7 +56,7 @@ module Proj
 
     # Returns the operation authority name
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_method_info proj_coordoperation_get_method_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_method_info
     #
     # @return [String]
     def method_auth_name
@@ -65,7 +65,7 @@ module Proj
 
     # Returns the operation code
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_method_info proj_coordoperation_get_method_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_method_info
     #
     # @return [String]
     def method_code
@@ -74,7 +74,7 @@ module Proj
 
     # Returns the number of parameters of a SingleOperation
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_param_count proj_coordoperation_get_param_count
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_param_count
     #
     # @return [Integer]
     def param_count
@@ -83,7 +83,7 @@ module Proj
 
     # Returns the index of a parameter of a SingleOperation
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_param_index proj_coordoperation_get_param_index
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_param_index
     #
     # @param name [String] Name of the parameter. Must not be nil
     #
@@ -94,7 +94,7 @@ module Proj
 
     # Returns a parameter of a SingleOperation
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_param proj_coordoperation_get_param
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_param
     #
     # @param index [Integer] Parameter index
     #
@@ -146,7 +146,7 @@ module Proj
     # the units and axis order of the definition of the source CRS. The returned transformed coordinate will
     # be in the units and axis order of the definition of the target CRS.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_trans proj_trans
+    # @see https://proj.org/development/reference/functions.html#c.proj_trans
     #
     # @param coord [Coordinate]
     #
@@ -159,7 +159,7 @@ module Proj
     # the units and axis order of the definition of the source CRS. The returned transformed coordinate will
     # be in the units and axis order of the definition of the target CRS.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_trans proj_trans
+    # @see https://proj.org/development/reference/functions.html#c.proj_trans
     #
     # @param coord [Coordinate]
     #
@@ -171,7 +171,7 @@ module Proj
     # Transforms a {Coordinate} in the specified direction. See {CoordinateOperation#forward forward} and
     # {CoordinateOperation#inverse inverse}
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_trans proj_trans
+    # @see https://proj.org/development/reference/functions.html#c.proj_trans
     #
     # @param direction [PJ_DIRECTION] Direction of transformation (:PJ_FWD or :PJ_INV)
     # @param coord [Coordinate]
@@ -239,7 +239,7 @@ module Proj
     # Measure the internal consistency of a given transformation. The function performs n round trip
     # transformations starting in either the forward or reverse direction.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_roundtrip proj_roundtrip
+    # @see https://proj.org/development/reference/functions.html#c.proj_roundtrip
     #
     # @param direction [PJ_DIRECTION] The starting direction of transformation
     # @param iterations [Integer] The number of roundtrip transformations
@@ -252,7 +252,7 @@ module Proj
 
     # Returns a new PJ object whose axis order is the one expected for visualization purposes
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_normalize_for_visualization proj_normalize_for_visualization
+    # @see https://proj.org/development/reference/functions.html#c.proj_normalize_for_visualization
     #
     # @return [CoordinateOperation] A new CoordinateOperation or nil in case of error
     def normalize_for_visualization
@@ -272,7 +272,7 @@ module Proj
 
     # Return whether a coordinate operation has a "ballpark" transformation
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_has_ballpark_transformation proj_coordoperation_has_ballpark_transformation
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_has_ballpark_transformation
     #
     # @return [Boolean]
     def ballpark_transformation?
@@ -282,7 +282,7 @@ module Proj
 
     # Returns the accuracy (in meters) of a coordinate operation.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_accuracy proj_coordoperation_get_accuracy
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_accuracy
     #
     # @return [Double] The accuracy, or a negative value if unknown or in case of error.
     def accuracy
@@ -291,7 +291,7 @@ module Proj
 
     # Returns the number of grids used by a CoordinateOperation
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_grid_used_count proj_coordoperation_get_grid_used_count
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_grid_used_count
     #
     # @return [Integer]
     def grid_count
@@ -300,7 +300,7 @@ module Proj
 
     # Returns information about a Grid
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_grid_used proj_coordoperation_get_grid_used
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_grid_used
     #
     # @param index [Integer] Grid index
     #
@@ -344,7 +344,7 @@ module Proj
 
     # Return the parameters of a Helmert transformation as WKT1 TOWGS84 values
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_towgs84_values proj_coordoperation_get_towgs84_values
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_towgs84_values
     #
     # @param error_if_incompatible [Boolean] If true an exception is thrown if the coordinate operation is not compatible with a WKT1 TOWGS84 representation
     #
@@ -359,7 +359,7 @@ module Proj
 
     # Returns the number of steps in a concatenated operation
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_concatoperation_get_step_count proj_concatoperation_get_step_count
+    # @see https://proj.org/development/reference/functions.html#c.proj_concatoperation_get_step_count
     #
     # @return [Integer] The number of steps
     def step_count
@@ -368,7 +368,7 @@ module Proj
 
     # Returns a step of a concatenated operation
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_concatoperation_get_step proj_concatoperation_get_step
+    # @see https://proj.org/development/reference/functions.html#c.proj_concatoperation_get_step
     #
     # @param index [Integer] Index of the step
     #

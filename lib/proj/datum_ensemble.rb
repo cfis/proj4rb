@@ -3,7 +3,7 @@ module Proj
 
     # Returns the number of members of a datum ensemble
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_datum_ensemble_get_member_count proj_datum_ensemble_get_member_count
+    # @see https://proj.org/development/reference/functions.html#c.proj_datum_ensemble_get_member_count
     #
     # @return [Integer]
     def count
@@ -12,7 +12,7 @@ module Proj
 
     # Returns a member from a datum ensemble.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_datum_ensemble_get_member proj_datum_ensemble_get_member
+    # @see https://proj.org/development/reference/functions.html#c.proj_datum_ensemble_get_member
     #
     # @param index [Integer] Index of the datum member to extract. Should be between 0 and DatumEnsembel#count - 1.
     #
@@ -24,7 +24,7 @@ module Proj
 
     # Returns the positional accuracy of the datum ensemble
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_datum_ensemble_get_accuracy proj_datum_ensemble_get_accuracy
+    # @see https://proj.org/development/reference/functions.html#c.proj_datum_ensemble_get_accuracy
     #
     # @return [Float] The data ensemble accuracy or -1 in case of error
     def accuracy

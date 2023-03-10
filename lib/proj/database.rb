@@ -19,7 +19,7 @@ module Proj
 
     # Returns the path the Proj database
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_database_path proj_context_get_database_path
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_database_path
     #
     # return [String]
     def path
@@ -30,7 +30,7 @@ module Proj
 
     # Sets the path to the Proj database
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_database_path proj_context_set_database_path
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_database_path
     #
     # @param value [String] Path to the proj database
     #
@@ -45,7 +45,7 @@ module Proj
 
     # Returns SQL statements to run to initiate a new valid auxiliary empty database.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_database_structure proj_context_get_database_structure
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_database_structure
     #
     # @return [Array<Strings>] List of sql statements
     def structure
@@ -55,7 +55,7 @@ module Proj
 
     # Return a metadata from the database.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_database_metadata proj_context_get_database_metadata
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_database_metadata
     #
     # @param key [String] The name of the metadata item. Must not be nil
     #                       Available keys:
@@ -81,7 +81,7 @@ module Proj
 
     # Returns the set of authority codes of the given object type.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_codes_from_database proj_get_codes_from_database
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_codes_from_database
     #
     # @param auth_name [String] Authority name. Must not be nil.
     # @param type [PJ_TYPE] Object type.
@@ -95,7 +95,7 @@ module Proj
 
     # Return a list of authorities used in the database
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_authorities_from_database proj_get_authorities_from_database
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_authorities_from_database
     #
     # @return [Array<Strings>] List of authorities
     def authorities
@@ -105,7 +105,7 @@ module Proj
 
     # Enumerate CRS infos from the database, taking into account various criteria.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_crs_info_list_from_database proj_get_crs_info_list_from_database
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_crs_info_list_from_database
     #
     # @param auth_name [String] Authority name. Use nil to specify all authorities
     # @param parameters [Parameters] Parameters to specify search criteria. May be nil
@@ -127,7 +127,7 @@ module Proj
 
     # Returns information about a Grid from the database
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_grid_get_info_from_database proj_grid_get_info_from_database
+    # @see https://proj.org/development/reference/functions.html#c.proj_grid_get_info_from_database
     #
     # @param name [String] The name of the grid
     #
@@ -172,7 +172,7 @@ module Proj
 
     # Returns a list of geoid models available
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_geoid_models_from_database proj_get_geoid_models_from_database
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_geoid_models_from_database
     #
     # @param authority [String] Authority name into which the object will be inserted. Must not be nil
     # @param code [Integer] Code with which the object will be inserted.Must not be nil
@@ -185,7 +185,7 @@ module Proj
 
     # Returns a list of celestial bodies from the database
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_celestial_body_list_from_database proj_get_celestial_body_list_from_database
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_celestial_body_list_from_database
     #
     # @param authority [String] Authority name, used to restrict the search. Set to nil for all authorities.
     #
@@ -210,7 +210,7 @@ module Proj
 
     # Return the name of the celestial body of the specified object.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_celestial_body_name proj_get_celestial_body_name
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_celestial_body_name
     #
     # @param object [PjObject] Object of type CRS, Datum or Ellipsoid. Must not be nil.
     #
@@ -221,7 +221,7 @@ module Proj
 
     # Suggests a database code for the specified object.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_suggests_code_for proj_suggests_code_for
+    # @see https://proj.org/development/reference/functions.html#c.proj_suggests_code_for
     #
     # @param object [PjObject] Object for which to suggest a code.
     # @param authority [String]  Authority name into which the object will be inserted.
@@ -237,7 +237,7 @@ module Proj
 
     # Returns a list of units from the database
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_units_from_database proj_get_units_from_database
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_units_from_database
     #
     # @param auth_name [String] Authority name, used to restrict the search. Or nil for all authorities.
     # @param category [String] Filter by category, if this parameter is not nil. Category is one of "linear", "linear_per_time", "angular", "angular_per_time", "scale", "scale_per_time" or "time
@@ -250,7 +250,7 @@ module Proj
 
     # Returns information for a unit of measure from a database lookup
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_uom_get_info_from_database proj_uom_get_info_from_database
+    # @see https://proj.org/development/reference/functions.html#c.proj_uom_get_info_from_database
     #
     # @param auth_name [String] Authority name
     # @param code [String] Unit of measure code

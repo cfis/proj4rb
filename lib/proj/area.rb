@@ -27,7 +27,7 @@ module Proj
 
     # Sets the bounds for an area
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_area_set_bbox proj_area_set_bbox
+    # @see https://proj.org/development/reference/functions.html#c.proj_area_set_bbox
     #
     # @param west_lon_degree [Float] West longitude, in degrees. In [-180,180] range.
     # @param south_lat_degree [Float] South latitude, in degrees. In [-90,90] range.
@@ -59,7 +59,7 @@ module Proj
 
     # Creates an area
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_area_create proj_area_create
+    # @see https://proj.org/development/reference/functions.html#c.proj_area_create
     def create_area
       @area = Api.proj_area_create
       self.set_bounds(west_lon_degree: west_lon_degree, south_lat_degree: south_lat_degree,

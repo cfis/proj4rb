@@ -23,7 +23,7 @@ module Proj
   class CoordinateSystem < PjObject
     # Returns the type of the coordinate system
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_cs_get_type proj_cs_get_type
+    # @see https://proj.org/development/reference/functions.html#c.proj_cs_get_type
     #
     # @return [PJ_COORDINATE_SYSTEM_TYPE]
     def type
@@ -36,7 +36,7 @@ module Proj
 
     # Returns the number of axes in the coordinate system
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_cs_get_axis_count proj_cs_get_axis_count
+    # @see https://proj.org/development/reference/functions.html#c.proj_cs_get_axis_count
     #
     # @return [Integer]
     def axis_count
@@ -49,7 +49,7 @@ module Proj
 
     # Returns information about a single axis
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_cs_get_axis_info proj_cs_get_axis_info
+    # @see https://proj.org/development/reference/functions.html#c.proj_cs_get_axis_info
     #
     # @param index [Integer] Index of the axis
     #

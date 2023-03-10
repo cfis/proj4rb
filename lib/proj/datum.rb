@@ -2,7 +2,7 @@ module Proj
   class Datum < PjObject
     # Returns the frame reference epoch of a dynamic geodetic or vertical reference frame
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_dynamic_datum_get_frame_reference_epoch proj_dynamic_datum_get_frame_reference_epoch
+    # @see https://proj.org/development/reference/functions.html#c.proj_dynamic_datum_get_frame_reference_epoch
     #
     # @return [Double] The frame reference epoch as decimal year, or -1 in case of error.
     def frame_reference_epoch
@@ -11,7 +11,7 @@ module Proj
 
     # Return the ellipsoid
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_ellipsoid proj_get_ellipsoid
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_ellipsoid
     #
     # @return [PjObject]
     def ellipsoid
@@ -21,7 +21,7 @@ module Proj
 
     # Returns the prime meridian
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_get_prime_meridian proj_get_prime_meridian
+    # @see https://proj.org/development/reference/functions.html#c.proj_get_prime_meridian
     #
     # @return [PjObject]
     def prime_meridian

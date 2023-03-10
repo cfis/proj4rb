@@ -20,7 +20,7 @@ module Proj
     # easting first, northing second, or the reverse. When using a PROJ string, the order will be
     # easting first, northing second, except if the +axis parameter modifies it.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs_from_pj proj_create_crs_to_crs_from_pj and
+    # @see https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs_from_pj
     # @see  https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs proj_create_crs_to_crs
     #
     # @param source [Crs | String] The source Crs. See the Crs documentation for the string format

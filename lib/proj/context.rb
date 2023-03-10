@@ -109,7 +109,7 @@ module Proj
 
     # Guess the "dialect" of the specified WKT string
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_guess_wkt_dialect proj_context_guess_wkt_dialect
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_guess_wkt_dialect
     #
     # @param wkt [String] A WKT string
     #
@@ -120,7 +120,7 @@ module Proj
 
     # Sets the CA Bundle path which will be used by PROJ when curl and PROJ_NETWORK are enabled.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_ca_bundle_path proj_context_set_ca_bundle_path
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_ca_bundle_path
     #
     # @param path [String] Path to CA bundle.
     #
@@ -138,7 +138,7 @@ module Proj
 
     # Returns if network access is enabled allowing {Grid} files to be downloaded
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_is_network_enabled proj_context_is_network_enabled
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_is_network_enabled
     #
     # @return [Boolean] True if network access is enabled, otherwise false
     def network_enabled?
@@ -148,7 +148,7 @@ module Proj
 
     # Enable or disable network access for downloading grid files
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_enable_network proj_context_set_enable_network
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_enable_network
     #
     # @param value [Boolean] Specifies if network access should be enabled or disabled
     def network_enabled=(value)
@@ -157,7 +157,7 @@ module Proj
 
     # Returns the URL endpoint to query for remote grids
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_url_endpoint proj_context_get_url_endpoint
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_url_endpoint
     #
     # @return [String] Endpoint URL
     def url
@@ -166,7 +166,7 @@ module Proj
 
     # Sets the URL endpoint to query for remote grids. This overrides the default endpoint in the PROJ configuration file or with the PROJ_NETWORK_ENDPOINT environment variable.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_url_endpoint proj_context_set_url_endpoint
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_url_endpoint
     #
     # @param value [String] Endpoint URL
     def url=(value)
@@ -175,7 +175,7 @@ module Proj
 
     # Returns the user directory used to save grid files.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_user_writable_directory proj_context_get_user_writable_directory
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_get_user_writable_directory
     #
     # @param [Boolean] If set to TRUE, create the directory if it does not exist already. Defaults to false
     #
@@ -189,7 +189,7 @@ module Proj
     #
     # If set on the default context, they will be inherited by contexts created later.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_search_paths proj_context_set_search_paths
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_search_paths
     def search_paths=(paths)
       # Convert paths to C chars
       paths_ptr = paths.map do |path|
@@ -208,7 +208,7 @@ module Proj
 
     # Installs a new {FileApi FileApiImpl}
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_fileapi proj_context_set_fileapi
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_fileapi
     def set_file_api(file_api_klass)
       unless file_api_klass.kind_of?(Class)
         raise("#{file_api_klass} must be a class whose initializer has single argument which is a context")
@@ -221,7 +221,7 @@ module Proj
 
     # Installs a new {NetworkApi NetworkApiImpl}
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_network_callbacks proj_context_set_network_callbacks
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_network_callbacks
     def set_network_api(network_api_klass)
       unless network_api_klass.kind_of?(Class)
         raise("#{network_api_klass} must be a class whose initializer has single argument which is a context")

@@ -19,7 +19,7 @@ module Proj
     if Api.method_defined?(:proj_get_units_from_database)
       # Returns a list of units from the database
       #
-      # @see https://proj.org/development/reference/functions.html#c.proj_get_units_from_database proj_get_units_from_database
+      # @see https://proj.org/development/reference/functions.html#c.proj_get_units_from_database
       #
       # @param auth_name [String] Authority name, used to restrict the search. Or nil for all authorities.
       # @param category [String] Filter by category, if this parameter is not nil. Category is one of "linear", "linear_per_time", "angular", "angular_per_time", "scale", "scale_per_time" or "time

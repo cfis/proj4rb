@@ -15,7 +15,7 @@ module Proj
 
     # Returns prime meridian parameters
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters proj_prime_meridian_get_parameters
+    # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters
     #
     # @return [Hash] Hash of ellipsoid parameters. Axes are in meters
     def parameters
@@ -38,7 +38,7 @@ module Proj
 
     # Returns the longitude of the prime meridian in its native unit
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters proj_prime_meridian_get_parameters
+    # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters
     #
     # @return [Double]
     def longitude
@@ -47,7 +47,7 @@ module Proj
 
     # Returns the conversion factor of the prime meridian longitude unit to radians
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters proj_prime_meridian_get_parameters
+    # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters
     #
     # @return [Double]
     def unit_conv_factor
@@ -56,7 +56,7 @@ module Proj
 
     # Returns the unit name
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters proj_prime_meridian_get_parameters
+    # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters
     #
     # @return [String ]
     def unit_name
