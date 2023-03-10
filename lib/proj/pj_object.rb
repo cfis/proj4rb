@@ -132,10 +132,11 @@ module Proj
     # @param strict [Boolean] Enables strict validation will be enabled. Default is false
     # @param unset_identifiers [Boolean] When enabled object identifiers are unset when there is
     #                                   a contradiction between the definition from WKT and the one
-    #                                   from the database. Defaults to true
+    #                                   from the database. Defaults to nil because this option
+    #                                   is only available in Proj 9+
     #
     # @return [PjObject] Crs or Transformation
-    def self.create_from_wkt(wkt, context = nil, strict: false, unset_identifiers: true)
+    def self.create_from_wkt(wkt, context = nil, strict: false, unset_identifiers: nil)
       out_warnings = FFI::MemoryPointer.new(:pointer)
       out_grammar_errors = FFI::MemoryPointer.new(:pointer)
 
@@ -144,8 +145,15 @@ module Proj
       # @param indentation_width [Integer] Specifies the indentation level. Defaults to 4.
       #
       # @return [String] wkt
-      options = {"STRICT": strict ? "YES" : "NO",
-                 "UNSET_IDENTIFIERS_IF_INCOMPATIBLE_DEF": unset_identifiers ? "YES" : "NO"}
+
+      # Unset
+      options = {"STRICT": strict ? "YES" : "NO"}
+      case unset_identifiers
+      when TrueClass
+        options["UNSET_IDENTIFIERS_IF_INCOMPATIBLE_DEF"] = "YES"
+      when FalseClass
+        options["UNSET_IDENTIFIERS_IF_INCOMPATIBLE_DEF"] = "NO"
+      end
       options_ptr = create_options_pointer(options)
 
       ptr = Api.proj_create_from_wkt(context, wkt, options_ptr, out_warnings, out_grammar_errors)

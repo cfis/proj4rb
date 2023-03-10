@@ -176,15 +176,7 @@ class DatabaseTest < AbstractTest
     params.north_lat_degree = 49.1
 
     crs_infos = database.crs_info("EPSG", params)
-
-    expected = case
-               when proj9?
-                 35
-               else
-                 5534
-               end
-
-    assert_equal(expected, crs_infos.count)
+    assert_equal(35, crs_infos.count)
   end
 
   def test_crs_info_bounds_exclusive
@@ -199,15 +191,7 @@ class DatabaseTest < AbstractTest
     params.crs_area_of_use_contains_bbox = 0
 
     crs_infos = database.crs_info("EPSG", params)
-
-    expected = case
-               when proj9?
-                 38
-               else
-                 5534
-               end
-
-    assert_equal(expected, crs_infos.count)
+    assert_equal(38, crs_infos.count)
   end
 
   def test_crs_info_celestial_body
@@ -220,7 +204,7 @@ class DatabaseTest < AbstractTest
                when proj9?
                  6723
                else
-                 5534
+                 6532
                end
 
     assert_equal(expected, crs_infos.count)
