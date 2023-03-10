@@ -42,15 +42,8 @@ module Proj
                  "ACCURACY": accuracy.nil? ? nil : accuracy.to_s,
                  "ALLOW_BALLPARK": allow_ballpark.nil? ? nil : (allow_ballpark ? "YES" : "NO"),
                  "ONLY_BEST": only_best.nil? ? nil : (only_best ? "YES" : "NO"),
-                 "FORCE_OVER": force_over.nil? ? nil : (force_over ? "YES" : "NO")}.compact
-
-      options_ptr_array = options.map do |key, value|
-        FFI::MemoryPointer.from_string("#{key}=#{value}")
-      end
-
-      # Add extra item at end for null pointer
-      options_ptr = FFI::MemoryPointer.new(:pointer, options.size + 1)
-      options_ptr.write_array_of_pointer(options_ptr_array)
+                 "FORCE_OVER": force_over.nil? ? nil : (force_over ? "YES" : "NO")}
+      options_ptr = create_options_pointer(options)
 
       pointer = if source.is_a?(Crs) && target.is_a?(Crs)
                   if Api.method_defined?(:proj_create_crs_to_crs_from_pj)

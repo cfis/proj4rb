@@ -44,7 +44,40 @@ module Proj
       end
     end
 
+    # Instantiates an object from a string
+    #
+    # @example
+    #      conversion = Proj::Conversion.create("+proj=helmert")
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_create
+    #
+    # @param value [String] Can be:
+    #  * Proj string
+    #  * WKT string
+    #  * Object code (like "EPSG:4326", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:coordinateOperation:EPSG::1671"),
+    #  * Object name. e.g "WGS 84", "WGS 84 / UTM zone 31N". In that case as uniqueness is not guaranteed, heuristics are applied to determine the appropriate best match.
+    #  * OGC URN combining references for compound coordinate reference systems (e.g "urn:ogc:def:crs,crs:EPSG::2393,crs:EPSG::5717" or custom abbreviated syntax "EPSG:2393+5717"),
+    #  * OGC URN combining references for concatenated operations (e.g. "urn:ogc:def:coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618")
+    #  * PROJJSON string. The jsonschema is at https://proj.org/schemas/v0.4/projjson.schema.json (added in 6.2)
+    #  * compound CRS made from two object names separated with " + ". e.g. "WGS 84 + EGM96 height" (added in 7.1)
+    #
+    # @return [PjObject] Crs or Transformation
+    def self.create(value, context=nil)
+      ptr = Api.proj_create(context || Context.current, value)
+
+      if ptr.null?
+        Error.check_object(self)
+      end
+
+      create_object(ptr, context)
+    end
+
     # Instantiates an object from a database lookup
+    #
+    # @example
+    #   crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_create_from_database
     #
     # @param auth_name [String] Authority name (must not be nil)
     # @param code  [String] Object code (must not be nil)
@@ -61,35 +94,10 @@ module Proj
       create_object(ptr, context)
     end
 
-    # Instantiates an object from a WKT string.
-    #
-    # @param wkt [String] WKT string (must not be nil)
-    # @param context [Context] Context. If nil the current context is used
-    # @param options [Hash] Currently supported options are:
-    #                          STRICT = True/False When set to YES, strict validation will be enabled.
-    #                          UNSET_IDENTIFIERS_IF_INCOMPATIBLE_DEF = True/False Defaults to True.
-    # @return [PjObject] Crs or Transformation
-    def self.create_from_wkt(wkt, context = nil, options = nil)
-      out_warnings = FFI::MemoryPointer.new(:pointer)
-      out_grammar_errors = FFI::MemoryPointer.new(:pointer)
-
-      ptr = Api.proj_create_from_wkt(context, wkt, nil, out_warnings, out_grammar_errors)
-
-      warnings = Strings.new(out_warnings.read_pointer)
-      errors = Strings.new(out_grammar_errors.read_pointer)
-
-      unless errors.empty?
-        raise(RuntimeError, errors.join(". "))
-      end
-
-      unless warnings.empty?
-        warn(warnings.join(". "))
-      end
-
-      create_object(ptr, context)
-    end
-
     # Return a list of objects by their name
+    #
+    # @example
+    #   objects = Proj::PjObject.create_from_name("WGS 84", Context.current)
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_create_from_name
     #
@@ -115,26 +123,42 @@ module Proj
       PjObjects.new(ptr, context)
     end
 
-    # Instantiates an object from a string
+    # Instantiates an object from a WKT string.
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_create
+    # @ see https://proj.org/development/reference/functions.html#c.proj_create_from_wkt
     #
-    # @param value [String] Can be:
-    #  * Proj string
-    #  * WKT string
-    #  * Object code (like "EPSG:4326", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:coordinateOperation:EPSG::1671"),
-    #  * Object name. e.g "WGS 84", "WGS 84 / UTM zone 31N". In that case as uniqueness is not guaranteed, heuristics are applied to determine the appropriate best match.
-    #  * OGC URN combining references for compound coordinate reference systems (e.g "urn:ogc:def:crs,crs:EPSG::2393,crs:EPSG::5717" or custom abbreviated syntax "EPSG:2393+5717"),
-    #  * OGC URN combining references for concatenated operations (e.g. "urn:ogc:def:coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618")
-    #  * PROJJSON string. The jsonschema is at https://proj.org/schemas/v0.4/projjson.schema.json (added in 6.2)
-    #  * compound CRS made from two object names separated with " + ". e.g. "WGS 84 + EGM96 height" (added in 7.1)
+    # @param wkt [String] WKT string (must not be nil)
+    # @param context [Context] Context. If nil the current context is used
+    # @param strict [Boolean] Enables strict validation will be enabled. Default is false
+    # @param unset_identifiers [Boolean] When enabled object identifiers are unset when there is
+    #                                   a contradiction between the definition from WKT and the one
+    #                                   from the database. Defaults to true
     #
     # @return [PjObject] Crs or Transformation
-    def self.create(value, context=nil)
-      ptr = Api.proj_create(context || Context.current, value)
+    def self.create_from_wkt(wkt, context = nil, strict: false, unset_identifiers: true)
+      out_warnings = FFI::MemoryPointer.new(:pointer)
+      out_grammar_errors = FFI::MemoryPointer.new(:pointer)
 
-      if ptr.null?
-        Error.check_object(self)
+      # @param wkt_type [PJ_WKT_TYPE] WKT version to output. Defaults to PJ_WKT2_2018
+      # @param multiline [Boolean] Specifies if output span multiple lines. Defaults to true.
+      # @param indentation_width [Integer] Specifies the indentation level. Defaults to 4.
+      #
+      # @return [String] wkt
+      options = {"STRICT": strict ? "YES" : "NO",
+                 "UNSET_IDENTIFIERS_IF_INCOMPATIBLE_DEF": unset_identifiers ? "YES" : "NO"}
+      options_ptr = create_options_pointer(options)
+
+      ptr = Api.proj_create_from_wkt(context, wkt, options_ptr, out_warnings, out_grammar_errors)
+
+      warnings = Strings.new(out_warnings.read_pointer)
+      errors = Strings.new(out_grammar_errors.read_pointer)
+
+      unless errors.empty?
+        raise(RuntimeError, errors.join(". "))
+      end
+
+      unless warnings.empty?
+        warn(warnings.join(". "))
       end
 
       create_object(ptr, context)
@@ -540,19 +564,12 @@ module Proj
     def to_proj_string(proj_version=:PJ_PROJ_5, use_approx_tmerc: false, multiline: false,
                                                 indentation_width: 2, max_line_length: 80)
 
-      options = ["USE_APPROX_TMERC=#{use_approx_tmerc ? "YES" : "NO"}",
-                 "MULTILINE=#{multiline ? "YES" : "NO"}",
-                 "INDENTATION_WIDTH=#{indentation_width}",
-                 "MAX_LINE_LENGTH=#{max_line_length}"]
+      options = {"USE_APPROX_TMERC": use_approx_tmerc ? "YES" : "NO",
+                 "MULTILINE": multiline ? "YES" : "NO",
+                 "INDENTATION_WIDTH": indentation_width,
+                 "MAX_LINE_LENGTH": max_line_length}
 
-      options_ptr_array = options.map do |option|
-        FFI::MemoryPointer.from_string(option)
-      end
-
-      # Add extra item at end for null pointer
-      options_ptr = FFI::MemoryPointer.new(:pointer, options.size + 1)
-      options_ptr.write_array_of_pointer(options_ptr_array)
-
+      options_ptr = create_options_pointer(options)
       Api.proj_as_proj_string(self.context, self, proj_version, options_ptr).force_encoding('UTF-8')
     end
 
@@ -565,17 +582,10 @@ module Proj
     #
     # @return [String]
     def to_json(multiline: true, indentation_width: 2)
-      options = ["MULTILINE=#{multiline ? "YES" : "NO"}",
-                 "INDENTATION_WIDTH=#{indentation_width}"]
+      options = {"MULTILINE": multiline ? "YES" : "NO",
+                 "INDENTATION_WIDTH": indentation_width}
 
-      options_ptr_array = options.map do |option|
-        FFI::MemoryPointer.from_string(option)
-      end
-
-      # Add extra item at end for null pointer
-      options_ptr = FFI::MemoryPointer.new(:pointer, options.size + 1)
-      options_ptr.write_array_of_pointer(options_ptr_array)
-
+      options_ptr = create_options_pointer(options)
       Api.proj_as_projjson(self.context, self, options_ptr).force_encoding('UTF-8')
     end
 
@@ -589,20 +599,13 @@ module Proj
     #
     # @return [String] wkt
     def to_wkt(wkt_type=:PJ_WKT2_2018, multiline: true, indentation_width: 4)
-      options = ["MULTILINE=#{multiline ? "YES" : "NO"}",
-                 "INDENTATION_WIDTH=#{indentation_width}",
-                 "OUTPUT_AXIS=AUTO",
-                 "STRICT=YES",
-                 "ALLOW_ELLIPSOIDAL_HEIGHT_AS_VERTICAL_CRS=NO"]
+      options = {"MULTILINE": multiline ? "YES" : "NO",
+                 "INDENTATION_WIDTH": indentation_width,
+                 "OUTPUT_AXIS": "AUTO",
+                 "STRICT": "YES",
+                 "ALLOW_ELLIPSOIDAL_HEIGHT_AS_VERTICAL_CRS": "NO"}
 
-      options_ptr_array = options.map do |option|
-        FFI::MemoryPointer.from_string(option)
-      end
-
-      # Add extra item at end for null pointer
-      options_ptr = FFI::MemoryPointer.new(:pointer, options.size + 1)
-      options_ptr.write_array_of_pointer(options_ptr_array)
-
+      options_ptr = create_options_pointer(options)
       Api.proj_as_wkt(self.context, self, wkt_type, options_ptr)&.force_encoding('UTF-8')
     end
 
@@ -611,6 +614,28 @@ module Proj
     # @return [String] String
     def to_s
       "#<#{self.class.name} - #{name}, #{proj_type}>"
+    end
+
+    private
+
+    def self.create_options_pointer(options)
+      options = options.compact
+      options_ptr_array = options.map do |key, value|
+        FFI::MemoryPointer.from_string("#{key}=#{value}")
+      end
+
+      if options_ptr_array.empty?
+        nil
+      else
+        # Add extra item at end for null pointer
+        options_ptr = FFI::MemoryPointer.new(:pointer, options.size + 1)
+        options_ptr.write_array_of_pointer(options_ptr_array)
+        options_ptr
+      end
+    end
+
+    def create_options_pointer(options)
+      self.class.create_options_pointer(options)
     end
   end
 end
