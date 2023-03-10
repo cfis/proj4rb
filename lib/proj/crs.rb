@@ -52,6 +52,14 @@ module Proj
 
     # Get the geodeticCRS / geographicCRS from a CRS.
     #
+    # @example
+    #     crs = Proj::Crs.new('EPSG:4326')
+    #     geodetic = crs.geodetic_crs
+    #     assert_equal(:PJ_TYPE_GEOGRAPHIC_2D_CRS, geodetic.proj_type)
+    #     assert_equal('+proj=longlat +datum=WGS84 +no_defs +type=crs', geodetic.to_proj_string)
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_crs_get_geodetic_crs proj_crs_get_geodetic_crs
+    #
     # @return [Crs]
     def geodetic_crs
       ptr = Api.proj_crs_get_geodetic_crs(self.context, self)
@@ -59,6 +67,10 @@ module Proj
     end
 
     # Get a CRS component from a CompoundCRS.
+    #
+    # @see {https://proj.org/development/reference/functions.html#c.proj_crs_get_sub_crs} proj_crs_get_sub_crs
+    #
+    # @param index [Integer] Index of the CRS component (typically 0 = horizontal, 1 = vertical)
     #
     # @return [Crs]
     def sub_crs(index)
@@ -114,13 +126,6 @@ module Proj
     def coordinate_system
       ptr = Api.proj_crs_get_coordinate_system(self.context, self)
       CoordinateSystem.new(ptr, self.context)
-    end
-
-    # Return the area of use of an object.
-    #
-    # @return [Area]
-    def area
-      self.area_of_use
     end
 
     # Returns the ellipsoid

@@ -1,6 +1,7 @@
 # encoding: UTF-8
 
 require_relative './abstract_test'
+require_relative '../lib/api/experimental'
 
 class CrsTest < AbstractTest
   def test_create_from_epsg
@@ -696,5 +697,28 @@ class CrsTest < AbstractTest
 
     expected = [-168.0, -60.0, 320.0, 0.0, 0.0, 0.0, 0.0]
     assert_equal(expected, values)
+  end
+
+  def test_sub_crs
+    context = Proj::Context.new
+    horizontal_coord_system_ptr = Proj::Api.proj_create_ellipsoidal_2D_cs(context, :PJ_ELLPS2D_LONGITUDE_LATITUDE, nil, 0)
+    horizontal_crs_ptr = Proj::Api.proj_create_geographic_crs(context,  "WGS 84", "World Geodetic System 1984", "WGS 84",
+                                                          6378137, 298.257223563,
+                                                          "Greenwich", 0.0,
+                                                          "Degree", 0.0174532925199433, horizontal_coord_system_ptr)
+
+    vertical_crs_ptr = Proj::Api.proj_create_vertical_crs(context, "myVertCRS", "myVertDatum", nil, 0.0)
+    vertical_crs = Proj::PjObject.create_object(vertical_crs_ptr, context)
+    assert_equal("myVertCRS", vertical_crs.name)
+
+    compound_crs_ptr = Proj::Api.proj_create_compound_crs(context, "myCompoundCRS", horizontal_crs_ptr, vertical_crs)
+    compound_crs = Proj::PjObject.create_object(compound_crs_ptr, context)
+    assert_equal("myCompoundCRS", compound_crs.name)
+
+    subcrs = compound_crs.sub_crs(0)
+    assert(subcrs.equivalent_to?(horizontal_crs_ptr, :PJ_COMP_STRICT))
+
+    subcrs = compound_crs.sub_crs(1)
+    assert(subcrs.equivalent_to?(vertical_crs_ptr, :PJ_COMP_STRICT))
   end
 end
