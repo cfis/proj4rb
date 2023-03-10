@@ -125,7 +125,7 @@ module Proj
 
     # Instantiates an object from a WKT string.
     #
-    # @ see https://proj.org/development/reference/functions.html#c.proj_create_from_wkt
+    # @see https://proj.org/development/reference/functions.html#c.proj_create_from_wkt
     #
     # @param wkt [String] WKT string (must not be nil)
     # @param context [Context] Context. If nil the current context is used
@@ -164,6 +164,7 @@ module Proj
       create_object(ptr, context)
     end
 
+    # @!visibility private
     def self.finalize(pointer)
       proc do
         Api.proj_destroy(pointer)

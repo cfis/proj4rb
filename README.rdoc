@@ -3,7 +3,9 @@ This gem provides Ruby bindings for the Proj Library (https://proj.org). The Pro
 between a number of different coordinate systems and projections.
 
 == Documentation
-Besides this readme file, reference documentation is available at https://rubydoc.info/github/cfis/proj4rb.
+Reference documentation is available at https://rubydoc.info/github/cfis/proj4rb.
+
+Examples can be found in this README file as well as in the {file:Examples.rdoc Examples} file. In addition, the test suite has exapmles of calling almost every API so when in doubt take a look at them!
 
 == Installation
 First install the gem in the usual manner:
@@ -127,10 +129,10 @@ compatability settings, set the logging level and to install custom logging code
 Both Crs and Transformation objects take a context object in their constructors. If none is passed, they default
 to using Context.current
 
-=== Examples
-The proj4b test suite hsa example of calling every API method! More tutorial like examples can be found in the examples folder and include:
+== Network Access
+Proj supports downloading grid files on demand if network access is enabled (it is disabled by default). To enable network use the method {Context#network_enabled=}. To specify the url endpoint use {Context#url=}. Advanced users can replace Proj's networking code, which uses libcurl, with their own implementation. To do this see the NetworkApi class.
 
-* Convert between a CRS and geodetic coordinates for that CRS (from Proj quick start guide)
+Downloaded grids are cached in a sqlite file named cache.db. To specify the location, size and other characteristics of the cache file refer to the {GridCache} class which is accessible via Context#cache. By default the cache size is 300MB. Caching is on by default but can be disabled via GridCache#enabled=.
 
 == Error handling
 When an error occurs, a Proj::Error instance will be thrown with the underlying message provided

@@ -238,6 +238,26 @@ class ConversionTest < AbstractTest
     assert_equal("Invalid coordinate", error.to_s)
   end
 
+  def test_pipeline
+    conversion = Proj::Conversion.new(<<~EOS)
+                    +proj=pipeline
+                    +step +inv +proj=lcc +lat_1=33.88333333333333
+                    +lat_2=32.78333333333333 +lat_0=32.16666666666666
+                    +lon_0=-116.25 +x_0=2000000.0001016 +y_0=500000.0001016001 +ellps=GRS80
+                    +towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs
+                    +step +proj=lcc +lat_1=33.88333333333333 +lat_2=32.78333333333333 +lat_0=32.16666666666666
+                    +lon_0=-116.25 +x_0=2000000 +y_0=500000
+                    +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
+                  EOS
+
+    # The Presidio, approximately
+    coordinate_1 = Proj::Coordinate.new(x: 4760096.421921, y: 3744293.729449)
+    coordinate_2 = conversion.forward(coordinate_1)
+
+    assert_in_delta(1450880.2910605003, coordinate_2.x)
+    assert_in_delta(1141263.01116045, coordinate_2.y)
+  end
+
   if proj9?
     def test_last_used_operation
       wkt = <<~EOS

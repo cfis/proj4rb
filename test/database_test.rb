@@ -165,6 +165,67 @@ class DatabaseTest < AbstractTest
     assert_equal(expected, crs_infos.count)
   end
 
+  def test_crs_info_bounds_inclusive
+    database = Proj::Database.new(Proj::Context.current)
+    params = Proj::Parameters.new
+    params.types = [:PJ_TYPE_PROJECTED_CRS]
+    params.bbox_valid = 1
+    params.west_lon_degree = 2
+    params.south_lat_degree = 49
+    params.east_lon_degree = 2.1
+    params.north_lat_degree = 49.1
+
+    crs_infos = database.crs_info("EPSG", params)
+
+    expected = case
+               when proj9?
+                 35
+               else
+                 5534
+               end
+
+    assert_equal(expected, crs_infos.count)
+  end
+
+  def test_crs_info_bounds_exclusive
+    database = Proj::Database.new(Proj::Context.current)
+    params = Proj::Parameters.new
+    params.types = [:PJ_TYPE_PROJECTED_CRS]
+    params.bbox_valid = 1
+    params.west_lon_degree = 2
+    params.south_lat_degree = 49
+    params.east_lon_degree = 2.1
+    params.north_lat_degree = 49.1
+    params.crs_area_of_use_contains_bbox = 0
+
+    crs_infos = database.crs_info("EPSG", params)
+
+    expected = case
+               when proj9?
+                 38
+               else
+                 5534
+               end
+
+    assert_equal(expected, crs_infos.count)
+  end
+
+  def test_crs_info_celestial_body
+    database = Proj::Database.new(Proj::Context.current)
+    params = Proj::Parameters.new
+      params.celestial_body_name = "Earth"
+    crs_infos = database.crs_info("EPSG", params)
+
+    expected = case
+               when proj9?
+                 6723
+               else
+                 5534
+               end
+
+    assert_equal(expected, crs_infos.count)
+  end
+
   def test_unit
     database = Proj::Database.new(Proj::Context.current)
     unit = database.unit("EPSG", "9001")

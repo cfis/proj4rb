@@ -1,0 +1,96 @@
+= Examples
+
+== Conversion from Geodetic to Projected Coordinates
+This example is ported from Proj's quickstart guide. See https://proj.org/development/quickstart.html
+
+    require 'bundler/setup'
+    require 'proj'
+
+    # Create a context
+    context = Proj::Context.new
+
+    # Create a projection
+    crs = Proj::Crs.new("+proj=utm +zone=32 +datum=WGS84 +type=crs", context)
+
+    # Get the geodetic CRS for that projection
+    geodetic_crs = crs.geodetic_crs
+    puts geodetic_crs.to_proj_string
+    # +proj=longlat +datum=WGS84 +no_defs +type=crs
+
+    # Create a transformation from the geodetic to projected coordinates
+    transformation = Proj::Transformation.new(geodetic_crs, crs, context)
+    puts transformation.to_proj_string
+    # +proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=utm +zone=32 +ellps=WGS84
+
+    # Create a coordinate for Copenhagen in degrees
+    coordinate_geodetic = Proj::Coordinate.new(lon: 12.0, lat: 55.0)
+    puts "lon: #{coordinate_geodetic.lon}, lat:  #{coordinate_geodetic.lat}"
+
+    # Transform the coordinate
+    coordinate_projected = transformation.forward(coordinate_geodetic)
+    # lon: 12.0, lat:  55.0
+
+    puts "east: #{coordinate_projected.e}, north: #{coordinate_projected.n}"
+    # east: 691875.632137542, north: 6098907.825129169
+
+    puts "x: #{coordinate_projected.x}, y: #{coordinate_projected.y}"
+    # x: 691875.632137542, y: 6098907.825129169
+
+    # Apply the inverse transform
+    coordinate_inverse = transformation.inverse(coordinate_projected)
+
+    puts "lon: #{coordinate_inverse.lon}, lat:  #{coordinate_inverse.lat}"
+    # lon: 12.0, lat:  55.0
+
+    puts coordinate_geodetic == coordinate_inverse
+    # true
+
+== Pipeline Operator
+This example is ported from the Rust Proj documentation (see https://github.com/georust/proj#convert-from-nad-83-us-survey-feet-to-nad-83-meters-using-the-pipeline-operator
+
+The pipeline operator makes it easy to create complex operations by daisy-chaining operations together. For more information refer to https://proj.org/operations/pipeline.html.
+
+In this example, a coordinate from NAD 83 US Survey Feet to NAD 83 Meters. It has two steps:
+
+* Step 1 as an inverse transform, yielding geodetic coordinates
+* Step 2 as a forward transform to projected coordinates, yielding metres
+
+
+    conversion = Proj::Conversion.new(<<~EOS)
+                    +proj=pipeline
+                    +step +inv +proj=lcc +lat_1=33.88333333333333
+                    +lat_2=32.78333333333333 +lat_0=32.16666666666666
+                    +lon_0=-116.25 +x_0=2000000.0001016 +y_0=500000.0001016001 +ellps=GRS80
+                    +towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs
+                    +step +proj=lcc +lat_1=33.88333333333333 +lat_2=32.78333333333333 +lat_0=32.16666666666666
+                    +lon_0=-116.25 +x_0=2000000 +y_0=500000
+                    +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
+                  EOS
+
+    # The Presidio, approximately
+    coordinate_1 = Proj::Coordinate.new(x: 4760096.421921, y: 3744293.729449)
+    coordinate_2 = conversion.forward(coordinate_1)
+
+    assert_in_delta(1450880.2910605003, coordinate_2.x)
+    assert_in_delta(1141263.01116045, coordinate_2.y)
+
+== Operation Factory Context
+Operation Factory Contexts are used to build coordinate operations between two CRSes. This examples finds the best available conversion between EPSG 4267 and 4269.
+
+    source = Proj::Crs.create_from_database("EPSG", "4267", :PJ_CATEGORY_CRS)
+    target = Proj::Crs.create_from_database("EPSG", "4269", :PJ_CATEGORY_CRS)
+
+    factory_context = Proj::OperationFactoryContext.new
+    factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
+    factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
+
+    operations = factory_context.create_operations(source, target)
+
+    coord = Proj::Coordinate.new(x: 40, y: -100)
+    index = operations.suggested_operation(:PJ_FWD, coord)
+    assert_equal(2, index)
+
+    operation = operations[index]
+    assert_equal("NAD27 to NAD83 (1)", operation.name)
+
+Operation Factory Contexts have many additional attributes that can be set to control how conversions should be constructed.

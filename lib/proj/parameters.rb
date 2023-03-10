@@ -95,11 +95,12 @@ module Proj
     end
 
     def celestial_body_name
-      @params[:celestial_body_name]
+      @params[:celestial_body_name].read_string_to_null
     end
 
     def celestial_body_name=(value)
-      @params[:celestial_body_name] = value
+      ptr = FFI::MemoryPointer.from_string(value)
+      @params[:celestial_body_name] = ptr
     end
   end
 end
