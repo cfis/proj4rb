@@ -10,36 +10,37 @@ module Proj
         # If we can create a derived classes, but we do not want to call their
         # initializers since we already have a valid PROJ object that we
         # just have to wrap
-        instance = case type
+        klass = case type
                    when :PJ_TYPE_CRS, :PJ_TYPE_GEODETIC_CRS, :PJ_TYPE_GEOCENTRIC_CRS,
                         :PJ_TYPE_GEOGRAPHIC_2D_CRS, :PJ_TYPE_GEOGRAPHIC_3D_CRS,
                         :PJ_TYPE_GEOGRAPHIC_CRS, :PJ_TYPE_VERTICAL_CRS,:PJ_TYPE_PROJECTED_CRS,
                         :PJ_TYPE_COMPOUND_CRS, :PJ_TYPE_TEMPORAL_CRS, :PJ_TYPE_ENGINEERING_CRS,
                         :PJ_TYPE_BOUND_CRS, :PJ_TYPE_OTHER_CRS
-                     Crs.allocate
+                     Crs
                    when :PJ_TYPE_CONVERSION, :PJ_TYPE_OTHER_COORDINATE_OPERATION, :PJ_TYPE_CONCATENATED_OPERATION
-                     Conversion.allocate
+                     Conversion
                    when :PJ_TYPE_TRANSFORMATION
-                     Transformation.allocate
+                     Transformation
                    when :PJ_TYPE_TEMPORAL_DATUM, :PJ_TYPE_ENGINEERING_DATUM, :PJ_TYPE_PARAMETRIC_DATUM,
                         :PJ_TYPE_GEODETIC_REFERENCE_FRAME, :PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME,
                         :PJ_TYPE_VERTICAL_REFERENCE_FRAME, :PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME
-                     Datum.allocate
+                     Datum
                    when :PJ_TYPE_DATUM_ENSEMBLE
-                     DatumEnsemble.allocate
+                     DatumEnsemble
                    when :PJ_TYPE_ELLIPSOID
-                     Ellipsoid.allocate
+                     Ellipsoid
                    when :PJ_TYPE_PRIME_MERIDIAN
-                     PrimeMeridian.allocate
+                     PrimeMeridian
                    else
-                     PjObject.allocate
+                     PjObject
                    end
 
         # Now setup the instance variables
-        instance.instance_variable_set(:@pointer, pointer)
-        instance.instance_variable_set(:@context, context)
+        result = klass.allocate
+        result.instance_variable_set(:@pointer, pointer)
+        result.instance_variable_set(:@context, context)
 
-        instance
+        result
       end
     end
 
@@ -114,20 +115,19 @@ module Proj
       PjObjects.new(ptr, context)
     end
 
-    # Instantiates an conversion from a string. The string can be:
+    # Instantiates an object from a string
     #
-    # * proj-string,
-    # * WKT string,
-    # * object code (like "EPSG:4326", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:coordinateOperation:EPSG::1671"),
-    # * Object name. e.g "WGS 84", "WGS 84 / UTM zone 31N". In that case as uniqueness is not guaranteed, heuristics are applied to determine the appropriate best match.
-    # * OGC URN combining references for compound coordinate reference systems (e.g "urn:ogc:def:crs,crs:EPSG::2393,crs:EPSG::5717" or custom abbreviated syntax "EPSG:2393+5717"),
-    # * OGC URN combining references for concatenated operations (e.g. "urn:ogc:def:coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618")
-    # * PROJJSON string. The jsonschema is at https://proj.org/schemas/v0.4/projjson.schema.json (added in 6.2)
-    # * compound CRS made from two object names separated with " + ". e.g. "WGS 84 + EGM96 height" (added in 7.1)
+    # @see https://proj.org/development/reference/functions.html#c.proj_create
     #
-    # @see https://proj.org/development/reference/functions.html#c.proj_create proj_create
-    #
-    # @param value [String]. See above
+    # @param value [String] Can be:
+    #  * Proj string
+    #  * WKT string
+    #  * Object code (like "EPSG:4326", "urn:ogc:def:crs:EPSG::4326", "urn:ogc:def:coordinateOperation:EPSG::1671"),
+    #  * Object name. e.g "WGS 84", "WGS 84 / UTM zone 31N". In that case as uniqueness is not guaranteed, heuristics are applied to determine the appropriate best match.
+    #  * OGC URN combining references for compound coordinate reference systems (e.g "urn:ogc:def:crs,crs:EPSG::2393,crs:EPSG::5717" or custom abbreviated syntax "EPSG:2393+5717"),
+    #  * OGC URN combining references for concatenated operations (e.g. "urn:ogc:def:coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618")
+    #  * PROJJSON string. The jsonschema is at https://proj.org/schemas/v0.4/projjson.schema.json (added in 6.2)
+    #  * compound CRS made from two object names separated with " + ". e.g. "WGS 84 + EGM96 height" (added in 7.1)
     #
     # @return [PjObject] Crs or Transformation
     def self.create(value, context=nil)
