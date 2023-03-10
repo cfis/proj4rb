@@ -34,7 +34,6 @@ class TransformationTest < AbstractTest
 
   def test_gk_to_wgs84_inverse
     transform = Proj::Transformation.new(@crs_gk, @crs_wgs84)
-    puts transform.to_wkt
     from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
     to = transform.inverse(from)
 

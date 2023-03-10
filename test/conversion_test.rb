@@ -58,8 +58,8 @@ class ConversionTest < AbstractTest
   end
 
   def test_accuracy_projection
-    object = Proj::Conversion.create("+proj=helmert")
-    assert_equal(-1.0, object.accuracy)
+    conversion = Proj::Conversion.create("+proj=helmert")
+    assert_equal(-1.0, conversion.accuracy)
   end
 
   def test_method_info
