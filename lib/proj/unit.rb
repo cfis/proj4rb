@@ -38,8 +38,12 @@ module Proj
         result.size.times do |i|
           unit_info = Api::PROJ_UNIT_INFO.new(array_p_units[i])
 
-          result[i] = self.new(unit_info[:auth_name], unit_info[:code], unit_info[:name],
-                               unit_info[:category], unit_info[:conv_factor], unit_info[:proj_short_name],
+          result[i] = self.new(unit_info[:auth_name],
+                               unit_info[:code],
+                               unit_info[:name],
+                               unit_info[:category],
+                               unit_info[:conv_factor],
+                               unit_info[:proj_short_name],
                                unit_info[:deprecated])
         end
 
