@@ -91,6 +91,7 @@ module Proj
     require_relative './api_4_9'
   end
 
+  # Load the right apis base don PROJ version
   versions = ['5.1.0', '5.2.0',
               '6.0.0', '6.1.0', '6.2.0', '6.3.0',
               '7.0.0', '7.1.0', '7.2.0',
@@ -103,4 +104,7 @@ module Proj
       require_relative "./api_#{api_version.segments[0]}_#{api_version.segments[1]}"
     end
   end
+
+  # Add in the experimental api
+  require_relative "./api_experimental"
 end

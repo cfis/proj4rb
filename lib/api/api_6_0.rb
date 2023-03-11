@@ -41,6 +41,16 @@ module Proj
     typedef :pointer, :PROJ_STRING_LIST
     attach_function :proj_string_list_destroy, [:PROJ_STRING_LIST], :void
 
+    # ----- Object List
+    typedef :pointer, :PJ_OBJ_LIST
+
+    attach_function :proj_create_from_name, [:PJ_CONTEXT, :string, :string, :pointer, :size_t, :int, :size_t, :string], :PJ_OBJ_LIST
+    attach_function :proj_get_non_deprecated, [:PJ_CONTEXT, :PJ], :PJ_OBJ_LIST
+    attach_function :proj_identify, [:PJ_CONTEXT, :PJ, :string, :pointer, :pointer], :PJ_OBJ_LIST
+    attach_function :proj_list_get_count, [:PJ_OBJ_LIST], :int
+    attach_function :proj_list_get, [:PJ_CONTEXT, :PJ_OBJ_LIST, :int], :PJ
+    attach_function :proj_list_destroy, [:PJ_OBJ_LIST], :void
+
     callback :proj_file_finder, [:PJ_CONTEXT, :string, :pointer], :pointer
     attach_function :proj_context_set_file_finder, [:PJ_CONTEXT, :proj_file_finder, :pointer], :void
     attach_function :proj_context_set_search_paths, [:PJ_CONTEXT, :int, :pointer], :void

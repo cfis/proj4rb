@@ -1,7 +1,6 @@
 # encoding: UTF-8
 
 require_relative './abstract_test'
-require_relative '../lib/api/experimental'
 
 class CrsTest < AbstractTest
   def test_create_from_epsg

@@ -3,16 +3,6 @@ module Proj
     # ----- Int List
     attach_function :proj_int_list_destroy, [:pointer], :void
 
-    # ----- Object List
-    typedef :pointer, :PJ_OBJ_LIST
-
-    attach_function :proj_create_from_name, [:PJ_CONTEXT, :string, :string, :pointer, :size_t, :int, :size_t, :string], :PJ_OBJ_LIST
-    attach_function :proj_get_non_deprecated, [:PJ_CONTEXT, :PJ], :PJ_OBJ_LIST
-    attach_function :proj_identify, [:PJ_CONTEXT, :PJ, :string, :pointer, :pointer], :PJ_OBJ_LIST
-    attach_function :proj_list_get_count, [:PJ_OBJ_LIST], :int
-    attach_function :proj_list_get, [:PJ_CONTEXT, :PJ_OBJ_LIST, :int], :PJ
-    attach_function :proj_list_destroy, [:PJ_OBJ_LIST], :void
-
     # ---- Units ------
     class PROJ_UNIT_INFO < FFI::Struct
       layout :auth_name, :string,
