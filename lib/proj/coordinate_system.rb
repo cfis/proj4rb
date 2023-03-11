@@ -21,6 +21,21 @@ module Proj
 
   # Represents a coordinate system for a {Crs CRS}
   class CoordinateSystem < PjObject
+    def self.create_cs(context, type, axis_count, axis)
+      ptr = Api.proj_create_cs(context, type, axis_count, axis)
+      self.create_object(ptr, context)
+    end
+
+    def self.create_ellipsoidal_2d_cs(context, type, unit_name, unit_conv_factor)
+      ptr = Api.proj_create_ellipsoidal_2D_cs(context, type, unit_name, unit_conv_factor)
+      self.create_object(ptr, context)
+    end
+
+    def self.create_ellipsoidal_3d_cs(context, type, horizontal_angular_unit_name, horizontal_angular_unit_conv_factor, vertical_linear_unit_name, vertical_linear_unit_conv_factor)
+      ptr = Api.proj_create_ellipsoidal_3D_cs(context, type, horizontal_angular_unit_name, horizontal_angular_unit_conv_factor, vertical_linear_unit_name, vertical_linear_unit_conv_factor)
+      self.create_object(ptr, context)
+    end
+
     # Returns the type of the coordinate system
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_cs_get_type

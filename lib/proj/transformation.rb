@@ -6,6 +6,11 @@ module Proj
   class Transformation < PjObject
     include CoordinateOperationMixin
 
+    def self.proj_create_transformation(context, name:, auth_name:, code:, source_crs:, target_crs:, interpolation_crs:, method_name:, method_auth_name:, method_code:, param_count:, params:, accuracy:)
+      ptr = Api.proj_create_transformation(context, name, auth_name, code, source_crs, target_crs, interpolation_crs, method_name, method_auth_name, method_code, param_count, params, accuracy)
+      self.create_object(ptr, context)
+    end
+
     # Transforms a {Coordinate} from the source {Crs} to the target {Crs}. Coordinates should be expressed in
     # the units and axis order of the definition of the source CRS. The returned transformed coordinate will
     # be in the units and axis order of the definition of the target CRS.

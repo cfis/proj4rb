@@ -186,4 +186,126 @@ module Proj
       return objects, confidences
     end
   end
+  
+  # Experimental API
+  def derived?
+    result = Api.proj_is_derived_crs(self.context, crs)
+    result == 1 ? true : false
+  end
+
+  def alter_name(name)
+    ptr = Api.proj_alter_name(self.context, self, name)
+    self.create_object(ptr, self.context)
+  end
+
+  def alter_id(auth_name, code)
+    ptr = Api.proj_alter_id(self.context, self, auth_name, code)
+    self.create_object(ptr, self.context)
+  end
+
+  def alter_geodetic_crs(new_geod_crs)
+    ptr = Api.proj_crs_alter_geodetic_crs(self.context, self, new_geod_crs)
+    self.create_object(ptr, self.context)
+  end
+
+  def alter_cs_angular_unit(angular_units:, angular_units_conv:, unit_auth_name:, unit_code:)
+    ptr = Api.proj_crs_alter_cs_angular_unit(self.context, self, angular_units, angular_units_conv, unit_auth_name, unit_code)
+    self.create_object(ptr, self.context)
+  end
+
+  def alter_cs_linear_unit(linear_units:, linear_units_conv:, unit_auth_name:, unit_code:)
+    ptr = Api.proj_crs_alter_cs_linear_unit(self.context, self, linear_units, linear_units_conv, unit_auth_name, unit_code)
+    self.create_object(ptr, self.context)
+  end
+
+  def alter_parameters_linear_unit(linear_units:, linear_units_conv:, unit_auth_name:, unit_code:, convert_to_new_unit:)
+    ptr = Api.proj_crs_alter_parameters_linear_unit(self.context, self, linear_units, linear_units_conv, unit_auth_name, unit_code, convert_to_new_unit)
+    self.create_object(ptr, self.context)
+  end
+
+  def promote_to_3d(crs_3d_name:, crs_2d:)
+    ptr = Api.proj_crs_promote_to_3D(self.context, crs_3d_name, crs_2d)
+    self.create_object(ptr, self.context)
+  end
+
+  def projected_3d_crs_from_2d(crs_name:, projected_2d_crs:, geog_3d_crs:)
+    ptr = Api.proj_crs_create_projected_3D_crs_from_2D(self.context, crs_name, projected_2d_crs, geog_3d_crs)
+    self.create_object(ptr, self.context)
+  end
+
+  def demote_to_2d(crs_2d_name:, crs_3d:)
+    ptr = Api.proj_crs_demote_to_2D(self.context, crs_2d_name, crs_3d)
+    self.create_object(ptr, self.context)
+  end
+
+  # Experimental CRS creation methods
+  def self.create_projected_crs(context, crs_name:, geodetic_crs:, conversion:, coordinate_system:)
+    ptr = Api.proj_create_projected_crs(context, crs_name, geodetic_crs, conversion, coordinate_system)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_bound_crs(context, base_crs:, hub_crs:, transformation:)
+    ptr = Api.proj_crs_create_bound_crs(context, base_crs, hub_crs, transformation)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_bound_crs_to_WGS84(context, crs:, options:)
+    ptr = Api.proj_crs_create_bound_crs_to_WGS84(context, crs, options)
+    self.create_object(ptr, context)
+  end
+
+  def self.geodetic_crs_from_datum(context, crs_auth_name:, datum_auth_name:, datum_code:, crs_type:)
+    ptr = Api.proj_query_geodetic_crs_from_datum(context, crs_auth_name, datum_auth_name, datum_code, crs_type)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_bound_vertical_crs(context, vert_crs:, hub_geographic_3D_crs:, grid_name:)
+    ptr = Api.proj_crs_create_bound_vertical_crs(context, vert_crs, hub_geographic_3D_crs, grid_name)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_engineering_crs(context, crs_name:)
+    ptr = Api.proj_create_engineering_crs(context, crs_name)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_vertical_crs(context, crs_name:, datum_name:, linear_units:, linear_units_conv:)
+    ptr = Api.proj_create_vertical_crs(context, crs_name, datum_name, linear_units, linear_units_conv)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_vertical_crs_ex(context, crs_name:, datum_name:, datum_auth_name:, datum_code:, linear_units:, linear_units_conv:, geoid_model_name:, geoid_model_auth_name:, geoid_model_code:, geoid_geog_crs:, options:)
+    ptr = Api.proj_create_vertical_crs_ex(context, crs_name, datum_name, datum_auth_name, datum_code, linear_units, linear_units_conv, geoid_model_name, geoid_model_auth_name, geoid_model_code, geoid_geog_crs, options)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_compound_crs(context, crs_name:, horiz_crs:, vert_crs:)
+    ptr = Api.proj_create_compound_crs(context, crs_name, horiz_crs, vert_crs)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_geographic_crs(context, crs_name:, datum_name:, ellps_name:, semi_major_metre:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, pm_angular_units:, pm_units_conv:, ellipsoidal_cs:)
+    ptr = Api.proj_create_geographic_crs(context, crs_name, datum_name, ellps_name, semi_major_metre, inv_flattening, prime_meridian_name, prime_meridian_offset, pm_angular_units, pm_units_conv, ellipsoidal_cs)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_geographic_crs_from_datum(context, crs_name:, datum_or_datum_ensemble:, ellipsoidal_cs:)
+    ptr = Api.proj_create_geographic_crs_from_datum(context, crs_name, datum_or_datum_ensemble, ellipsoidal_cs)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_geocentric_crs(context, crs_name:, datum_name:, ellps_name:, semi_major_metre:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, angular_units:, angular_units_conv:, linear_units:, linear_units_conv:)
+    ptr = Api.proj_create_geocentric_crs(context, crs_name, datum_name, ellps_name, semi_major_metre, inv_flattening, prime_meridian_name, prime_meridian_offset, angular_units, angular_units_conv, linear_units, linear_units_conv)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_geocentric_crs_from_datum(context, crs_name:, datum_or_datum_ensemble:, linear_units:, linear_units_conv:)
+    ptr = Api.proj_create_geocentric_crs_from_datum(context, crs_name, datum_or_datum_ensemble, linear_units, linear_units_conv)
+    self.create_object(ptr, context)
+  end
+
+  def self.create_derived_geographic_crs(context, crs_name:, base_geographic_crs:, conversion:, ellipsoidal_cs:)
+    ptr = Api.proj_create_derived_geographic_crs(context, crs_name, base_geographic_crs, conversion, ellipsoidal_cs)
+    self.create_object(ptr, context)
+  end
 end
