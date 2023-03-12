@@ -245,7 +245,30 @@ module Proj
     #
     # @return [Array<Unit>] Array of units
     def units(auth_name, category = nil, allow_deprecated = false)
-      Unit.list(auth_name: auth_name, category: category, allow_deprecated: allow_deprecated)
+      # Create pointer to read the count output parameter
+      out_result_count = FFI::MemoryPointer.new(:int)
+
+      # Result is an array of pointers to structures
+      pp_units = Api.proj_get_units_from_database(Context.current, auth_name, category, allow_deprecated ? 1 : 0, out_result_count)
+      count = out_result_count.read(:int)
+      array_p_units = pp_units.read_array_of_pointer(count)
+
+      result = Array.new(count)
+      count.times do |i|
+        unit_info = Api::PROJ_UNIT_INFO.new(array_p_units[i])
+
+        result[i] = Unit.new(unit_info[:auth_name],
+                             unit_info[:code],
+                             unit_info[:name],
+                             unit_info[:category],
+                             unit_info[:conv_factor],
+                             unit_info[:proj_short_name],
+                             unit_info[:deprecated])
+      end
+
+      Api.proj_unit_list_destroy(pp_units)
+
+      result
     end
 
     # Returns information for a unit of measure from a database lookup

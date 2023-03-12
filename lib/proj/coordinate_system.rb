@@ -1,37 +1,51 @@
 # encoding: UTF-8
 
 module Proj
-  # @!attribute [r] name
-  #   @return [String] Axis name
-  # @!attribute [r] abbreviation
-  #   @return [String] Axis abbreviation
-  # @!attribute [r] direction
-  #   @return [String] Axis direction
-  # @!attribute [r] unit_conv_factor
-  #   @return [String] Axis unit_conv_factor
-  # @!attribute [r] unit_name
-  #   @return [String] Axis unit_name
-  # @!attribute [r] unit_auth_name
-  #   @return [String] Axis unit_auth_name
-  # @!attribute [r] unit_code
-  #   @return [String] Axis unit_code
-  AxisInfo = Struct.new(:name, :abbreviation, :direction,
-                        :unit_conv_factor, :unit_name, :unit_auth_name, :unit_code,
-                        keyword_init: true)
-
   # Represents a coordinate system for a {Crs CRS}
   class CoordinateSystem < PjObject
-    def self.create_cs(context, type, axis_count, axis)
-      ptr = Api.proj_create_cs(context, type, axis_count, axis)
+    # Create a CoordinateSystem
+    #
+    # @param context [Context] The context associated with the CoordinateSystem
+    # @param type [PJ_COORDINATE_SYSTEM_TYPE] Coordinate system type
+    # @param axes [Array<PJ_AXIS_DESCRIPTION>] Array of Axes
+    #
+    # @return [CoordinateSystem]
+    def self.create(type, axes, context)
+      axes_ptr = FFI::MemoryPointer.new(Api::PJ_AXIS_DESCRIPTION, axes.size)
+      axes.each_with_index do |axis, i|
+        axis_description_target = Api::PJ_AXIS_DESCRIPTION.new(axes_ptr[i])
+        axis_description_source = axis.to_description
+        axis_description_target.to_ptr.__copy_from__(axis_description_source.to_ptr, Api::PJ_AXIS_DESCRIPTION.size)
+      end
+
+      ptr = Api.proj_create_cs(context, type, axes.count, axes_ptr)
       self.create_object(ptr, context)
     end
 
-    def self.create_ellipsoidal_2d_cs(context, type, unit_name, unit_conv_factor)
+    # Create an Ellipsoidal 2D CoordinateSystem
+    #
+    # @param context [Context] The context associated with the CoordinateSystem
+    # @param type [PJ_COORDINATE_SYSTEM_TYPE] Coordinate system type
+    # @param unit_name [String] Name of the angular units. Or nil for degree
+    # @param unit_conv_factor [Double] Conversion factor from the angular unit to radian. Set to 0 if unit name is degree
+    #
+    # @return [CoordinateSystem]
+    def self.create_ellipsoidal_2d(type, context, unit_name: nil, unit_conv_factor: 0)
       ptr = Api.proj_create_ellipsoidal_2D_cs(context, type, unit_name, unit_conv_factor)
       self.create_object(ptr, context)
     end
 
-    def self.create_ellipsoidal_3d_cs(context, type, horizontal_angular_unit_name, horizontal_angular_unit_conv_factor, vertical_linear_unit_name, vertical_linear_unit_conv_factor)
+    # Create an Ellipsoidal 3D CoordinateSystem
+    #
+    # @param context [Context] The context associated with the CoordinateSystem
+    # @param type [PJ_COORDINATE_SYSTEM_TYPE] Coordinate system type
+    # @param horizontal_angular_unit_name [String] Name of the angular units. Or nil for degree
+    # @param horizontal_angular_unit_conv_factor [Double] Conversion factor from the angular unit to radian. Set to 0 if horizontal_angular_unit_name name is degree
+    # @param vertical_linear_unit_name [String] Name of the angular units. Or nil for meter
+    # @param vertical_linear_unit_conv_factor [Double] Conversion factor from the linear unit to meter. Set to 0 if vertical_linear_unit_name name is meter
+    #
+    # @return [CoordinateSystem]
+    def self.create_ellipsoidal_3d(type, context, horizontal_angular_unit_name: nil, horizontal_angular_unit_conv_factor: 0, vertical_linear_unit_name: nil, vertical_linear_unit_conv_factor: 0)
       ptr = Api.proj_create_ellipsoidal_3D_cs(context, type, horizontal_angular_unit_name, horizontal_angular_unit_conv_factor, vertical_linear_unit_name, vertical_linear_unit_conv_factor)
       self.create_object(ptr, context)
     end

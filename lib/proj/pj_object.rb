@@ -32,7 +32,8 @@ module Proj
                    when :PJ_TYPE_PRIME_MERIDIAN
                      PrimeMeridian
                    else
-                     PjObject
+                     # Return whatever the current class is
+                     self
                    end
 
         # Now setup the instance variables
@@ -336,7 +337,7 @@ module Proj
     #
     # @return [String]
     def auth_name(index=0)
-      Api.proj_get_id_auth_name(self, index).force_encoding('UTF-8')
+      Api.proj_get_id_auth_name(self, index)&.force_encoding('UTF-8')
     end
 
     # Get the code of an identifier of an object

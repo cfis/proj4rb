@@ -2,9 +2,9 @@ module Proj
   module Api
     if Api::PROJ_VERSION >= Gem::Version.new('6.0.0')
       PJ_UNIT_TYPE = enum(:PJ_UT_ANGULAR,
-                         :PJ_UT_LINEAR,
-                         :PJ_UT_SCALE,
-                         :PJ_UT_TIME)
+                          :PJ_UT_LINEAR,
+                          :PJ_UT_SCALE,
+                          :PJ_UT_TIME)
 
       PJ_CARTESIAN_CS_2D_TYPE = enum(:PJ_CART2D_EASTING_NORTHING,
                                      :PJ_CART2D_NORTHING_EASTING,
@@ -16,12 +16,23 @@ module Proj
                                        :PJ_ELLPS2D_LATITUDE_LONGITUDE)
 
       class PJ_AXIS_DESCRIPTION < FFI::Struct
-        layout :name, :string,
-               :abbreviation, :string,
-               :direction, :string,
-               :unit_name, :string,
+        layout :name, :pointer,
+               :abbreviation, :pointer,
+               :direction, :pointer,
+               :unit_name, :pointer,
                :unit_conv_factor, :double,
                :unit_type, PJ_UNIT_TYPE
+
+        def self.create(name:, abbreviation:, direction:, unit_name:, unit_conv_factor:, unit_type:)
+          result = PJ_AXIS_DESCRIPTION.new
+          result[:name] = FFI::MemoryPointer.from_string(name)
+          result[:abbreviation] = FFI::MemoryPointer.from_string(abbreviation)
+          result[:direction] = FFI::MemoryPointer.from_string(direction)
+          result[:unit_name] = FFI::MemoryPointer.from_string(unit_name)
+          result[:unit_conv_factor] = unit_conv_factor
+          result[:unit_type] = unit_type
+          result
+        end
       end
 
       class PJ_PARAM_DESCRIPTION < FFI::Struct
