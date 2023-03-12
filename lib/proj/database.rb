@@ -244,7 +244,7 @@ module Proj
     # @param allow_deprecated [Boolean] Whether deprecated units should also be returned. Default false.
     #
     # @return [Array<Unit>] Array of units
-    def units(auth_name, category = nil, allow_deprecated = false)
+    def units(auth_name: nil, category: nil, allow_deprecated: false)
       # Create pointer to read the count output parameter
       out_result_count = FFI::MemoryPointer.new(:int)
 

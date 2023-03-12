@@ -75,6 +75,7 @@ module Proj
     end
 
     def ==(other)
+      self.auth_name == other.auth_name &&
       self.code == other.code
     end
 
