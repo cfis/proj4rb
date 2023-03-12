@@ -15,7 +15,7 @@ module Proj
     #            GEOGCRS["WGS 84",
     #            DATUM["World Geodetic System 1984",
     #                  ELLIPSOID["WGS 84",6378137,298.257223563,
-    #                            LENGTHUNIT["metre",1]]],
+    #                            LENGTHUNIT["meter",1]]],
     #            PRIMEM["Greenwich",0,
     #                   ANGLEUNIT["degree",0.0174532925199433]],
     #            CS[ellipsoidal,2],
@@ -283,18 +283,57 @@ module Proj
       self.create_object(ptr, context)
     end
 
-    def self.create_geographic(context, name:, datum_name:, ellps_name:, semi_major_metre:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, pm_angular_units:, pm_units_conv:, ellipsoidal_cs:)
-      ptr = Api.proj_create_geographic_crs(context, name, datum_name, ellps_name, semi_major_metre, inv_flattening, prime_meridian_name, prime_meridian_offset, pm_angular_units, pm_units_conv, ellipsoidal_cs)
+    # Create a GeographicCRS.
+    #
+    # @param ctx [Context] Context
+    # @param name [String] Name of the GeographicCRS. Default is nil.
+    # @param datum_name [String] Name of the GeodeticReferenceFrame. Default is nil.
+    # @param ellipsoid_name [String] Name of the Ellipsoid. Default is nil.
+    # @param semi_major_meter [Double] Ellipsoid semi-major axis, in meters.
+    # @param inv_flattening [Double] Ellipsoid inverse flattening. Or 0 for a sphere.
+    # @param prime_meridian_name [String] Name of the PrimeMeridian. Default is nil.
+    # @param prime_meridian_offset [Double] Offset of the prime meridian, expressed in the specified angular units.
+    # @param pm_angular_units [String] Name of the angular units. Or nil for degrees.
+    # @param pm_angular_units_conv [Double] Conversion factor from the angular unit to radians. Default is 0 if pm_angular_units is nil
+    # @param coordinate_system [CoordinateSystem] Ellipsoidal coordinate system
+    #
+    # @return [CRS]
+    def self.create_geographic(context, name:, datum_name:, ellps_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, pm_angular_units:, pm_units_conv:, coordinate_system:)
+      ptr = Api.proj_create_geographic_crs(context, name, datum_name, ellps_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, pm_angular_units, pm_units_conv, coordinate_system)
       self.create_object(ptr, context)
     end
 
-    def self.create_geographic_from_datum(context, name:, datum_or_datum_ensemble:, ellipsoidal_cs:)
-      ptr = Api.proj_create_geographic_crs_from_datum(context, name, datum_or_datum_ensemble, ellipsoidal_cs)
+    # Create a GeographicCRS from a datum
+    #
+    # @param ctx [Context] Context
+    # @param name [String] Name of the GeographicCRS. Default is nil.
+    # @param datum [Datum | DatumEnsemble] Datum or DatumEnsemble
+    # @param coordinate_system [CoordinateSystem] Ellipsoidal coordinate system
+    #
+    # @return [CRS]
+    def self.create_geographic_from_datum(context, name:, datum:, coordinate_system:)
+      ptr = Api.proj_create_geographic_crs_from_datum(context, name, datum, coordinate_system)
       self.create_object(ptr, context)
     end
 
-    def self.create_geocentric(context, name:, datum_name:, ellps_name:, semi_major_metre:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, angular_units:, angular_units_conv:, linear_units:, linear_units_conv:)
-      ptr = Api.proj_create_geocentric_crs(context, name, datum_name, ellps_name, semi_major_metre, inv_flattening, prime_meridian_name, prime_meridian_offset, angular_units, angular_units_conv, linear_units, linear_units_conv)
+    # Create a GeographicCRS.
+    #
+    # @param ctx [Context] Context
+    # @param name [String] Name of the GeographicCRS. Default is nil.
+    # @param datum_name [String] Name of the GeodeticReferenceFrame. Default is nil.
+    # @param ellipsoid_name [String] Name of the Ellipsoid. Default is nil.
+    # @param semi_major_meter [Double] Ellipsoid semi-major axis, in meters.
+    # @param inv_flattening [Double] Ellipsoid inverse flattening. Or 0 for a sphere.
+    # @param prime_meridian_name [String] Name of the PrimeMeridian. Default is nil.
+    # @param prime_meridian_offset [Double] Offset of the prime meridian, expressed in the specified angular units.
+    # @param angular_units [String] Name of the angular units. Or nil for degrees.
+    # @param angular_units_conv [Double] Conversion factor from the angular unit to radians. Default is 0 if angular_units is nil
+    # @param linear_units [String] Name of the angular units. Or nil for meters.
+    # @param linear_units_conv [Double] Conversion factor from linear units to meters. Default is 0 if linear_units is nil
+    #
+    # @return [CRS]
+    def self.create_geocentric(context, name:, datum_name:, ellps_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, angular_units:, angular_units_conv:, linear_units:, linear_units_conv:)
+      ptr = Api.proj_create_geocentric_crs(context, name, datum_name, ellps_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, angular_units, angular_units_conv, linear_units, linear_units_conv)
       self.create_object(ptr, context)
     end
 

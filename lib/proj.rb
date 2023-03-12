@@ -33,6 +33,7 @@ require_relative 'proj/pj_objects'
 require_relative 'proj/strings'
 
 require_relative 'proj/coordinate_operation_mixin'
+require_relative 'proj/projections'
 require_relative 'proj/conversion'
 require_relative 'proj/operation'
 require_relative 'proj/crs'
