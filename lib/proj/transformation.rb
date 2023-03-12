@@ -80,23 +80,23 @@ module Proj
                  "FORCE_OVER": force_over.nil? ? nil : (force_over ? "YES" : "NO")}
       options_ptr = create_options_pointer(options)
 
-      pointer = if source.is_a?(Crs) && target.is_a?(Crs)
-                  if Api.method_defined?(:proj_create_crs_to_crs_from_pj)
-                    Api.proj_create_crs_to_crs_from_pj(context, source, target, area, options_ptr)
-                  else
-                    Api.proj_create_crs_to_crs(context, source.definition, target.definition, area)
-                  end
-                else
-                  Api.proj_create_crs_to_crs(context, source, target, nil)
-                end
+      ptr = if source.is_a?(Crs) && target.is_a?(Crs)
+              if Api.method_defined?(:proj_create_crs_to_crs_from_pj)
+                Api.proj_create_crs_to_crs_from_pj(context, source, target, area, options_ptr)
+              else
+                Api.proj_create_crs_to_crs(context, source.definition, target.definition, area)
+              end
+            else
+              Api.proj_create_crs_to_crs(context, source, target, nil)
+            end
 
-      if pointer.null?
+      if ptr.null?
         Error.check_context(context)
         # If that does not raise an error then no operation was found
         raise(Error, "No operation found matching criteria")
       end
 
-      super(pointer, context)
+      super(ptr, context)
     end
   end
 end

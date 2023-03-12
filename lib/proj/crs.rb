@@ -264,15 +264,15 @@ module Proj
     # @param value [String]. See above
     # @param context [Context]. An optional Context that the Crs will use for calculations.
     def initialize(value, context=nil)
-      pointer = Api.proj_create(context || Context.current, value)
+      ptr = Api.proj_create(context || Context.current, value)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      super(pointer, context)
+      super(ptr, context)
 
-      if Api.method_defined?(:proj_is_crs) && !Api.proj_is_crs(pointer)
+      if Api.method_defined?(:proj_is_crs) && !Api.proj_is_crs(ptr)
         raise(Error, "Invalid crs definition. Proj created an instance of: #{self.proj_type}.")
       end
     end
@@ -311,13 +311,13 @@ module Proj
     #
     # @return [Datum]
     def datum
-      pointer = Api.proj_crs_get_datum(self.context, self)
+      ptr = Api.proj_crs_get_datum(self.context, self)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.class.create_object(pointer, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns a datum for a SingleCRS. If the SingleCRS has a datum, then this datum is returned.
@@ -383,11 +383,11 @@ module Proj
     #
     # @return [PjObject]
     def coordinate_operation
-      pointer = Api.proj_crs_get_coordoperation(self.context, self)
-      if pointer.null?
+      ptr = Api.proj_crs_get_coordoperation(self.context, self)
+      if ptr.null?
         Error.check_object(self)
       end
-      self.class.create_object(pointer, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns the prime meridian
@@ -425,93 +425,93 @@ module Proj
     end
 
     def alter_name(name)
-      pointer = Api.proj_alter_name(self.context, self, name)
+      ptr = Api.proj_alter_name(self.context, self, name)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(pointer, context)
+      self.create_object(ptr, context)
     end
 
     def alter_id(auth_name, code)
-      pointer = Api.proj_alter_id(self.context, self, auth_name, code)
+      ptr = Api.proj_alter_id(self.context, self, auth_name, code)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(pointer, context)
+      self.create_object(ptr, context)
     end
 
     def alter_geodetic_crs(new_geod_crs)
-      pointer = Api.proj_crs_alter_geodetic_crs(self.context, self, new_geod_crs)
+      ptr = Api.proj_crs_alter_geodetic_crs(self.context, self, new_geod_crs)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(pointer, context)
+      self.create_object(ptr, context)
     end
 
     def alter_cs_angular_unit(angular_units:, angular_units_conv:, unit_auth_name:, unit_code:)
-      pointer = Api.proj_crs_alter_cs_angular_unit(self.context, self, angular_units, angular_units_conv, unit_auth_name, unit_code)
+      ptr = Api.proj_crs_alter_cs_angular_unit(self.context, self, angular_units, angular_units_conv, unit_auth_name, unit_code)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(pointer, context)
+      self.create_object(ptr, context)
     end
 
     def alter_cs_linear_unit(linear_units:, linear_units_conv:, unit_auth_name:, unit_code:)
-      pointer = Api.proj_crs_alter_cs_linear_unit(self.context, self, linear_units, linear_units_conv, unit_auth_name, unit_code)
+      ptr = Api.proj_crs_alter_cs_linear_unit(self.context, self, linear_units, linear_units_conv, unit_auth_name, unit_code)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(pointer, context)
+      self.create_object(ptr, context)
     end
 
     def alter_parameters_linear_unit(linear_units:, linear_units_conv:, unit_auth_name:, unit_code:, convert_to_new_unit:)
-      pointer = Api.proj_crs_alter_parameters_linear_unit(self.context, self, linear_units, linear_units_conv, unit_auth_name, unit_code, convert_to_new_unit)
+      ptr = Api.proj_crs_alter_parameters_linear_unit(self.context, self, linear_units, linear_units_conv, unit_auth_name, unit_code, convert_to_new_unit)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(pointer, context)
+      self.create_object(ptr, context)
     end
 
     def promote_to_3d(crs_3d_name:, crs_2d:)
-      pointer = Api.proj_crs_promote_to_3D(self.context, crs_3d_name, crs_2d)
+      ptr = Api.proj_crs_promote_to_3D(self.context, crs_3d_name, crs_2d)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(pointer, context)
+      self.create_object(ptr, context)
     end
 
     def projected_3d_crs_from_2d(crs_name:, projected_2d_crs:, geog_3d_crs:)
-      pointer = Api.proj_crs_create_projected_3D_crs_from_2D(self.context, crs_name, projected_2d_crs, geog_3d_crs)
+      ptr = Api.proj_crs_create_projected_3D_crs_from_2D(self.context, crs_name, projected_2d_crs, geog_3d_crs)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(pointer, context)
+      self.create_object(ptr, context)
     end
 
     def demote_to_2d(crs_2d_name:, crs_3d:)
-      pointer = Api.proj_crs_demote_to_2D(self.context, crs_2d_name, crs_3d)
+      ptr = Api.proj_crs_demote_to_2D(self.context, crs_2d_name, crs_3d)
 
-      if pointer.null?
+      if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(pointer, context)
+      self.create_object(ptr, context)
     end
   end
 end
