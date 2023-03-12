@@ -3,6 +3,12 @@
 require_relative 'api/api'
 
 require_relative 'proj/pj_object'
+require_relative 'proj/pj_objects'
+require_relative 'proj/coordinate_operation_mixin'
+require_relative 'proj/projections'
+require_relative 'proj/conversion'
+require_relative 'proj/crs'
+require_relative 'proj/transformation'
 
 require_relative 'proj/area'
 require_relative 'proj/axis_info'
@@ -22,24 +28,17 @@ require_relative 'proj/grid_cache'
 require_relative 'proj/grid_info'
 require_relative 'proj/network_api'
 require_relative 'proj/parameter'
+require_relative 'proj/operation'
+require_relative 'proj/operation_factory_context'
 require_relative 'proj/parameters'
-require_relative 'proj/point'
 require_relative 'proj/prime_meridian'
 require_relative 'proj/session'
+require_relative 'proj/strings'
 require_relative 'proj/unit'
 
-require_relative 'proj/pj_object'
-require_relative 'proj/pj_objects'
-require_relative 'proj/strings'
-
-require_relative 'proj/coordinate_operation_mixin'
-require_relative 'proj/projections'
-require_relative 'proj/conversion'
-require_relative 'proj/operation'
-require_relative 'proj/crs'
-require_relative 'proj/operation_factory_context'
+# Deprecated
 require_relative 'proj/projection'
-require_relative 'proj/transformation'
+require_relative 'proj/point'
 
 module Proj
   # Returns information about the Proj library

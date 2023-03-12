@@ -268,18 +268,59 @@ module Proj
       self.create_object(ptr, context)
     end
 
+    # Create a VerticalCRS. For additional functionality see Crs#create_vertical_ex
+    #
+    # @param ctx [Context] Context
+    # @param name [String] Name of the GeographicCRS. Default is nil.
+    # @param datum_name [String] Name of the GeodeticReferenceFrame. Default is nil.
+    # @param linear_units [String] Name of the angular units. Or nil for meters.
+    # @param linear_units_conv [Double] Conversion factor from linear units to meters. Default is 0 if linear_units is nil
+    #
+    # @return [Crs]
     def self.create_vertical(context, name:, datum_name:, linear_units:, linear_units_conv:)
       ptr = Api.proj_create_vertical_crs(context, name, datum_name, linear_units, linear_units_conv)
       self.create_object(ptr, context)
     end
 
-    def self.create_vertical_ex(context, name:, datum_name:, datum_auth_name:, datum_code:, linear_units:, linear_units_conv:, geoid_model_name:, geoid_model_auth_name:, geoid_model_code:, geoid_geog_crs:, options:)
-      ptr = Api.proj_create_vertical_crs_ex(context, name, datum_name, datum_auth_name, datum_code, linear_units, linear_units_conv, geoid_model_name, geoid_model_auth_name, geoid_model_code, geoid_geog_crs, options)
+    # Create a VerticalCRS. This is an extended version of Crs#create_vertical that adds
+    # the capability of defining a geoid model.
+    #
+    # @param ctx [Context] Context
+    # @param name [String] Name of the GeographicCRS. Default is nil.
+    # @param datum_name [String] Name of the GeodeticReferenceFrame. Default is nil.
+    # @param datum_auth_name [String] Authority name of the VerticalReferenceFrame. Default is nil.
+    # @param datum_code [String] Code of the VerticalReferenceFrame. Default is nil.
+    # @param linear_units [String] Name of the angular units. Or nil for meters.
+    # @param linear_units_conv [Double] Conversion factor from linear units to meters. Default is 0 if linear_units is nil
+    # @param geoid_model_name [String] Geoid model name. Can be a name from the geoid_model name or a string "PROJ foo.gtx". Default is nil.
+    # @param geoid_model_auth_name [String] Authority name of the transformation for the geoid model. Default is nil.
+    # @param geoid_model_code [String] Code of the transformation for the geoid model. Default is nil.
+    # @param geoid_geog_crs [Crs] Geographic CRS for the geoid transformation. Default is nil.
+    # @param accuracy [Double] Accuracy in meters. Default is nil
+    #
+    # @return [Crs]
+    def self.create_vertical_ex(context, name: nil, datum_name: nil, datum_auth_name: nil, datum_code: nil,
+                                linear_units: nil, linear_units_conv: 0,
+                                geoid_model_name: nil, geoid_model_auth_name: nil, geoid_model_code: nil,
+                                geoid_geog_crs: nil, accuracy: nil)
+
+      options = {"ACCURACY": accuracy.nil? ? nil : accuracy.to_s}
+      options_ptr = create_options_pointer(options)
+
+      ptr = Api.proj_create_vertical_crs_ex(context, name, datum_name, datum_auth_name, datum_code, linear_units, linear_units_conv, geoid_model_name, geoid_model_auth_name, geoid_model_code, geoid_geog_crs, options_ptr)
       self.create_object(ptr, context)
     end
 
-    def self.create_compound(context, name:, horiz_crs:, vert_crs:)
-      ptr = Api.proj_create_compound_crs(context, name, horiz_crs, vert_crs)
+    # Create a CompoundCRS.
+    #
+    # @param ctx [Context] Context
+    # @param name [String] Name of the GeographicCRS. Default is nil.
+    # @param horizontal_crs [CRS] A horizontal CRS
+    # @param vertical_crs [CRS] A vertical CRS
+    #
+    # @return [CRS]
+    def self.create_compound(context, name:, horizontal_crs:, vertical_crs:)
+      ptr = Api.proj_create_compound_crs(context, name, horizontal_crs, vertical_crs)
       self.create_object(ptr, context)
     end
 

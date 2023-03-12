@@ -27,37 +27,37 @@ class TransformationTest < AbstractTest
                                              name: "Source CRS",
                                              datum_name: "World Geodetic System 1984",
                                              ellps_name: "WGS 84",
-                                             semi_major_metre: 6378137,
+                                             semi_major_meter: 6378137,
                                              inv_flattening: 298.257223563,
                                              prime_meridian_name: "Greenwich",
                                              prime_meridian_offset: 0.0,
                                              pm_angular_units: "Degree",
                                              pm_units_conv: 0.0174532925199433,
-                                             ellipsoidal_cs: coordinate_system)
+                                             coordinate_system: coordinate_system)
 
     target_crs = Proj::Crs.create_geographic(context,
                                              name: "WGS 84",
                                              datum_name: "World Geodetic System 1984",
                                              ellps_name: "WGS 84",
-                                             semi_major_metre: 6378137,
+                                             semi_major_meter: 6378137,
                                              inv_flattening: 298.257223563,
                                              prime_meridian_name: "Greenwich",
                                              prime_meridian_offset: 0.0,
                                              pm_angular_units: "Degree",
                                              pm_units_conv: 0.0174532925199433,
-                                             ellipsoidal_cs: coordinate_system)
+                                             coordinate_system: coordinate_system)
 
     interp_crs = Proj::Crs.create_geographic(context,
                                              name: "Interpolation CRS",
                                              datum_name: "World Geodetic System 1984",
                                              ellps_name: "WGS 84",
-                                             semi_major_metre: 6378137,
+                                             semi_major_meter: 6378137,
                                              inv_flattening: 298.257223563,
                                              prime_meridian_name: "Greenwich",
                                              prime_meridian_offset: 0.0,
                                              pm_angular_units: "Degree",
                                              pm_units_conv: 0.0174532925199433,
-                                             ellipsoidal_cs: coordinate_system)
+                                             coordinate_system: coordinate_system)
 
     param = Proj::Parameter.new(name: "param name", value: 0.99,
                                 unit_conv_factor: 1.0, unit_type: :PJ_UT_SCALE)

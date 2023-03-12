@@ -752,4 +752,63 @@ class CrsTest < AbstractTest
     crs_2 = Proj::Crs.create_from_database("EPSG", "4978", :PJ_CATEGORY_CRS)
     assert(crs.equivalent_to?(crs_2, :PJ_COMP_EQUIVALENT))
   end
+
+  def test_vertical_crs_ex
+    context = Proj::Context.new
+
+    vertical_crs = Proj::Crs.create_vertical_ex(context, name: "myVertCRS (ftUS)",
+                                                datum_name: "myVertDatum",
+                                                linear_units: "US survey foot", linear_units_conv: 0.304800609601219,
+                                                geoid_model_name: "PROJ @foo.gtx",
+                                                accuracy: 123)
+    assert(vertical_crs)
+    assert_equal(:PJ_TYPE_VERTICAL_CRS, vertical_crs.proj_type)
+  end
+
+  def test_vertical_crs_ex_with_geog_crs
+    context = Proj::Context.new
+    # NAD83(2011) / UTM zone 11N
+    horizontal_crs = Proj::Crs.create_from_database("EPSG", "6340", :PJ_CATEGORY_CRS)
+
+    # WGS84
+    wgs84 = Proj::Crs.new("EPSG:4979", context)
+
+    vertical_crs = Proj::Crs.create_vertical_ex(context, name: "myVertCRS",
+                                                datum_name: "myVertDatum",
+                                                linear_units: "US survey foot", linear_units_conv: 0.304800609601219,
+                                                geoid_model_name: "PROJ @foo.gtx",
+                                                geoid_geog_crs: wgs84)
+    assert(vertical_crs)
+    assert_equal(:PJ_TYPE_VERTICAL_CRS, vertical_crs.proj_type)
+  end
+
+  def test_compound
+    context = Proj::Context.new
+    coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LONGITUDE_LATITUDE, context)
+
+    horizontal_crs = Proj::Crs.create_geographic(context, name: "WGS 84", datum_name: "World Geodetic System 1984", ellps_name: "WGS 84",
+                                                 semi_major_meter: 6378137, inv_flattening: 298.257223563,
+                                                 prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0, pm_angular_units: "Degree", pm_units_conv: 0.0174532925199433,
+                                                 coordinate_system: coordinate_system)
+
+    vertical_crs = Proj::Crs.create_vertical(context, name: "myVertCRS",
+                                             datum_name: "myVertDatum",
+                                             linear_units: "US survey foot", linear_units_conv: 0.304800609601219)
+
+    assert(vertical_crs)
+    assert_equal(:PJ_TYPE_VERTICAL_CRS, vertical_crs.proj_type)
+    assert_equal("myVertCRS", vertical_crs.name)
+
+    compound_crs = Proj::Crs.create_compound(context, name: "myCompoundCRS",
+                                             horizontal_crs: horizontal_crs, vertical_crs: vertical_crs);
+    assert(compound_crs)
+    assert_equal(:PJ_TYPE_COMPOUND_CRS, compound_crs.proj_type)
+    assert_equal("myCompoundCRS", compound_crs.name)
+
+    crs = compound_crs.sub_crs(0)
+    assert(crs.equivalent_to?(horizontal_crs, :PJ_COMP_STRICT))
+
+    crs = compound_crs.sub_crs(1)
+    assert(crs.equivalent_to?(vertical_crs, :PJ_COMP_STRICT))
+  end
 end

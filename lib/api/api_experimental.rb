@@ -162,7 +162,7 @@ module Proj
       attach_function :proj_crs_promote_to_3D, [:PJ_CONTEXT, :string, :PJ], :PJ
       attach_function :proj_crs_create_projected_3D_crs_from_2D, [:PJ_CONTEXT, :string, :PJ, :PJ], :PJ
       attach_function :proj_crs_demote_to_2D, [:PJ_CONTEXT, :string, :PJ], :PJ
-      attach_function :proj_create_vertical_crs_ex, [:PJ_CONTEXT, :string, :string, :string, :string, :string, :double, :string, :string, :string, :PJ, :string], :PJ
+      attach_function :proj_create_vertical_crs_ex, [:PJ_CONTEXT, :string, :string, :string, :string, :string, :double, :string, :string, :string, :PJ, :pointer], :PJ
       attach_function :proj_crs_create_bound_vertical_crs, [:PJ_CONTEXT, :PJ, :PJ, :string], :PJ
       attach_function :proj_create_conversion_vertical_perspective, [:PJ_CONTEXT, :double, :double, :double, :double, :double, :double, :string, :double, :string, :double], :PJ
       attach_function :proj_create_conversion_pole_rotation_grib_convention, [:PJ_CONTEXT, :double, :double, :double, :string, :double], :PJ

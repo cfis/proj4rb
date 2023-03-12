@@ -49,6 +49,7 @@ class ProjectionsTest < AbstractTest
   end
 
   def test_tunisia_mining_grid
+    skip "This test only work on Proj 9.2 and up"
     context = Proj::Context.new
     proj = Proj::Conversion.tunisia_mining_grid(context, center_lat: 0, center_long: 0,
                                                 false_easting: 0, false_northing: 0,
