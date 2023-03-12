@@ -63,7 +63,7 @@ module Proj
     # @return [Crs]
     def geodetic_crs
       ptr = Api.proj_crs_get_geodetic_crs(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Get a CRS component from a CompoundCRS.
@@ -75,7 +75,7 @@ module Proj
     # @return [Crs]
     def sub_crs(index)
       ptr = Api.proj_crs_get_sub_crs(self.context, self, index)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns the datum of a SingleCRS.
@@ -85,7 +85,7 @@ module Proj
     # @return [Datum]
     def datum
       ptr = Api.proj_crs_get_datum(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns a datum for a SingleCRS. If the SingleCRS has a datum, then this datum is returned.
@@ -97,7 +97,7 @@ module Proj
     # @return [Datum]
     def datum_forced
       ptr = Api.proj_crs_get_datum_forced(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Get the horizontal datum from a CRS.
@@ -107,7 +107,7 @@ module Proj
     # @return [Crs]
     def horizontal_datum
       ptr = Api.proj_crs_get_horizontal_datum(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns the {DatumEnsemble datum ensemble} of a SingleCRS.
@@ -117,7 +117,7 @@ module Proj
     # @return [DatumEnsemble]
     def datum_ensemble
       ptr = Api.proj_crs_get_datum_ensemble(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns the coordinate system of a SingleCRS.
@@ -135,7 +135,7 @@ module Proj
     # @return [PjObject]
     def ellipsoid
       ptr = Api.proj_get_ellipsoid(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns whether a CRS is a derived CRS.
@@ -155,7 +155,7 @@ module Proj
       if pointer.null?
         Error.check_object(self)
       end
-      PjObject.create_object(pointer, self.context)
+      self.class.create_object(pointer, self.context)
     end
 
     # Returns the prime meridian
@@ -165,7 +165,7 @@ module Proj
     # @return [PjObject]
     def prime_meridian
       ptr = Api.proj_get_prime_meridian(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns a list of matching reference CRS, and the percentage (0-100) of confidence in the match.
@@ -188,7 +188,7 @@ module Proj
 
     # Experimental API
     def derived?
-      result = Api.proj_is_derived_crs(self.context, crs)
+      result = Api.proj_is_derived_crs(self.context, self)
       result == 1 ? true : false
     end
 

@@ -25,7 +25,7 @@ module Proj
     # @return [Conversion, Transformation] Returns nil on error
     def create_inverse
       ptr = Api.proj_coordoperation_create_inverse(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # @!visibility private
@@ -375,7 +375,7 @@ module Proj
     # @return [PjObject]
     def step(index)
       ptr = Api.proj_concatoperation_get_step(self.context, self, index)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
   end
 end

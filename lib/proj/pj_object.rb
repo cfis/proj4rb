@@ -408,7 +408,7 @@ module Proj
     # @return [Crs]
     def source_crs
       ptr = Api.proj_get_source_crs(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Return the hub CRS of a BoundCRS or the target CRS of a CoordinateOperation
@@ -418,7 +418,7 @@ module Proj
     # @return [Crs]
     def target_crs
       ptr = Api.proj_get_target_crs(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Calculate various cartographic properties, such as scale factors, angular distortion and

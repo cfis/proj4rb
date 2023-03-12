@@ -19,7 +19,7 @@ module Proj
     # @return [Integer]
     def [](index)
       ptr = Api.proj_datum_ensemble_get_member(self.context, self, index)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns the positional accuracy of the datum ensemble

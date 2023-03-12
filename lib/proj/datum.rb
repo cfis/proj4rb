@@ -16,7 +16,7 @@ module Proj
     # @return [PjObject]
     def ellipsoid
       ptr = Api.proj_get_ellipsoid(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
 
     # Returns the prime meridian
@@ -26,7 +26,7 @@ module Proj
     # @return [PjObject]
     def prime_meridian
       ptr = Api.proj_get_prime_meridian(self.context, self)
-      PjObject.create_object(ptr, self.context)
+      self.class.create_object(ptr, self.context)
     end
   end
 end
