@@ -698,30 +698,7 @@ class CrsTest < AbstractTest
     assert_equal(expected, values)
   end
 
-  def test_sub_crs
-    context = Proj::Context.new
-    horizontal_coord_system_ptr = Proj::Api.proj_create_ellipsoidal_2D_cs(context, :PJ_ELLPS2D_LONGITUDE_LATITUDE, nil, 0)
-    horizontal_crs_ptr = Proj::Api.proj_create_geographic_crs(context,  "WGS 84", "World Geodetic System 1984", "WGS 84",
-                                                          6378137, 298.257223563,
-                                                          "Greenwich", 0.0,
-                                                          "Degree", 0.0174532925199433, horizontal_coord_system_ptr)
-
-    vertical_crs_ptr = Proj::Api.proj_create_vertical_crs(context, "myVertCRS", "myVertDatum", nil, 0.0)
-    vertical_crs = Proj::PjObject.create_object(vertical_crs_ptr, context)
-    assert_equal("myVertCRS", vertical_crs.name)
-
-    compound_crs_ptr = Proj::Api.proj_create_compound_crs(context, "myCompoundCRS", horizontal_crs_ptr, vertical_crs)
-    compound_crs = Proj::PjObject.create_object(compound_crs_ptr, context)
-    assert_equal("myCompoundCRS", compound_crs.name)
-
-    subcrs = compound_crs.sub_crs(0)
-    assert(subcrs.equivalent_to?(horizontal_crs_ptr, :PJ_COMP_STRICT))
-
-    subcrs = compound_crs.sub_crs(1)
-    assert(subcrs.equivalent_to?(vertical_crs_ptr, :PJ_COMP_STRICT))
-  end
-
-  def test_geographic_crs
+  def test_geographic
     context = Proj::Context.new
     coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LATITUDE_LONGITUDE, context)
 
@@ -741,7 +718,7 @@ class CrsTest < AbstractTest
     crs = Proj::Crs.create_geographic_from_datum(context, name: "WGS 84", datum: datum, coordinate_system: coordinate_system)
   end
 
-  def test_geocentric_crs
+  def test_geocentric
     context = Proj::Context.new
     crs = Proj::Crs.create_geocentric(context, name: "WGS 84", datum_name: "World Geodetic System 1984", ellps_name: "WGS 84",
                                       semi_major_meter: 6378137, inv_flattening: 298.257223563,
@@ -751,6 +728,21 @@ class CrsTest < AbstractTest
 
     crs_2 = Proj::Crs.create_from_database("EPSG", "4978", :PJ_CATEGORY_CRS)
     assert(crs.equivalent_to?(crs_2, :PJ_COMP_EQUIVALENT))
+  end
+
+  def test_geocentric_datum
+    context = Proj::Context.new
+    crs = Proj::Crs.create_geocentric(context, name: "WGS 84", datum_name: "World Geodetic System 1984", ellps_name: "WGS 84",
+                                      semi_major_meter: 6378137, inv_flattening: 298.257223563,
+                                      prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0,
+                                      angular_units: "Degree", angular_units_conv: 0.0174532925199433,
+                                      linear_units: "Metre", linear_units_conv: 1.0)
+    datum = crs.datum
+
+    geocentric_crs = Proj::Crs.create_geocentric_from_datum(context, name: "WGS 84", datum: datum,
+                                                            linear_units: "Metre", linear_units_conv: 1.0)
+
+    assert(crs.equivalent_to?(geocentric_crs, :PJ_COMP_STRICT))
   end
 
   def test_vertical_crs_ex
@@ -810,5 +802,98 @@ class CrsTest < AbstractTest
 
     crs = compound_crs.sub_crs(1)
     assert(crs.equivalent_to?(vertical_crs, :PJ_COMP_STRICT))
+  end
+
+  def test_derived_geographic
+    context = Proj::Context.new
+    crs = Proj::Crs.create("EPSG:4326", context)
+
+    conversion = Proj::Conversion.pole_rotation_grib_convention(context, south_pole_lat_in_unrotated_crs: 2, south_pole_long_in_unrotated_crs: 3,
+                                                                axis_rotation: 4, ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433)
+
+    coordinate_system = crs.coordinate_system
+
+    # Wrong type of base_geographic_crs
+    derived_crs = Proj::Crs.create_derived_geographic(context, name: "my rotated CRS",
+                                                      base_geographic_crs: conversion, conversion: conversion,
+                                                      coordinate_system: coordinate_system)
+    refute(derived_crs)
+
+    # Wrong type of conversion
+    derived_crs = Proj::Crs.create_derived_geographic(context, name: "my rotated CRS",
+                                                      base_geographic_crs: crs, conversion: crs,
+                                                      coordinate_system: coordinate_system)
+    refute(derived_crs)
+
+    derived_crs = Proj::Crs.create_derived_geographic(context, name: "my rotated CRS",
+                                                      base_geographic_crs: crs, conversion: conversion,
+                                                      coordinate_system: coordinate_system)
+    refute(crs.derived?)
+    assert(derived_crs.derived?)
+
+    expected = "+proj=ob_tran +o_proj=longlat +o_lon_p=-4 +o_lat_p=-2 +lon_0=3 +datum=WGS84 +no_defs +type=crs"
+    assert_equal(expected, derived_crs.to_proj_string)
+  end
+
+  def test_projected
+    context = Proj::Context.new
+    param = Proj::Parameter.new(name: "param name", value: 0.99,
+                                unit_conv_factor: 1.0, unit_type: :PJ_UT_SCALE)
+
+    conversion = Proj::Conversion.create_conversion(context, name: "conv",
+                                                    auth_name: "conv auth", code: "conv code",
+                                                    method_name: "method", method_auth_name: "method auth", method_code: "method code",
+                                                    params: [param])
+
+    coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LONGITUDE_LATITUDE, context)
+    crs = Proj::Crs.create_geographic(context, name: "WGS 84", datum_name: "World Geodetic System 1984",
+                                      ellps_name: "WGS 84", semi_major_meter: 6378137, inv_flattening: 298.257223563,
+                                      prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0,
+                                      pm_angular_units: "Degree", pm_units_conv: 0.0174532925199433,
+                                      coordinate_system: coordinate_system)
+
+    cartesian = Proj::CoordinateSystem.create_cartesian_2d(context, :PJ_CART2D_EASTING_NORTHING)
+
+    projected = Proj::Crs.create_projected(context, name: "My Projected CRS", geodetic_crs: crs,
+                                           conversion: conversion, coordinate_system: cartesian)
+    assert_equal(:PJ_TYPE_PROJECTED_CRS, projected.proj_type)
+    assert_equal("My Projected CRS", projected.name)
+  end
+
+  def test_create_bound_crs_to_wgs84
+    context = Proj::Context.new
+    crs = Proj::Crs.create_from_database("EPSG", "4807", :PJ_CATEGORY_CRS)
+
+    bounded = Proj::Crs.create_bound_to_wgs84(context, crs: crs)
+    expected = "+proj=longlat +ellps=clrk80ign +pm=paris +towgs84=-168,-60,320,0,0,0,0 +no_defs +type=crs"
+    assert_equal(expected, bounded.to_proj_string)
+
+    base_crs = bounded.source_crs
+    assert(base_crs.equivalent_to?(crs, :PJ_COMP_EQUIVALENT))
+
+    hub_crs = bounded.target_crs
+    wgs84_crs = Proj::Crs.create_from_database("EPSG", "4326", :PJ_CATEGORY_CRS)
+    assert(hub_crs.equivalent_to?(wgs84_crs, :PJ_COMP_EQUIVALENT))
+
+    transform = bounded.coordinate_operation
+    values = transform.to_wgs84(true)
+    expected = [-168, -60, 320, 0, 0, 0, 0]
+    assert_equal(expected, values)
+
+    bounded_2 = Proj::Crs.create_bound(context, base_crs: base_crs, hub_crs: hub_crs, transformation: transform)
+    assert_equal(:PJ_TYPE_BOUND_CRS, bounded_2.proj_type)
+    expected = "+proj=longlat +ellps=clrk80ign +pm=paris +towgs84=-168,-60,320,0,0,0,0 +no_defs +type=crs"
+    assert_equal(expected, bounded_2.to_proj_string)
+  end
+
+  def test_query_geodetic_from_datum
+    context = Proj::Context.new
+    crses = Proj::Crs.query_geodetic_from_datum(context, datum_auth_name: "EPSG", datum_code: "6326")
+    assert_equal(12, crses.size)
+
+    crses = Proj::Crs.query_geodetic_from_datum(context, auth_name: "EPSG",
+                                                datum_auth_name: "EPSG", datum_code: "6326",
+                                                crs_type: "geographic 2D")
+    assert_equal(1, crses.size)
   end
 end

@@ -76,13 +76,13 @@ module Proj
       attach_function :proj_create_compound_crs, [:PJ_CONTEXT, :string, :PJ, :PJ], :PJ
       attach_function :proj_create_projected_crs, [:PJ_CONTEXT, :string, :PJ, :PJ, :PJ], :PJ
       attach_function :proj_crs_create_bound_crs, [:PJ_CONTEXT, :PJ, :PJ, :PJ], :PJ
-      attach_function :proj_crs_create_bound_crs_to_WGS84, [:PJ_CONTEXT, :PJ, :string], :PJ
+      attach_function :proj_crs_create_bound_crs_to_WGS84, [:PJ_CONTEXT, :PJ, :pointer], :PJ
 
       # Transformation
       attach_function :proj_create_transformation, [:PJ_CONTEXT, :string, :string, :string, :PJ, :PJ, :PJ, :string, :string, :string, :int, :pointer, :double], :PJ
 
       # Conversion
-      attach_function :proj_create_conversion, [:PJ_CONTEXT, :string, :string, :string, :string, :string, :string, :int, PJ_PARAM_DESCRIPTION.by_ref], :PJ
+      attach_function :proj_create_conversion, [:PJ_CONTEXT, :string, :string, :string, :string, :string, :string, :int, :pointer], :PJ
       attach_function :proj_convert_conversion_to_other_method, [:PJ_CONTEXT, :PJ, :int, :string], :PJ
       attach_function :proj_create_conversion_utm, [:PJ_CONTEXT, :int, :int], :PJ
       attach_function :proj_create_conversion_transverse_mercator, [:PJ_CONTEXT, :double, :double, :double, :double, :double, :string, :double, :string, :double], :PJ

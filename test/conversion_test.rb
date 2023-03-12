@@ -3,6 +3,21 @@
 require_relative './abstract_test'
 
 class ConversionTest < AbstractTest
+  def test_create_conversion
+    context = Proj::Context.new
+    param = Proj::Parameter.new(name: "param name", value: 0.99,
+                                unit_conv_factor: 1.0, unit_type: :PJ_UT_SCALE)
+
+    conversion = Proj::Conversion.create_conversion(context, name: "conv",
+                                                    auth_name: "conv auth", code: "conv code",
+                                                    method_name: "method", method_auth_name: "method auth", method_code: "method code",
+                                                    params: [param])
+    assert(conversion)
+    assert_equal("conv", conversion.name)
+    assert_equal("conv auth:conv code", conversion.auth)
+    assert_equal(:PJ_TYPE_CONVERSION, conversion.proj_type)
+  end
+
   def test_inverse_operation
     operation = Proj::Conversion.new(<<~EOS)
                   +proj=pipeline +step +proj=axisswap +order=2,1 +step 
