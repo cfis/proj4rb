@@ -65,8 +65,6 @@ module Proj
       # Create CRSes
       attach_function :proj_create_geographic_crs, [:PJ_CONTEXT, :string, :string, :string, :double, :double, :string, :double, :string, :double, :PJ], :PJ
       attach_function :proj_create_geocentric_crs, [:PJ_CONTEXT, :string, :string, :string, :double, :double, :string, :double, :string, :double, :string, :double], :PJ
-      attach_function :proj_alter_name, [:PJ_CONTEXT, :PJ, :string], :PJ
-      attach_function :proj_alter_id, [:PJ_CONTEXT, :PJ, :string, :string], :PJ
       attach_function :proj_crs_alter_geodetic_crs, [:PJ_CONTEXT, :PJ, :PJ], :PJ
       attach_function :proj_crs_alter_cs_angular_unit, [:PJ_CONTEXT, :PJ, :string, :double, :string, :string], :PJ
       attach_function :proj_crs_alter_cs_linear_unit, [:PJ_CONTEXT, :PJ, :string, :double, :string, :string], :PJ
@@ -78,12 +76,18 @@ module Proj
       attach_function :proj_crs_create_bound_crs, [:PJ_CONTEXT, :PJ, :PJ, :PJ], :PJ
       attach_function :proj_crs_create_bound_crs_to_WGS84, [:PJ_CONTEXT, :PJ, :pointer], :PJ
 
+      # Modify CRS
+      attach_function :proj_alter_name, [:PJ_CONTEXT, :PJ, :string], :PJ
+      attach_function :proj_alter_id, [:PJ_CONTEXT, :PJ, :string, :string], :PJ
+
       # Transformation
       attach_function :proj_create_transformation, [:PJ_CONTEXT, :string, :string, :string, :PJ, :PJ, :PJ, :string, :string, :string, :int, :pointer, :double], :PJ
 
       # Conversion
       attach_function :proj_create_conversion, [:PJ_CONTEXT, :string, :string, :string, :string, :string, :string, :int, :pointer], :PJ
       attach_function :proj_convert_conversion_to_other_method, [:PJ_CONTEXT, :PJ, :int, :string], :PJ
+
+      # Projections
       attach_function :proj_create_conversion_utm, [:PJ_CONTEXT, :int, :int], :PJ
       attach_function :proj_create_conversion_transverse_mercator, [:PJ_CONTEXT, :double, :double, :double, :double, :double, :string, :double, :string, :double], :PJ
       attach_function :proj_create_conversion_gauss_schreiber_transverse_mercator, [:PJ_CONTEXT, :double, :double, :double, :double, :double, :string, :double, :string, :double], :PJ
@@ -155,8 +159,10 @@ module Proj
       PJ_ELLIPSOIDAL_CS_3D_TYPE = enum(:PJ_ELLPS3D_LONGITUDE_LATITUDE_HEIGHT,
                                        :PJ_ELLPS3D_LATITUDE_LONGITUDE_HEIGHT)
 
+      # Coordinate System
       attach_function :proj_create_ellipsoidal_3D_cs, [:PJ_CONTEXT, PJ_ELLIPSOIDAL_CS_3D_TYPE, :string, :double, :string, :double], :PJ
 
+      # CRS
       attach_function :proj_create_derived_geographic_crs, [:PJ_CONTEXT, :string, :PJ, :PJ, :PJ], :PJ
       attach_function :proj_is_derived_crs, [:PJ_CONTEXT, :PJ], :int
       attach_function :proj_crs_promote_to_3D, [:PJ_CONTEXT, :string, :PJ], :PJ
@@ -169,15 +175,18 @@ module Proj
     end
 
     if Api::PROJ_VERSION >= Gem::Version.new('7.2.0')
+      # CRS
       attach_function :proj_create_geographic_crs_from_datum, [:PJ_CONTEXT, :string, :PJ, :PJ], :PJ
       attach_function :proj_create_geocentric_crs_from_datum, [:PJ_CONTEXT, :string, :PJ, :string, :double], :PJ
     end
 
     if Api::PROJ_VERSION >= Gem::Version.new('8.2.0')
+      # Projection
       attach_function :proj_create_conversion_pole_rotation_netcdf_cf_convention, [:PJ_CONTEXT, :double, :double, :double, :string, :double], :PJ
     end
 
     if Api::PROJ_VERSION >= Gem::Version.new('9.2.0')
+      # Projection
       attach_function :proj_create_conversion_tunisia_mining_grid, [:PJ_CONTEXT, :double, :double, :double, :double, :string, :double, :string, :double], :PJ
       attach_function :proj_create_conversion_tunisia_mapping_grid, [:PJ_CONTEXT, :double, :double, :double, :double, :string, :double, :string, :double], :PJ
     end

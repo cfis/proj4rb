@@ -774,6 +774,19 @@ class CrsTest < AbstractTest
     assert_equal(:PJ_TYPE_VERTICAL_CRS, vertical_crs.proj_type)
   end
 
+  def test_bound_vertical
+    context = Proj::Context.new
+    vertical_crs = Proj::Crs.create_vertical_ex(context, name: "myVertCRS",
+                                                datum_name: "myVertDatum")
+
+    crs_4979 = Proj::Crs.create_from_database("EPSG", "4979", :PJ_CATEGORY_CRS)
+    bound = Proj::Crs.create_bound_vertical(context, vertical_crs: vertical_crs,
+                                            hub_crs: crs_4979, grid_name: "foo.gtx")
+
+    assert_equal(:PJ_TYPE_BOUND_CRS, bound.proj_type)
+    assert_equal("myVertCRS", bound.name)
+  end
+
   def test_compound
     context = Proj::Context.new
     coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LONGITUDE_LATITUDE, context)
@@ -884,6 +897,24 @@ class CrsTest < AbstractTest
     assert_equal(:PJ_TYPE_BOUND_CRS, bounded_2.proj_type)
     expected = "+proj=longlat +ellps=clrk80ign +pm=paris +towgs84=-168,-60,320,0,0,0,0 +no_defs +type=crs"
     assert_equal(expected, bounded_2.to_proj_string)
+  end
+
+  def test_create_engineering
+    context = Proj::Context.new
+    crs = Proj::Crs.create_engineering("EPSG", name: "4807")
+    assert_equal("4807", crs.name)
+    assert_equal(:PJ_TYPE_ENGINEERING_CRS, crs.proj_type)
+
+    expected = <<~EOS
+        LOCAL_CS["name",
+            UNIT["metre",1,
+                AUTHORITY["EPSG","9001"]],
+            AXIS["Easting",EAST],
+            AXIS["Northing",NORTH]]
+    EOS
+
+    # This crashes proj
+    #assert_equal(expected, crs.to_wkt(:PJ_WKT1_GDAL))
   end
 
   def test_query_geodetic_from_datum

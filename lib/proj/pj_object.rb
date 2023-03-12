@@ -92,6 +92,10 @@ module Proj
       ptr = Api.proj_create_from_database(context, auth_name, code, category,
                                           use_alternative_grid_names ? 1 : 0, nil)
 
+      if ptr.null?
+        Error.check_context(context)
+      end
+
       create_object(ptr, context)
     end
 
@@ -616,7 +620,13 @@ module Proj
                  "ALLOW_ELLIPSOIDAL_HEIGHT_AS_VERTICAL_CRS": "NO"}
 
       options_ptr = create_options_pointer(options)
-      Api.proj_as_wkt(self.context, self, wkt_type, options_ptr)&.force_encoding('UTF-8')
+      result = Api.proj_as_wkt(self.context, self, wkt_type, nil)
+
+      if result.nil?
+        Error.check_object(self)
+      end
+
+      result.force_encoding('UTF-8')
     end
 
     # Returns the string representation for this object

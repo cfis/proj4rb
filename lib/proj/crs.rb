@@ -15,7 +15,11 @@ module Proj
     # @return [CRS]
     def self.create_projected(context, name: nil, geodetic_crs:, conversion:, coordinate_system:)
       pointer = Api.proj_create_projected_crs(context, name, geodetic_crs, conversion, coordinate_system)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -29,7 +33,11 @@ module Proj
     # @return [CRS]
     def self.create_bound(context, base_crs:, hub_crs:, transformation:)
       pointer = Api.proj_crs_create_bound_crs(context, base_crs, hub_crs, transformation)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -51,19 +59,27 @@ module Proj
       options_ptr = create_options_pointer(options)
 
       pointer = Api.proj_crs_create_bound_crs_to_WGS84(context, crs, options_ptr)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
-    def self.create_bound_vertical(context, vert_crs:, hub_geographic_3D_crs:, grid_name:)
-      pointer = Api.proj_crs_create_bound_vertical_crs(context, vert_crs, hub_geographic_3D_crs, grid_name)
-      Error.check_context(context)
-      self.create_object(pointer, context)
-    end
-
+    # Create a a EngineeringCRS
+    #
+    # @param ctx [Context] Context
+    # @param name [String] Name of the CRS. Default is nil.
+    #
+    # @return [CRS]
     def self.create_engineering(context, name:)
       pointer = Api.proj_create_engineering_crs(context, name)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -78,7 +94,30 @@ module Proj
     # @return [CRS]
     def self.create_vertical(context, name:, datum_name:, linear_units:, linear_units_conv:)
       pointer = Api.proj_create_vertical_crs(context, name, datum_name, linear_units, linear_units_conv)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
+      self.create_object(pointer, context)
+    end
+
+    # Create a Bound Vertical CRS, with a transformation to a hub geographic 3D crs, such as
+    # EPSG:4979 or WGS84, using a grid
+    #
+    # @param ctx [Context] Context
+    # @param vertical_crs [CRS] A VerticalCRS
+    # @param hub_geographic_3d_crs [CRS] A Geographic 3D CRS
+    # @param grid_name [String] Grid name (typically a .gtx file)
+    #
+    # @return [CRS]
+    def self.create_bound_vertical(context, vertical_crs:, hub_crs:, grid_name:)
+      pointer = Api.proj_crs_create_bound_vertical_crs(context, vertical_crs, hub_crs, grid_name)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -108,7 +147,11 @@ module Proj
       options_ptr = create_options_pointer(options)
 
       pointer = Api.proj_create_vertical_crs_ex(context, name, datum_name, datum_auth_name, datum_code, linear_units, linear_units_conv, geoid_model_name, geoid_model_auth_name, geoid_model_code, geoid_geog_crs, options_ptr)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -122,7 +165,11 @@ module Proj
     # @return [CRS]
     def self.create_compound(context, name:, horizontal_crs:, vertical_crs:)
       pointer = Api.proj_create_compound_crs(context, name, horizontal_crs, vertical_crs)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -143,7 +190,11 @@ module Proj
     # @return [CRS]
     def self.create_geographic(context, name:, datum_name:, ellps_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, pm_angular_units:, pm_units_conv:, coordinate_system:)
       pointer = Api.proj_create_geographic_crs(context, name, datum_name, ellps_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, pm_angular_units, pm_units_conv, coordinate_system)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -157,7 +208,11 @@ module Proj
     # @return [CRS]
     def self.create_geographic_from_datum(context, name:, datum:, coordinate_system:)
       pointer = Api.proj_create_geographic_crs_from_datum(context, name, datum, coordinate_system)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -179,7 +234,11 @@ module Proj
     # @return [CRS]
     def self.create_geocentric(context, name:, datum_name:, ellps_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, angular_units:, angular_units_conv:, linear_units:, linear_units_conv:)
       pointer = Api.proj_create_geocentric_crs(context, name, datum_name, ellps_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, angular_units, angular_units_conv, linear_units, linear_units_conv)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -194,7 +253,11 @@ module Proj
     # @return [CRS]
     def self.create_geocentric_from_datum(context, name:, datum:, linear_units:, linear_units_conv:)
       pointer = Api.proj_create_geocentric_crs_from_datum(context, name, datum, linear_units, linear_units_conv)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -209,7 +272,11 @@ module Proj
     # @return [CRS]
     def self.create_derived_geographic(context, name: nil, base_geographic_crs:, conversion:, coordinate_system:)
       pointer = Api.proj_create_derived_geographic_crs(context, name, base_geographic_crs, conversion, coordinate_system)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       self.create_object(pointer, context)
     end
 
@@ -227,7 +294,11 @@ module Proj
     # @return [PjObjects] - A list of CRSes
     def self.query_geodetic_from_datum(context, auth_name: nil, datum_auth_name:, datum_code:, crs_type: nil)
       pointer = Api.proj_query_geodetic_crs_from_datum(context, auth_name, datum_auth_name, datum_code, crs_type)
-      Error.check_context(context)
+
+      if pointer.null?
+        Error.check_context(context)
+      end
+
       PjObjects.new(pointer, context)
     end
 
@@ -418,7 +489,9 @@ module Proj
       return objects, confidences
     end
 
-    # Experimental API
+    # Returns whether a CRS is a Derived CRS
+    #
+    # @return [Boolean] - True if the CRS is derived
     def derived?
       result = Api.proj_is_derived_crs(self.context, self)
       result == 1 ? true : false
