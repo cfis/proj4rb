@@ -239,10 +239,10 @@ module Proj
     #
     # @return [Boolean] True if the objects are equivalent, otherwise false
     def equivalent_to?(other, comparison)
-      result = if Api::PROJ_VERSION < Gem::Version.new('6.3.0')
-                 Api.proj_is_equivalent_to(self, other, comparison)
-               else
+      result = if defined?(Api.proj_is_equivalent_to_with_ctx)
                  Api.proj_is_equivalent_to_with_ctx(self.context, self, other, comparison)
+               else
+                 Api.proj_is_equivalent_to(self, other, comparison)
                end
       result == 1 ? true : false
     end

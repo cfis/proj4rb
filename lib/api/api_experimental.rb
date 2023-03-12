@@ -36,13 +36,25 @@ module Proj
       end
 
       class PJ_PARAM_DESCRIPTION < FFI::Struct
-        layout :name, :string,
-               :auth_name, :string,
-               :code, :string,
+        layout :name, :pointer,
+               :auth_name, :pointer,
+               :code, :pointer,
                :value, :double,
-               :unit_name, :string,
+               :unit_name, :pointer,
                :unit_conv_factor, :double,
                :unit_type, PJ_UNIT_TYPE
+
+        def self.create(name:, auth_name: nil, code: nil, value:, unit_name: nil, unit_conv_factor:, unit_type:)
+          result = PJ_PARAM_DESCRIPTION.new
+          result[:name] = FFI::MemoryPointer.from_string(name)
+          result[:auth_name] = auth_name ? FFI::MemoryPointer.from_string(auth_name) : nil
+          result[:code] = code ? FFI::MemoryPointer.from_string(code) : nil
+          result[:value] = value
+          result[:unit_name] = unit_name ? FFI::MemoryPointer.from_string(unit_name) : nil
+          result[:unit_conv_factor] = unit_conv_factor
+          result[:unit_type] = unit_type
+          result
+        end
       end
 
       # Create coordinate systems
@@ -67,7 +79,7 @@ module Proj
       attach_function :proj_crs_create_bound_crs_to_WGS84, [:PJ_CONTEXT, :PJ, :string], :PJ
 
       # Transformation
-      attach_function :proj_create_transformation, [:PJ_CONTEXT, :string, :string, :string, :PJ, :PJ, :PJ, :string, :string, :string, :int, PJ_PARAM_DESCRIPTION.by_ref, :double], :PJ
+      attach_function :proj_create_transformation, [:PJ_CONTEXT, :string, :string, :string, :PJ, :PJ, :PJ, :string, :string, :string, :int, :pointer, :double], :PJ
 
       # Conversion
       attach_function :proj_create_conversion, [:PJ_CONTEXT, :string, :string, :string, :string, :string, :string, :int, PJ_PARAM_DESCRIPTION.by_ref], :PJ

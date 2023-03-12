@@ -6,8 +6,38 @@ module Proj
   class Transformation < PjObject
     include CoordinateOperationMixin
 
-    def self.proj_create_transformation(context, name:, auth_name:, code:, source_crs:, target_crs:, interpolation_crs:, method_name:, method_auth_name:, method_code:, param_count:, params:, accuracy:)
-      ptr = Api.proj_create_transformation(context, name, auth_name, code, source_crs, target_crs, interpolation_crs, method_name, method_auth_name, method_code, param_count, params, accuracy)
+    # Create a Transformation
+    #
+    # @param context [Context] Context
+    # @param name [String] Name of the transformation. Default is nil.
+    # @param auth_name [String] Transformation authority name. Default is nil.
+    # @param code [String] Transformation code. Default is nil.
+    # @param source_crs [CoordinateSystem] Source CRS
+    # @param target_crs [CoordinateSystem] Target CRS
+    # @param interpolation_crs [CoordinateSystem] Interpolation. Default is nil
+    # @param method_name [String] Method name. Default is nil.
+    # @param method_auth_name [String] Method authority name. Default is nil.
+    # @param method_code [String] Method code. Default is nil.
+    # @param params [Array<Parameter>] Parameter descriptions
+    # @param accuracy [Double] Accuracy of the transformation in meters. A negative value means unknown.
+    #
+    # @return [Transformation]
+    def self.create(context, name: nil, auth_name: nil, code: nil,
+                    source_crs:, target_crs:, interpolation_crs: nil,
+                    method_name: nil, method_auth_name: nil, method_code: nil,
+                    params:, accuracy:)
+
+      params_ptr = FFI::MemoryPointer.new(Api::PJ_PARAM_DESCRIPTION, params.size)
+      params.each_with_index do |param, i|
+        param_description_target = Api::PJ_PARAM_DESCRIPTION.new(params_ptr[i])
+        param_description_source = param.to_description
+        param_description_target.to_ptr.__copy_from__(param_description_source.to_ptr, Api::PJ_PARAM_DESCRIPTION.size)
+      end
+
+      ptr = Api.proj_create_transformation(context, name, auth_name, code,
+                                           source_crs, target_crs, interpolation_crs,
+                                           method_name, method_auth_name, method_code,
+                                           params.count, params_ptr, accuracy)
       self.create_object(ptr, context)
     end
 
