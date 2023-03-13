@@ -821,7 +821,7 @@ class CrsTest < AbstractTest
     context = Proj::Context.new
     crs = Proj::Crs.create("EPSG:4326", context)
 
-    conversion = Proj::Conversion.pole_rotation_grib_convention(context, south_pole_lat_in_unrotated_crs: 2, south_pole_long_in_unrotated_crs: 3,
+    conversion = Proj::Projection.pole_rotation_grib_convention(context, south_pole_lat_in_unrotated_crs: 2, south_pole_long_in_unrotated_crs: 3,
                                                                 axis_rotation: 4, ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433)
 
     coordinate_system = crs.coordinate_system

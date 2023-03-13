@@ -198,10 +198,11 @@ class ConversionTest < AbstractTest
   end
 
   def test_steps_concatenated
+    context = Proj::Context.new
     source_crs = Proj::Conversion.create_from_database("EPSG", "28356", :PJ_CATEGORY_CRS)
     target_crs = Proj::Conversion.create_from_database("EPSG", "7856", :PJ_CATEGORY_CRS)
 
-    factory_context = Proj::OperationFactoryContext.new
+    factory_context = Proj::OperationFactoryContext.new(context)
     factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
     factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
 
@@ -329,7 +330,7 @@ class ConversionTest < AbstractTest
                                       prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0, pm_angular_units: "Degree", pm_units_conv: 0.0174532925199433,
                                       coordinate_system: coordinate_system)
 
-    mercator = Proj::Conversion.mercator_variant_a(context, center_lat: 0, center_long: 1,
+    mercator = Proj::Projection.mercator_variant_a(context, center_lat: 0, center_long: 1,
                                                    scale: 0.99,
                                                    false_easting: 2, false_northing: 3,
                                                    ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
