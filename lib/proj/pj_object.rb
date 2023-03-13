@@ -374,7 +374,16 @@ module Proj
     end
 
     def auth(index=0)
-      "#{self.auth_name(index)}:#{self.id_code(index)}"
+      auth_name = self.auth_name(index)
+      code = self.id_code(index)
+
+      if auth_name and code
+        "#{self.auth_name(index)}:#{self.id_code(index)}"
+      elsif auth_name
+        auth_name
+      elsif code
+        code
+      end
     end
 
     # Return the area of use of an object
@@ -612,7 +621,7 @@ module Proj
     # @param indentation_width [Integer] Specifies the indentation level. Defaults to 4.
     #
     # @return [String] wkt
-    def to_wkt(wkt_type=:PJ_WKT2_2018, multiline: true, indentation_width: 4)
+    def to_wkt(wkt_type=:PJ_WKT2_2019, multiline: true, indentation_width: 4)
       options = {"MULTILINE": multiline ? "YES" : "NO",
                  "INDENTATION_WIDTH": indentation_width,
                  "OUTPUT_AXIS": "AUTO",

@@ -15,9 +15,9 @@ module Proj
     # @!attribute [r] unit_code
     #   @return [String] Axis unit_code
     attr_reader :name, :abbreviation, :direction,
-                :unit_conv_factor, :unit_name, :unit_auth_name, :unit_code
-    
-    def initialize(name:, abbreviation:, direction:, unit_conv_factor:, unit_name:, unit_auth_name:, unit_code:)
+                :unit_name, :unit_auth_name, :unit_code, :unit_conv_factor
+
+      def initialize(name:, abbreviation:, direction:, unit_conv_factor:, unit_name:, unit_auth_name:, unit_code:)
       @name = name
       @abbreviation = abbreviation
       @direction = direction

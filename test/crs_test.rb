@@ -927,4 +927,138 @@ class CrsTest < AbstractTest
                                                 crs_type: "geographic 2D")
     assert_equal(1, crses.size)
   end
+
+  def test_alter_name
+    context = Proj::Context.new
+    coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LATITUDE_LONGITUDE, context)
+
+    crs = Proj::Crs.create_geographic(context, name: "WGS 84", datum_name: "World Geodetic System 1984", ellps_name: "WGS 84",
+                                      semi_major_meter: 6378137, inv_flattening: 298.257223563,
+                                      prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0, pm_angular_units: "Degree", pm_units_conv: 0.0174532925199433,
+                                      coordinate_system: coordinate_system)
+    assert_equal("WGS 84", crs.name)
+
+    altered = crs.alter_name("new name")
+    assert_equal("WGS 84", crs.name)
+    assert_equal("new name", altered.name)
+  end
+
+  def test_alter_id
+    context = Proj::Context.new
+    coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LATITUDE_LONGITUDE, context)
+
+    crs = Proj::Crs.create_geographic(context, name: "WGS 84", datum_name: "World Geodetic System 1984", ellps_name: "WGS 84",
+                                      semi_major_meter: 6378137, inv_flattening: 298.257223563,
+                                      prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0, pm_angular_units: "Degree", pm_units_conv: 0.0174532925199433,
+                                      coordinate_system: coordinate_system)
+    refute(crs.auth)
+
+    altered = crs.alter_id("auth", "code")
+    refute(crs.auth)
+    assert_equal("auth:code", altered.auth)
+  end
+
+  def test_alter_geodetic_crs
+    context = Proj::Context.new
+    projected = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
+    geod_crs = projected.geodetic_crs
+    new_geod_crs = Proj::Crs.new("+proj=longlat +type=crs", context)
+
+    altered = geod_crs.alter_geodetic_crs(new_geod_crs)
+    assert(altered.equivalent_to?(new_geod_crs, :PJ_COMP_STRICT))
+
+    altered = projected.alter_geodetic_crs(new_geod_crs)
+    assert_equal(:PJ_TYPE_PROJECTED_CRS, altered.proj_type)
+    assert(altered.geodetic_crs.equivalent_to?(new_geod_crs, :PJ_COMP_STRICT))
+  end
+
+  def test_alter_cs_angular_unit
+    context = Proj::Context.new
+    crs = Proj::Crs.new('EPSG:4326')
+    altered = crs.alter_cs_angular_unit(angular_units: "my unit", angular_units_conv: 2,
+                                        unit_auth_name: "my auth", unit_code: "my code")
+
+    cs = altered.coordinate_system
+    assert_equal(2, cs.axis_count)
+
+    axis = cs.axis_info(0)
+    assert_equal("my unit", axis.unit_name)
+    assert_equal(2, axis.unit_conv_factor)
+    assert_equal("my auth", axis.unit_auth_name)
+    assert_equal("my code", axis.unit_code)
+  end
+
+  def test_alter_alter_cs_linear_unit
+    context = Proj::Context.new
+    projected = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
+    altered = projected.alter_cs_linear_unit(linear_units: "my unit", linear_units_conv: 2,
+                                             unit_auth_name: "my auth", unit_code: "my code")
+
+    cs = altered.coordinate_system
+    assert_equal(2, cs.axis_count)
+
+    axis = cs.axis_info(0)
+    assert_equal("my unit", axis.unit_name)
+    assert_equal(2, axis.unit_conv_factor)
+    assert_equal("my auth", axis.unit_auth_name)
+    assert_equal("my code", axis.unit_code)
+  end
+
+  def test_alter_parameters_linear_unit
+    context = Proj::Context.new
+    projected = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
+    altered = projected.alter_parameters_linear_unit(linear_units: "my unit", linear_units_conv: 2,
+                                                     convert_to_new_unit: false)
+
+    wkt = altered.to_wkt
+    assert_match(/500000/, wkt)
+    assert_match(/"my unit",2/, wkt)
+  end
+
+  def test_promote_to_3d
+    context = Proj::Context.new
+    crs = Proj::Crs.new('EPSG:4326')
+
+    crs_3d = crs.promote_to_3d
+    assert_equal("4979", crs_3d.id_code)
+
+    cs = crs_3d.coordinate_system
+    assert_equal(3, cs.axis_count)
+  end
+
+  def test_demote_to_3d
+    context = Proj::Context.new
+    crs = Proj::Crs.new('EPSG:4979')
+
+    crs_2d = crs.demote_to_2d
+    assert_equal("4326", crs_2d.id_code)
+
+    cs = crs_2d.coordinate_system
+    assert_equal(2, cs.axis_count)
+  end
+
+  def test_projected_3d_with_base
+    context = Proj::Context.new
+    projected = Proj::Crs.new('EPSG:32631')
+    base_crs_3d = Proj::Crs.create_from_database("EPSG", "4979", :PJ_CATEGORY_CRS)
+
+    crs_3d = projected.projected_3d(geog_3d_crs: base_crs_3d)
+    assert_equal(:PJ_TYPE_PROJECTED_CRS, crs_3d.proj_type)
+    assert_equal(crs_3d.name, projected.name)
+
+    cs = crs_3d.coordinate_system
+    assert_equal(3, cs.axis_count)
+  end
+
+  def test_projected_3d_without_base
+    context = Proj::Context.new
+    projected = Proj::Crs.new('EPSG:32631')
+
+    crs_3d = projected.projected_3d
+    assert_equal(:PJ_TYPE_PROJECTED_CRS, crs_3d.proj_type)
+    assert_equal(crs_3d.name, projected.name)
+
+    cs = crs_3d.coordinate_system
+    assert_equal(3, cs.axis_count)
+  end
 end

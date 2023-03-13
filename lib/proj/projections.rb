@@ -5,8 +5,8 @@ module Proj
   # Projections are coordinate operations that are conversions. For more information about each
   # projection @see https://proj.org/operations/projections/index.html
   module Projections
-    def utm(context, zone:, north:)
-      ptr = Api.proj_create_conversion_utm(context, zone, north)
+    def utm(context, zone:, north: true)
+      ptr = Api.proj_create_conversion_utm(context, zone, north ? 1 : 0)
 
       if ptr.null?
         Error.check_context(context)

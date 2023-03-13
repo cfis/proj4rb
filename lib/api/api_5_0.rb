@@ -272,8 +272,9 @@ module Proj
 
     PJ_WKT_TYPE = enum(:PJ_WKT2_2015,
                        :PJ_WKT2_2015_SIMPLIFIED,
-                       :PJ_WKT2_2018,
-                       :PJ_WKT2_2018_SIMPLIFIED,
+                       :PJ_WKT2_2019,
+                       :PJ_WKT2_2018, # Deprecated alias for PJ_WKT2_2019
+                       :PJ_WKT2_2018_SIMPLIFIED, # Deprecated alias for PJ_WKT2_2019
                        :PJ_WKT1_GDAL,
                        :PJ_WKT1_ESRI)
 

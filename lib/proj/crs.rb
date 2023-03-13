@@ -497,6 +497,11 @@ module Proj
       result == 1 ? true : false
     end
 
+    # Return a copy of the CRS with its name changed
+    #
+    # @param name [String] The new name of the CRS
+    #
+    # @return [CRS]
     def alter_name(name)
       ptr = Api.proj_alter_name(self.context, self, name)
 
@@ -504,9 +509,15 @@ module Proj
         Error.check_object(self)
       end
 
-      self.create_object(ptr, context)
+      self.class.create_object(ptr, context)
     end
 
+    # Return a copy of the CRS with its identifier changed
+    #
+    # @param name [String] The new authority name of the CRS
+    # @param code [String] The new code of the CRS
+    #
+    # @return [CRS]
     def alter_id(auth_name, code)
       ptr = Api.proj_alter_id(self.context, self, auth_name, code)
 
@@ -514,9 +525,19 @@ module Proj
         Error.check_object(self)
       end
 
-      self.create_object(ptr, context)
+      self.class.create_object(ptr, context)
     end
 
+    # Return a copy of the CRS with its geodetic CRS changed.
+    #  * If the CRS is a GeodeticCRS then a clone of new_geod_crs is returned.
+    #  * If the CRS is a ProjectedCRS, then it replaces the base CRS with new_geod_crs.
+    #  * If the CRS is a CompoundCRS, then it replaces the GeodeticCRS part of the horizontal
+    #      CRS with new_geod_crs.
+    #  * In other cases, it returns a clone of obj.
+    #
+    # @param new_geod_crs [CRS] A GeodeticCRS
+    #
+    # @return [CRS]
     def alter_geodetic_crs(new_geod_crs)
       ptr = Api.proj_crs_alter_geodetic_crs(self.context, self, new_geod_crs)
 
@@ -524,67 +545,128 @@ module Proj
         Error.check_object(self)
       end
 
-      self.create_object(ptr, context)
+      self.class.create_object(ptr, context)
     end
 
-    def alter_cs_angular_unit(angular_units:, angular_units_conv:, unit_auth_name:, unit_code:)
+    # Return a copy of the CRS with its angular units changed
+    #
+    # @param angular_units [String] Name of the angular units. Or nil for degrees.
+    # @param angular_units_conv [Double] Conversion factor from the angular unit to radians. Default is 0 if angular_units is nil
+    # @param unit_auth_name [String]  Unit authority name. Defaults to nil.
+    # @param unit_code [String] Unit code. Defaults to nil.
+    #
+    # @return [CRS]
+    def alter_cs_angular_unit(angular_units: nil, angular_units_conv: 0, unit_auth_name: nil, unit_code: nil)
       ptr = Api.proj_crs_alter_cs_angular_unit(self.context, self, angular_units, angular_units_conv, unit_auth_name, unit_code)
 
       if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(ptr, context)
+      self.class.create_object(ptr, context)
     end
 
-    def alter_cs_linear_unit(linear_units:, linear_units_conv:, unit_auth_name:, unit_code:)
+    # Return a copy of the CRS with its linear units changed. The CRS
+    # must be or contain a ProjectedCRS, VerticalCRS or a GeocentricCRS.
+    #
+    # @param linear_units [String] Name of the linear units. Or nil for meters.
+    # @param linear_units_conv [Double] Conversion factor from the linear unit to meters. Default is 0 if linear_units is nil
+    # @param unit_auth_name [String]  Unit authority name. Defaults to nil.
+    # @param unit_code [String] Unit code. Defaults to nil.
+    #
+    # @return [CRS]
+    def alter_cs_linear_unit(linear_units: nil, linear_units_conv: 0, unit_auth_name: nil, unit_code: nil)
       ptr = Api.proj_crs_alter_cs_linear_unit(self.context, self, linear_units, linear_units_conv, unit_auth_name, unit_code)
 
       if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(ptr, context)
+      self.class.create_object(ptr, context)
     end
 
-    def alter_parameters_linear_unit(linear_units:, linear_units_conv:, unit_auth_name:, unit_code:, convert_to_new_unit:)
-      ptr = Api.proj_crs_alter_parameters_linear_unit(self.context, self, linear_units, linear_units_conv, unit_auth_name, unit_code, convert_to_new_unit)
+    # Return a copy of the CRS with its linear units changed. The CRS
+    # must be or contain a ProjectedCRS, VerticalCRS or a GeocentricCRS.
+    #
+    # @param linear_units [String] Name of the linear units. Or nil for meters.
+    # @param linear_units_conv [Double] Conversion factor from the linear unit to meters. Default is 0 if linear_units is nil
+    # @param unit_auth_name [String]  Unit authority name. Defaults to nil.
+    # @param unit_code [String] Unit code. Defaults to nil.
+    # @param convert_to_new_unit [Boolean] If true then existing values will be converted from
+    #  their current unit to the new unit. If false then their values will be left unchanged
+    #  and the unit overridden (so the resulting CRS will not be equivalent to the
+    #  original one for reprojection purposes).
+    #
+    # @return [CRS]
+    def alter_parameters_linear_unit(linear_units: nil, linear_units_conv: 0, unit_auth_name: nil, unit_code: nil, convert_to_new_unit:)
+      ptr = Api.proj_crs_alter_parameters_linear_unit(self.context, self, linear_units, linear_units_conv,
+                                                      unit_auth_name, unit_code,
+                                                      convert_to_new_unit ? 1 : 0)
 
       if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(ptr, context)
+      self.class.create_object(ptr, context)
     end
 
-    def promote_to_3d(crs_3d_name:, crs_2d:)
-      ptr = Api.proj_crs_promote_to_3D(self.context, crs_3d_name, crs_2d)
+    # Create a 3D CRS from this 2D CRS. The new axis will be ellipsoidal height,
+    # oriented upwards, and with metre units.
+    #
+    # @param name [String] CRS name. If nil then the name of this CRS will be used.
+    #
+    # @return [CRS]
+    def promote_to_3d(name: nil)
+      ptr = Api.proj_crs_promote_to_3D(self.context, name, self)
 
       if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(ptr, context)
+      self.class.create_object(ptr, context)
     end
 
-    def projected_3d_crs_from_2d(crs_name:, projected_2d_crs:, geog_3d_crs:)
-      ptr = Api.proj_crs_create_projected_3D_crs_from_2D(self.context, crs_name, projected_2d_crs, geog_3d_crs)
+    # Create a 2D CRS from an this 3D CRS.
+    #
+    # @param name [String] CRS name. If nil then the name of this CRS will be used.
+    #
+    # @return [CRS]
+    def demote_to_2d(name: nil)
+      ptr = Api.proj_crs_demote_to_2D(self.context, name, self)
 
       if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(ptr, context)
+      self.class.create_object(ptr, context)
     end
 
-    def demote_to_2d(crs_2d_name:, crs_3d:)
-      ptr = Api.proj_crs_demote_to_2D(self.context, crs_2d_name, crs_3d)
+    # Create a projected 3D CRS from this projected 2D CRS.
+    # 
+    # This CRS's name is replaced by the name parameter and its base geographic CRS
+    # is replaced by geog_3D_crs. The vertical axis of geog_3D_crs (ellipsoidal height)
+    # will be added as the 3rd axis of the resulting projected 3D CRS.
+    #
+    # Normally, the passed geog_3D_crs should be the 3D counterpart of the original
+    # 2D base geographic CRS of projected_2D_crs, but such no check is done.
+    # 
+    # It is also possible to invoke this function with a nil geog_3D_crs. In this case
+    # the existing base geographic of this CRS will be automatically promoted to 3D by
+    # assuming a 3rd axis being an ellipsoidal height, oriented upwards, and with metre units.
+    # This is equivalent to using Crs#promote_to_3d
+    #
+    # @param name [String] CRS name. If nil then the name of this CRS will be used.
+    # @param geog_3D_crs [CRS] Base geographic 3D CRS for the new CRS. Defaults to nil.
+    #
+    # @return [CRS]
+    def projected_3d(name: nil, geog_3d_crs: nil)
+      ptr = Api.proj_crs_create_projected_3D_crs_from_2D(self.context, name, self, geog_3d_crs)
 
       if ptr.null?
         Error.check_object(self)
       end
 
-      self.create_object(ptr, context)
+      self.class.create_object(ptr, context)
     end
   end
 end
