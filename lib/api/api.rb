@@ -28,12 +28,7 @@ module Proj
                    self.linux_search_paths
                end
 
-      # Remove any paths that don't exist
-      result = result.find_all do |path|
-        File.exist?(path)
-      end
-
-      # Try libproj as catch all
+       # Try libproj as catch all
       result << 'libproj'
       result
     end
@@ -51,25 +46,10 @@ module Proj
     end
 
     def self.macos_search_paths
-      # Mac HomeBrew
-      paths1 = self.library_versions.map do |version|
-        "/usr/local/lib/libproj.#{version}.dylib"
+      # On MacOS only support HomeBrew since the MacPort is unsupported and ancient (5.2).
+      self.library_versions.map do |version|
+        "libproj.#{version}.dylib"
       end
-      paths1 << "/usr/local/lib/libproj.dylib"
-
-      # Mac Ports
-      paths2 = self.library_versions.map do |version|
-        case version
-          when 15..17
-            "/opt/local/lib/proj6/lib/libproj.#{version}.dylib"
-          when 13..14
-            "/opt/local/lib/proj5/lib/libproj.#{version}.dylib"
-          when 11..12
-            "/opt/local/lib/proj49/lib/libproj.#{version}.dylib"
-        end
-      end
-
-      paths1.compact + paths2.compact
     end
 
     def self.load_library
@@ -79,7 +59,7 @@ module Proj
         ffi_lib self.search_paths
       end
 
-      library = ffi_libraries.first
+      ffi_libraries.first
     end
 
     def self.load_api
@@ -93,6 +73,7 @@ module Proj
                   '7.0.0', '7.1.0', '7.2.0',
                   '8.0.0', '8.1.0', '8.2.0',
                   '9.1.0', '9.2.0']
+
       versions.each do |version|
         api_version = Gem::Version.new(version)
 
