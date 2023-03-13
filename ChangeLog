@@ -1,3 +1,9 @@
+4.1.0 - March 12, 2023
+======================
+* Fix YARD warnings
+* Fix YARD types to match RBS types
+* Don't use type as attribute or method name to avoid conflicts with RBS
+
 4.0.0 - March 12, 2023
 ======================
 * Support Proj 9
