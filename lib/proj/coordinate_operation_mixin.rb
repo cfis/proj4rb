@@ -245,7 +245,7 @@ module Proj
     # @param iterations [Integer] The number of roundtrip transformations
     # @param coordinate [Coordinate] The input coordinate
     #
-    # @return [Double] The euclidean distance of the starting point coordinate and the last coordinate after n iterations back and forth.
+    # @return [Float] The euclidean distance of the starting point coordinate and the last coordinate after n iterations back and forth.
     def roundtrip(direction, iterations, coordinate)
       Api.proj_roundtrip(self, direction, iterations, coordinate.pj_coord)
     end
@@ -254,7 +254,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_normalize_for_visualization
     #
-    # @return [CoordinateOperation] A new CoordinateOperation or nil in case of error
+    # @return [CoordinateOperationMixin] A new CoordinateOperation or nil in case of error
     def normalize_for_visualization
       ptr = Api.proj_normalize_for_visualization(self.context, self)
       self.class.create_object(ptr, self.context)
@@ -264,7 +264,7 @@ module Proj
     #
     # @see }https://proj.org/development/reference/functions.html#c.proj_trans_get_last_used_operation proj_trans_get_last_used_operation
     #
-    # @return [CoordinateOperation] The last used operation
+    # @return [CoordinateOperationMixin] The last used operation
     def last_used_operation
       ptr = Api.proj_trans_get_last_used_operation(self)
       self.class.create_object(ptr, self.context)
@@ -284,7 +284,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_accuracy
     #
-    # @return [Double] The accuracy, or a negative value if unknown or in case of error.
+    # @return [Float] The accuracy, or a negative value if unknown or in case of error.
     def accuracy
       Api.proj_coordoperation_get_accuracy(self.context, self)
     end
@@ -348,7 +348,7 @@ module Proj
     #
     # @param error_if_incompatible [Boolean] If true an exception is thrown if the coordinate operation is not compatible with a WKT1 TOWGS84 representation
     #
-    # @return [Array<Double>] Array of 7 numbers that represent translation, rotation and scale parameters.
+    # @return [Array<Float>]] Array of 7 numbers that represent translation, rotation and scale parameters.
     #                          Rotation and scale difference terms might be zero if the transformation only includes translation parameters
     def to_wgs84(error_if_incompatible = false)
       parameter_count = 7

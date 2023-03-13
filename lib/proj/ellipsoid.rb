@@ -43,7 +43,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters
     #
-    # @return [Double]
+    # @return [Float]
     def semi_major_axis
       self.parameters[:semi_major_axis]
     end
@@ -52,7 +52,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters
     #
-    # @return [Double]
+    # @return [Float]
     def semi_minor_axis
       self.parameters[:semi_minor_axis]
     end
@@ -70,7 +70,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_ellipsoid_get_parameters
     #
-    # @return [Double]
+    # @return [Float]
     def inverse_flattening
       self.parameters[:inverse_flattening]
     end

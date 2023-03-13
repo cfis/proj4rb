@@ -4,6 +4,7 @@ module Proj
     typedef :pointer, :PROJ_FILE_HANDLE
     typedef :pointer, :USER_DATA
 
+    # @return [Symbol]
     PROJ_OPEN_ACCESS = enum(:PROJ_OPEN_ACCESS_READ_ONLY, # Read-only access. Equivalent to "rb"
                             :PROJ_OPEN_ACCESS_READ_UPDATE, # Read-update access. File should be created if not existing. Equivalent to "r+b
                             :PROJ_OPEN_ACCESS_CREATE) # Create access. File should be truncated to 0-byte if already existing. Equivalent to "w+b"

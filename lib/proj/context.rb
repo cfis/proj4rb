@@ -23,6 +23,7 @@ module Proj
       Thread.current[:proj_context] ||= Context.new
     end
 
+    # @!visibility private
     def self.finalize(pointer)
       proc do
         Api.proj_context_destroy(pointer)

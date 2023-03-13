@@ -2,6 +2,7 @@ module Proj
   class Session
     attr_reader :context
 
+    # @!visibility private
     def self.finalize(context, pointer)
       proc do
         Api.proj_insert_object_session_destroy(context, pointer)
@@ -24,7 +25,7 @@ module Proj
     # @param authority [String] - Authority name into which the object will be inserted. Must not be nil
     # @param code [Integer] - Code with which the object will be inserted.Must not be nil
     # @param numeric_codes [Boolean] - Whether intermediate objects that can be created should use numeric codes (true), or may be alphanumeric (false)
-    # @param allowed_authorities  [Array[String]] - Authorities to which intermediate objects are allowed to refer to. "authority" will be implicitly added to it.
+    # @param allowed_authorities [Array<String>] - Authorities to which intermediate objects are allowed to refer to. "authority" will be implicitly added to it.
     #
     # @return [Strings] - List of insert statements
     def get_insert_statements(object, authority, code, numeric_codes = false, allowed_authorities = nil)

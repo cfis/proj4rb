@@ -3,6 +3,7 @@ module Proj
   class OperationFactoryContext
     attr_reader :context
 
+    # @!visibility private
     def self.finalize(pointer)
       proc do
         Api.proj_operation_factory_context_destroy(pointer)
@@ -44,7 +45,7 @@ module Proj
 
     # Set the desired accuracy of the resulting coordinate transformations.
     #
-    # @param value [double] - Accuracy in meters. Set to 0 to disable the filter.
+    # @param value [Float] - Accuracy in meters. Set to 0 to disable the filter.
     def desired_accuracy=(value)
       Api.proj_operation_factory_context_set_desired_accuracy(self.context, self, value)
     end

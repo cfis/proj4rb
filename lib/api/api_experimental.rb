@@ -1,17 +1,21 @@
 module Proj
   module Api
     if Api::PROJ_VERSION >= Gem::Version.new('6.0.0')
+
+      # @return [Symbol]
       PJ_UNIT_TYPE = enum(:PJ_UT_ANGULAR,
                           :PJ_UT_LINEAR,
                           :PJ_UT_SCALE,
                           :PJ_UT_TIME)
 
+      # @return [Symbol]
       PJ_CARTESIAN_CS_2D_TYPE = enum(:PJ_CART2D_EASTING_NORTHING,
                                      :PJ_CART2D_NORTHING_EASTING,
                                      :PJ_CART2D_NORTH_POLE_EASTING_SOUTH_NORTHING_SOUTH,
                                      :PJ_CART2D_SOUTH_POLE_EASTING_NORTH_NORTHING_NORTH,
                                      :PJ_CART2D_WESTING_SOUTHING)
 
+      # @return [Symbol]
       PJ_ELLIPSOIDAL_CS_2D_TYPE = enum(:PJ_ELLPS2D_LONGITUDE_LATITUDE,
                                        :PJ_ELLPS2D_LATITUDE_LONGITUDE)
 
@@ -156,6 +160,7 @@ module Proj
     end
 
     if Api::PROJ_VERSION >= Gem::Version.new('6.3.0')
+      # @return [Symbol]
       PJ_ELLIPSOIDAL_CS_3D_TYPE = enum(:PJ_ELLPS3D_LONGITUDE_LATITUDE_HEIGHT,
                                        :PJ_ELLPS3D_LATITUDE_LONGITUDE_HEIGHT)
 

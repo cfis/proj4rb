@@ -40,7 +40,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters
     #
-    # @return [Double]
+    # @return [Float]
     def longitude
       self.parameters[:longitude]
     end
@@ -49,7 +49,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_prime_meridian_get_parameters
     #
-    # @return [Double]
+    # @return [Float]
     def unit_conv_factor
       self.parameters[:unit_conv_factor]
     end

@@ -1,6 +1,7 @@
 # encoding: UTF-8
 module Proj
   class PjObjects
+    # @!visibility private
     def self.finalize(pointer)
       proc do
         Api.proj_list_destroy(pointer)

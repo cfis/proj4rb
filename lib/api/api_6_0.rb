@@ -1,11 +1,13 @@
 module Proj
   module Api
     # Comparison criteria
+    # @return [Symbol]
     PJ_COMPARISON_CRITERION = enum(:PJ_COMP_STRICT, # All properties are identical
                                    :PJ_COMP_EQUIVALENT, # The objects are equivalent for the purpose of coordinate operations. They can differ by the name of their objects, identifiers, other metadata. Parameters may be expressed in different units, provided that the value is (with some tolerance) the same once expressed in a common unit.
                                    :PJ_COMP_EQUIVALENT_EXCEPT_AXIS_ORDER_GEOGCRS) # Same as EQUIVALENT, relaxed with an exception that the axis order of the base CRS of a DerivedCRS/ProjectedCRS or the axis order of a GeographicCRS is ignored. Only to be used with DerivedCRS/ProjectedCRS/GeographicCRS
 
     #Guessed WKT "dialect"
+    # @return [Symbol]
     PJ_GUESSED_WKT_DIALECT = enum(:PJ_GUESSED_WKT2_2019,
                                   :PJ_GUESSED_WKT2_2018,
                                   :PJ_GUESSED_WKT2_2015,

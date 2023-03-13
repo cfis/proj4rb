@@ -3,10 +3,10 @@ module Proj
     attr_reader :id, :description
 
     def self.list
-      pointer_to_array = FFI::Pointer.new(Api::PJ_OPERATIONS, Api.proj_list_operations)
+      pointer_to_array = FFI::Pointer.new(Api::PJ_LIST, Api.proj_list_operations)
       result = Array.new
       0.step do |i|
-        operation_info = Api::PJ_OPERATIONS.new(pointer_to_array[i])
+        operation_info = Api::PJ_LIST.new(pointer_to_array[i])
         break result if operation_info[:id].nil?
         id = operation_info[:id]
         description = operation_info[:descr].read_pointer.read_string.force_encoding('UTF-8')

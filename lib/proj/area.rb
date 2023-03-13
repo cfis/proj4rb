@@ -6,6 +6,7 @@ module Proj
   class Area
     attr_reader :name, :west_lon_degree, :south_lat_degree, :east_lon_degree, :north_lat_degree
 
+    # @!visibility private
     def self.finalize(pointer)
       proc do
         Api.proj_area_destroy(pointer)

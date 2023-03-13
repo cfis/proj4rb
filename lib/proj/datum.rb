@@ -4,7 +4,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_dynamic_datum_get_frame_reference_epoch
     #
-    # @return [Double] The frame reference epoch as decimal year, or -1 in case of error.
+    # @return [Float] The frame reference epoch as decimal year, or -1 in case of error.
     def frame_reference_epoch
       Api.proj_dynamic_datum_get_frame_reference_epoch(self.context, self)
     end

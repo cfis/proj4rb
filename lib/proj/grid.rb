@@ -85,7 +85,7 @@ module Proj
     # @see https://proj.org/development/reference/functions.html#c.proj_download_file
     #
     # @param ignore_ttl [Boolean] If set to FALSE, PROJ will only check the recentness of an already downloaded file, if the delay between the last time it has been verified and the current time exceeds the TTL setting. This can save network accesses. If set to TRUE, PROJ will unconditionally check from the server the recentness of the file.
-    # @yieldparam percent [Double] The progress downloading the file in the range of 0 to 1
+    # @yieldparam percent [Float] The progress downloading the file in the range of 0 to 1
     #
     # @return [Boolean] True if the download was successful or unneeded. Otherwise false
     def download(ignore_ttl = false)

@@ -1,6 +1,7 @@
 # encoding: UTF-8
 module Proj
   class Parameters
+    # @!visibility private
     def self.finalize(pointer)
       proc do
         Api.proj_get_crs_list_parameters_destroy(pointer)

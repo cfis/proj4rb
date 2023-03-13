@@ -19,7 +19,7 @@ module Proj
     # @param method_auth_name [String] Method authority name. Default is nil.
     # @param method_code [String] Method code. Default is nil.
     # @param params [Array<Parameter>] Parameter descriptions
-    # @param accuracy [Double] Accuracy of the transformation in meters. A negative value means unknown.
+    # @param accuracy [Float] Accuracy of the transformation in meters. A negative value means unknown.
     #
     # @return [Transformation]
     def self.create(context, name: nil, auth_name: nil, code: nil,
@@ -58,8 +58,8 @@ module Proj
     # @see https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs_from_pj
     # @see  https://proj.org/development/reference/functions.html#c.proj_create_crs_to_crs proj_create_crs_to_crs
     #
-    # @param source [Crs | String] The source Crs. See the Crs documentation for the string format
-    # @param target [Crs | String] The target Crs. See the Crs documentation for the string format
+    # @param source [Crs, String] The source Crs. See the Crs documentation for the string format
+    # @param target [Crs, String] The target Crs. See the Crs documentation for the string format
     # @param area [Area] If an area is specified a more accurate transformation between two given systems can be chosen
     # @param context [Context]
     # @param authority [String] Restricts the authority of coordinate operations looked up in the database

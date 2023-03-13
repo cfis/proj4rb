@@ -40,6 +40,8 @@ module Proj
   # Returns information about the Proj library
   #
   # @see https://proj.org/development/reference/functions.html#c.proj_info proj_info
+  #
+  # @return [PJ_INFO]
   def self.info
     Api.proj_info
   end
@@ -47,6 +49,8 @@ module Proj
   # Returns the Proj version
   #
   # @see https://proj.org/development/reference/functions.html#c.proj_info proj_info
+  #
+  # @return [String]
   def self.version
     self.info[:version]
   end
@@ -55,7 +59,7 @@ module Proj
   #
   # @see https://proj.org/development/reference/functions.html#c.proj_info proj_info
   #
-  # @return [Array<string>] List of search paths
+  # @return [Array<String>] List of search paths
   def self.search_paths
     self.info[:searchpath].split(";")
   end
@@ -75,9 +79,9 @@ module Proj
   #
   # see https://proj.org/development/reference/functions.html#c.proj_torad proj_torad
   #
-  # @param value [Double] Value in degrees to convert
+  # @param value [Float] Value in degrees to convert
   #
-  # @return [Double]
+  # @return [Float]
   def self.degrees_to_radians(value)
     Api.proj_torad(value)
   end
@@ -86,9 +90,9 @@ module Proj
   #
   # see https://proj.org/development/reference/functions.html#c.proj_todeg proj_todeg
   #
-  # @param value [Double] Value in radians to convert
+  # @param value [Float] Value in radians to convert
   #
-  # @return [Double]
+  # @return [Float]
   def self.radians_to_degrees(value)
     Api.proj_todeg(value)
   end
@@ -99,7 +103,7 @@ module Proj
   #
   # @param value [String] Value to be converted to radians
   #
-  # @return [Double]
+  # @return [Float]
   def self.degrees_minutes_seconds_to_radians(value)
     ptr = FFI::MemoryPointer.new(:string)
     Api.proj_dmstor(value, ptr)
@@ -110,7 +114,7 @@ module Proj
   # @see https://proj.org/development/reference/functions.html#c.proj_rtodms proj_rtodms
   # @see https://proj.org/development/reference/functions.html#c.proj_rtodms2 proj_rtodms2
   #
-  # @param value [Double] Value to be converted in radians
+  # @param value [Float] Value to be converted in radians
   # @param positive [String] Character denoting positive direction, typically 'N' or 'E'. Default 'N'
   # @param negative [String] Character denoting negative direction, typically 'S' or 'W'. Default 'S'
   #

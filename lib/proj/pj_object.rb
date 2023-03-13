@@ -310,7 +310,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_pj_info
     #
-    # @return [Double]
+    # @return [Float]
     def accuracy
       self.info[:accuracy]
     end
@@ -468,7 +468,7 @@ module Proj
     # @param coord1 [Coordinate] Coordinate of first point. Must be lat/long in radians
     # @param coord2 [Coordinate] Coordinate of second point. Must be lat/long in radians
     #
-    # @return [Double] Distance between the coordinates in meters
+    # @return [Float] Distance between the coordinates in meters
     def lp_distance(coord1, coord2)
       Api.proj_lp_dist(self, coord1, coord2)
     end
@@ -485,7 +485,7 @@ module Proj
     # @param coord1 [Coordinate] Coordinate of first point. Must be lat/long in radians
     # @param coord2 [Coordinate] Coordinate of second point. Must be lat/long in radians
     #
-    # @return [Double] Distance between the coordinates in meters
+    # @return [Float] Distance between the coordinates in meters
     def lpz_distance(coord1, coord2)
       Api.proj_lpz_dist(self, coord1, coord2)
     end
@@ -497,7 +497,7 @@ module Proj
     # @param coord1 [Coordinate] Coordinate of first point
     # @param coord2 [Coordinate] Coordinate of second point
     #
-    # @return [Double] Distance between the coordinates in meters
+    # @return [Float] Distance between the coordinates in meters
     def xy_distance(coord1, coord2)
       Api.proj_xy_dist(coord1, coord2)
     end
@@ -510,7 +510,7 @@ module Proj
     # @param coord1 [Coordinate] Coordinate of first point
     # @param coord2 [Coordinate] Coordinate of second point
     #
-    # @return [Double] Distance between the coordinates in meters
+    # @return [Float] Distance between the coordinates in meters
     def xyz_distance(coord1, coord2)
       Api.proj_xyz_dist(coord1, coord2)
     end

@@ -28,7 +28,6 @@ module Proj
              :PJ,    :pointer,  # projection entry point
              :descr, :pointer   # description text
     end
-    PJ_OPERATIONS = PJ_LIST
 
     class PJ_ELLPS < FFI::Struct
       layout :id, :string, # ellipse keyword name
@@ -197,6 +196,7 @@ module Proj
              :lastupdate, [:string, 16] # Date of last update in YYYY-MM-DD format
     end
 
+    # @return [Symbol]
     PJ_LOG_LEVEL = enum(:PJ_LOG_NONE , 0,
                         :PJ_LOG_ERROR, 1,
                         :PJ_LOG_DEBUG, 2,
@@ -206,11 +206,13 @@ module Proj
                         :PJ_LOG_DEBUG_MINOR, 3) # for proj_api.h compatibility
 
     # Apply transformation to observation - in forward or inverse direction
+    # @return [Symbol]
     PJ_DIRECTION = enum(:PJ_FWD, 1,   # Forward
                         :PJ_IDENT, 0, # Do nothing
                         :PJ_INV, -1)  # Inverse
 
     # Object category
+    # @return [Symbol]
     PJ_CATEGORY = enum(:PJ_CATEGORY_ELLIPSOID,
                        :PJ_CATEGORY_PRIME_MERIDIAN,
                        :PJ_CATEGORY_DATUM,
@@ -218,6 +220,7 @@ module Proj
                        :PJ_CATEGORY_COORDINATE_OPERATION,
                        :PJ_CATEGORY_DATUM_ENSEMBLE)
 
+    # @return [Symbol]
     PJ_TYPE = enum(:PJ_TYPE_UNKNOWN,
                    :PJ_TYPE_ELLIPSOID,
                    :PJ_TYPE_PRIME_MERIDIAN,
@@ -256,9 +259,11 @@ module Proj
 
                    :PJ_TYPE_COORDINATE_METADATA)
 
+    # @return [Symbol]
     PJ_PROJ_STRING_TYPE = enum(:PJ_PROJ_5,
                                :PJ_PROJ_4)
 
+    # @return [Symbol]
     PJ_COORDINATE_SYSTEM_TYPE = enum(:PJ_CS_TYPE_UNKNOWN,
                                      :PJ_CS_TYPE_CARTESIAN,
                                      :PJ_CS_TYPE_ELLIPSOIDAL,
@@ -270,6 +275,7 @@ module Proj
                                      :PJ_CS_TYPE_TEMPORALCOUNT,
                                      :PJ_CS_TYPE_TEMPORALMEASURE)
 
+    # @return [Symbol]
     PJ_WKT_TYPE = enum(:PJ_WKT2_2015,
                        :PJ_WKT2_2015_SIMPLIFIED,
                        :PJ_WKT2_2019,

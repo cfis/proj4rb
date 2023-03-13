@@ -5,6 +5,9 @@ module Proj
   module Api
     extend FFI::Library
 
+    # List of knows PROJ library versions
+    #
+    # @return [Array<String>]
     def self.library_versions
       ["25", # 9.2
        "9_1", # 9.1
@@ -18,6 +21,9 @@ module Proj
        "11"] # 4.9
     end
 
+    # Search paths to use when looking for PROJ library
+    #
+    # @return [Array<String>]
     def self.search_paths
       result = case RbConfig::CONFIG['host_os']
                  when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
@@ -33,18 +39,27 @@ module Proj
       result
     end
 
+    # Windows search paths for PROJ library
+    #
+    # @return [Array<String>]
     def self.windows_search_paths
       self.library_versions.map do |version|
         ["libproj-#{version}", "libproj_#{version}"]
       end.flatten
     end
 
+    # Linux search paths for PROJ library
+    #
+    # @return [Array<String>]
     def self.linux_search_paths
       self.library_versions.map do |version|
         "libproj.so.#{version}"
       end
     end
 
+    # MacOS search paths for PROJ library
+    #
+    # @return [Array<String>]
     def self.macos_search_paths
       # On MacOS only support HomeBrew since the MacPort is unsupported and ancient (5.2).
       self.library_versions.map do |version|
@@ -52,6 +67,9 @@ module Proj
       end
     end
 
+    # Load PROJ library
+    #
+    # @return [FFI::DynamicLibrary]
     def self.load_library
       if ENV["PROJ_LIB_PATH"]
         ffi_lib ENV["PROJ_LIB_PATH"]
@@ -62,6 +80,9 @@ module Proj
       ffi_libraries.first
     end
 
+    # Load API files based on PROJ version
+    #
+    # @return [nil]
     def self.load_api
       # First load the base 5.0 api so we can determine the Proj Version
       require_relative './api_5_0'

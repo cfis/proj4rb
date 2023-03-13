@@ -84,12 +84,12 @@ module Proj
     # @see https://proj.org/development/reference/functions.html#c.proj_get_codes_from_database
     #
     # @param auth_name [String] Authority name. Must not be nil.
-    # @param type [PJ_TYPE] Object type.
+    # @param pj_type [PJ_TYPE] Proj Object type.
     # @param allow_deprecated [Boolean] Specifies if deprecated objects should be returned. Default is false.
     #
     # @return [Strings] Returned authority codes
-    def codes(auth_name, type, allow_deprecated = false)
-      ptr = Api.proj_get_codes_from_database(self.context, auth_name, type, allow_deprecated ? 1 : 0)
+    def codes(auth_name, pj_type, allow_deprecated = false)
+      ptr = Api.proj_get_codes_from_database(self.context, auth_name, pj_type, allow_deprecated ? 1 : 0)
       Strings.new(ptr)
     end
 
