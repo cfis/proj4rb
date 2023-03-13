@@ -8,9 +8,9 @@ class CoordinateSystemTest < AbstractTest
     crs = Proj::Crs.new('EPSG:4326', context)
     cs = crs.coordinate_system
     axes = cs.axes
-    cs = Proj::CoordinateSystem.create(cs.type, axes, context)
+    cs = Proj::CoordinateSystem.create(cs.cs_type, axes, context)
     assert_equal(2, cs.axis_count)
-    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.type)
+    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.cs_type)
     assert_equal(:PJ_TYPE_UNKNOWN, cs.proj_type)
     refute(cs.auth_name)
     refute(cs.id_code)
@@ -20,7 +20,7 @@ class CoordinateSystemTest < AbstractTest
     context = Proj::Context.new
     cs = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LONGITUDE_LATITUDE, context)
     assert_equal(2, cs.axis_count)
-    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.type)
+    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.cs_type)
     assert_equal(:PJ_TYPE_UNKNOWN, cs.proj_type)
     refute(cs.auth_name)
     refute(cs.id_code)
@@ -30,7 +30,7 @@ class CoordinateSystemTest < AbstractTest
     context = Proj::Context.new
     cs = Proj::CoordinateSystem.create_ellipsoidal_3d(:PJ_ELLPS3D_LATITUDE_LONGITUDE_HEIGHT, context)
     assert_equal(3, cs.axis_count)
-    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.type)
+    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.cs_type)
     assert_equal(:PJ_TYPE_UNKNOWN, cs.proj_type)
 
     axis = cs.axis_info(0)
@@ -54,7 +54,7 @@ class CoordinateSystemTest < AbstractTest
                                                       horizontal_angular_unit_name: "foo", horizontal_angular_unit_conv_factor: 0.5,
                                                       vertical_linear_unit_name: "bar", vertical_linear_unit_conv_factor: 0.6)
     assert_equal(3, cs.axis_count)
-    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.type)
+    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.cs_type)
     assert_equal(:PJ_TYPE_UNKNOWN, cs.proj_type)
 
     axis = cs.axis_info(0)
@@ -83,7 +83,7 @@ class CoordinateSystemTest < AbstractTest
     context = Proj::Context.new
     coordinate_system = Proj::CoordinateSystem.create_cartesian_2d(context, :PJ_CART2D_EASTING_NORTHING)
     assert_equal(2, coordinate_system.axis_count)
-    assert_equal(:PJ_CS_TYPE_CARTESIAN, coordinate_system.type)
+    assert_equal(:PJ_CS_TYPE_CARTESIAN, coordinate_system.cs_type)
     assert_equal(:PJ_TYPE_UNKNOWN, coordinate_system.proj_type)
   end
 
@@ -91,7 +91,7 @@ class CoordinateSystemTest < AbstractTest
     crs = Proj::Crs.new('EPSG:4326')
     cs = crs.coordinate_system
     refute(cs.name)
-    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.type)
+    assert_equal(:PJ_CS_TYPE_ELLIPSOIDAL, cs.cs_type)
     assert_equal(:PJ_TYPE_UNKNOWN, cs.proj_type)
     assert_equal("EPSG", cs.auth_name)
     assert_equal("6422", cs.id_code)

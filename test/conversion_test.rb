@@ -326,9 +326,9 @@ class ConversionTest < AbstractTest
     context = Proj::Context.new
     coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LONGITUDE_LATITUDE, context)
 
-    crs = Proj::Crs.create_geographic(context, name: "WGS 84", datum_name: "World Geodetic System 1984", ellps_name: "WGS 84",
+    crs = Proj::Crs.create_geographic(context, name: "WGS 84", datum_name: "World Geodetic System 1984", ellipsoid_name: "WGS 84",
                                       semi_major_meter: 6378137, inv_flattening: 298.257223563,
-                                      prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0, pm_angular_units: "Degree", pm_units_conv: 0.0174532925199433,
+                                      prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0, pm_angular_units: "Degree", pm_angular_units_conv: 0.0174532925199433,
                                       coordinate_system: coordinate_system)
 
     mercator = Proj::Projection.mercator_variant_a(context, center_lat: 0, center_long: 1,

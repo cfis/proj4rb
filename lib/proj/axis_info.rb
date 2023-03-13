@@ -38,7 +38,7 @@ module Proj
     def unit_type
       database = Database.new(Context.default)
       unit = database.unit(self.unit_auth_name, self.unit_code)
-      unit.type
+      unit.unit_type
     end
   end
 end

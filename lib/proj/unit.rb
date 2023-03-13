@@ -79,7 +79,7 @@ module Proj
       self.code == other.code
     end
 
-    def type
+    def unit_type
       case self.category
       when "linear"
         :PJ_UT_LINEAR

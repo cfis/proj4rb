@@ -108,7 +108,7 @@ class DatabaseTest < AbstractTest
     assert_equal("EPSG", crs_info.auth_name)
     assert_equal("2000", crs_info.code)
     assert_equal("Anguilla 1957 / British West Indies Grid", crs_info.name)
-    assert_equal(:PJ_TYPE_PROJECTED_CRS, crs_info.type)
+    assert_equal(:PJ_TYPE_PROJECTED_CRS, crs_info.crs_type)
     refute(crs_info.deprecated)
     assert(crs_info.bbox_valid)
     assert_equal(-63.22, crs_info.west_lon_degree)

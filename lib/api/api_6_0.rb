@@ -65,9 +65,9 @@ module Proj
                 :type, PJ_TYPE, # Object type
                 :deprecated, :int, # Whether the object is deprecated
                 :bbox_valid, :int, # Whether bbox values in degrees are valid
-                :west_lon_degree, :double,  # Western-most longitude of the area of use, in degrees.
+                :west_lon_degree, :double, # Western-most longitude of the area of use, in degrees.
                 :south_lat_degree, :double, # Southern-most latitude of the area of use, in degrees.
-                :east_lon_degree, :double,  # Eastern-most longitude of the area of use, in degrees.
+                :east_lon_degree, :double, # Eastern-most longitude of the area of use, in degrees.
                 :north_lat_degree, :double, # Northern-most latitude of the area of use, in degrees.
                 :area_name, :string, # Name of the area of use
                 :projection_method_name, :string] # Name of the projection method for a projected CRS. Might be NULL even for projected CRS in some cases.
