@@ -7,7 +7,6 @@ module Proj
   # do not exert a change in reference frame while {Transformation transformations } do.
   class Conversion < PjObject
     include CoordinateOperationMixin
-    extend Projections
 
     # Instantiate a Conversion
 
