@@ -920,7 +920,15 @@ class CrsTest < AbstractTest
   def test_query_geodetic_from_datum
     context = Proj::Context.new
     crses = Proj::Crs.query_geodetic_from_datum(context, datum_auth_name: "EPSG", datum_code: "6326")
-    assert_equal(12, crses.size)
+
+    expected = case
+               when proj9?
+                 12
+               else
+                 11
+               end
+
+    assert_equal(expected, crses.size)
 
     crses = Proj::Crs.query_geodetic_from_datum(context, auth_name: "EPSG",
                                                 datum_auth_name: "EPSG", datum_code: "6326",
