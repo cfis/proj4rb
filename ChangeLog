@@ -7,6 +7,7 @@
  Datum, DatumEnsemble, CoordinateOperation and Parameters
 * Greatly improved documentation (https://rubydoc.info/github/cfis/proj4rb)
 * Remove old Proj 4.9 support
+* Note this release does have some API changes. These include the removal of Proj 4.9 Point and Coordinate classes, changes to the PrimeMeridian class and changes to the Ellipsoid class. These changes should not impact most users.
 
 3.0.0 - September 26, 2021
 =========================
