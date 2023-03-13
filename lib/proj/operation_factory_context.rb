@@ -11,6 +11,7 @@ module Proj
 
     # Create a new OperationFactoryContext
     #
+    # @param context   - The context to use or the current context if nil
     # @param authority - If authority is nil or the empty string, then coordinate operations
     #                    from any authority will be searched, with the restrictions set
     #                    in the authority_to_authority_preference database table.
@@ -18,9 +19,7 @@ module Proj
     #                    authority will be searched
     #                    If authority is a non-empty string different of "any", then coordinate
     #                    operations will be searched only in that authority namespace.
-    # @param context   - The context to use or the current context if nil
-    def initialize(authority = nil, context = nil)
-      @context = context || Context.current
+    def initialize(context, authority: nil)
       @pointer = Api.proj_create_operation_factory_context(context, authority)
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
     end

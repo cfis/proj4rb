@@ -4,13 +4,15 @@ require_relative './abstract_test'
 
 class OperationFactoryContextTest < AbstractTest
   def test_create
-    context = Proj::OperationFactoryContext.new
+    context = Proj::Context.new
+    factory_context = Proj::OperationFactoryContext.new(context)
     assert(context.to_ptr)
   end
 
   def test_finalize
     100.times do
-      context = Proj::OperationFactoryContext.new
+      context = Proj::Context.new
+      factory_context = Proj::OperationFactoryContext.new(context)
       assert(context.to_ptr)
       GC.start
     end
@@ -18,10 +20,11 @@ class OperationFactoryContextTest < AbstractTest
   end
 
   def test_create_operations
+    context = Proj::Context.new
     source = Proj::Crs.create_from_database("EPSG", "4267", :PJ_CATEGORY_CRS)
     target = Proj::Crs.create_from_database("EPSG", "4269", :PJ_CATEGORY_CRS)
 
-    factory_context = Proj::OperationFactoryContext.new
+    factory_context = Proj::OperationFactoryContext.new(context)
     factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
     factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
 
@@ -34,10 +37,11 @@ class OperationFactoryContextTest < AbstractTest
   end
 
   def test_suggested_operation
+    context = Proj::Context.new
     source = Proj::Crs.create_from_database("EPSG", "4267", :PJ_CATEGORY_CRS)
     target = Proj::Crs.create_from_database("EPSG", "4269", :PJ_CATEGORY_CRS)
 
-    factory_context = Proj::OperationFactoryContext.new
+    factory_context = Proj::OperationFactoryContext.new(context)
     factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
     factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
 
@@ -67,10 +71,11 @@ class OperationFactoryContextTest < AbstractTest
   end
 
   def test_ballpark_transformations
+    context = Proj::Context.new
     source = Proj::Crs.create_from_database("EPSG", "4267", :PJ_CATEGORY_CRS)
     target = Proj::Crs.create_from_database("EPSG", "4258", :PJ_CATEGORY_CRS)
 
-    factory_context = Proj::OperationFactoryContext.new
+    factory_context = Proj::OperationFactoryContext.new(context)
     factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
     factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
 
@@ -90,42 +95,49 @@ class OperationFactoryContextTest < AbstractTest
   end
 
   def test_desired_accuracy
-    context = Proj::OperationFactoryContext.new
-    context.desired_accuracy = 5
+    context = Proj::Context.new
+    factory_context = Proj::OperationFactoryContext.new(context)
+    factory_context.desired_accuracy = 5
   end
 
   def test_set_area_of_interest
-    context = Proj::OperationFactoryContext.new
-    context.set_area_of_interest(10, 10, 10, 10)
+    context = Proj::Context.new
+    factory_context = Proj::OperationFactoryContext.new(context)
+    factory_context.set_area_of_interest(10, 10, 10, 10)
   end
 
   def test_crs_extent_use
-    context = Proj::OperationFactoryContext.new
-    context.crs_extent_use = :PJ_CRS_EXTENT_SMALLEST
+    context = Proj::Context.new
+    factory_context = Proj::OperationFactoryContext.new(context)
+    factory_context.crs_extent_use = :PJ_CRS_EXTENT_SMALLEST
   end
 
   def test_spatial_criterion
-    context = Proj::OperationFactoryContext.new
-    context.spatial_criterion = :PROJ_SPATIAL_CRITERION_STRICT_CONTAINMENT
+    context = Proj::Context.new
+    factory_context = Proj::OperationFactoryContext.new(context)
+    factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_STRICT_CONTAINMENT
   end
 
   def test_grid_availability
-    context = Proj::OperationFactoryContext.new
-    context.grid_availability = :PROJ_GRID_AVAILABILITY_USE
+    context = Proj::Context.new
+    factory_context = Proj::OperationFactoryContext.new(context)
+    factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_USE
   end
 
   def test_use_proj_alternative_grid_names
-    context = Proj::OperationFactoryContext.new
-    context.use_proj_alternative_grid_names = true
+    context = Proj::Context.new
+    factory_context = Proj::OperationFactoryContext.new(context)
+    factory_context.use_proj_alternative_grid_names = true
   end
 
   def test_allow_use_intermediate_crs
+    context = Proj::Context.new
     # There is no direct transformations between both
     source = Proj::Crs.create_from_database("EPSG", "4230", :PJ_CATEGORY_CRS)
     target = Proj::Crs.create_from_database("EPSG", "4171", :PJ_CATEGORY_CRS)
 
     # Default behavior: allow any pivot
-    factory_context = Proj::OperationFactoryContext.new
+    factory_context = Proj::OperationFactoryContext.new(context)
     operations = factory_context.create_operations(source, target)
     assert_equal(1, operations.count)
 
@@ -144,12 +156,14 @@ class OperationFactoryContextTest < AbstractTest
   end
 
   def test_allowed_intermediate_crs
+    context = Proj::Context.new
+
     # There is no direct transformations between both
     source = Proj::Crs.create_from_database("EPSG", "4230", :PJ_CATEGORY_CRS)
     target = Proj::Crs.create_from_database("EPSG", "4171", :PJ_CATEGORY_CRS)
 
     # Restrict pivot to ETRS89
-    factory_context = Proj::OperationFactoryContext.new("EPSG")
+    factory_context = Proj::OperationFactoryContext.new(context, authority: "EPSG")
     factory_context.allowed_intermediate_crs = ["EPSG", "4258"]
 
     operations = factory_context.create_operations(source, target)
@@ -160,10 +174,11 @@ class OperationFactoryContextTest < AbstractTest
   end
 
   def test_discard_superseded
+    context = Proj::Context.new
     source = Proj::Crs.create_from_database("EPSG", "4203", :PJ_CATEGORY_CRS)
     target = Proj::Crs.create_from_database("EPSG", "4326", :PJ_CATEGORY_CRS)
 
-    factory_context = Proj::OperationFactoryContext.new
+    factory_context = Proj::OperationFactoryContext.new(context)
     factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
     factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
 
@@ -178,8 +193,9 @@ class OperationFactoryContextTest < AbstractTest
 
   if proj9?
     def test_set_area_of_interest_name
-      context = Proj::OperationFactoryContext.new
-      context.area_of_interest_name = 'test'
+      context = Proj::Context.new
+      factory_context = Proj::OperationFactoryContext.new(context)
+      factory_context.area_of_interest_name = 'test'
     end
   end
 end
