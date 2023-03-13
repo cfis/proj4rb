@@ -36,10 +36,6 @@ require_relative 'proj/session'
 require_relative 'proj/strings'
 require_relative 'proj/unit'
 
-# Deprecated
-require_relative 'proj/projection'
-require_relative 'proj/point'
-
 module Proj
   # Returns information about the Proj library
   #

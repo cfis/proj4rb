@@ -64,47 +64,44 @@ module Proj
       paths1 + paths2
     end
 
-    if ENV["PROJ_LIB_PATH"]
-      ffi_lib ENV["PROJ_LIB_PATH"]
-    else
-      ffi_lib self.search_paths
+    def self.load_library
+      if ENV["PROJ_LIB_PATH"]
+        ffi_lib ENV["PROJ_LIB_PATH"]
+      else
+        ffi_lib self.search_paths
+      end
+
+      library = ffi_libraries.first
     end
 
-    library = ffi_libraries.first
-
-    # proj_info was introduced in Proj 5
-    if library.find_function('proj_info')
+    def self.load_api
+      # First load the base 5.0 api so we can determine the Proj Version
       require_relative './api_5_0'
-      PROJ_VERSION = Gem::Version.new(self.proj_info[:version])
-    else
-      # Load the old deprecated api
-      require_relative './api_4_9'
+      Api.const_set('PROJ_VERSION', Gem::Version.new(self.proj_info[:version]))
 
-      release = self.pj_get_release
-      version = release.match(/\d\.\d\.\d/)
-      PROJ_VERSION = Gem::Version.new(version)
+      # Now load the rest of the apis based on the proj version
+      versions = ['5.1.0', '5.2.0',
+                  '6.0.0', '6.1.0', '6.2.0', '6.3.0',
+                  '7.0.0', '7.1.0', '7.2.0',
+                  '8.0.0', '8.1.0', '8.2.0',
+                  '9.1.0', '9.2.0']
+      versions.each do |version|
+        api_version = Gem::Version.new(version)
+
+        if PROJ_VERSION >= api_version
+          require_relative "./api_#{api_version.segments[0]}_#{api_version.segments[1]}"
+        end
+      end
+
+      # Add in the experimental api
+      require_relative "./api_experimental"
     end
+
+    # Load the library
+    load_library
+
+    # Load the api
+    load_api
   end
-
-  # Load the old deprecated API for versions before version 8
-  if Api::PROJ_VERSION < Gem::Version.new('8.0.0')
-    require_relative './api_4_9'
-  end
-
-  # Load the right apis base don PROJ version
-  versions = ['5.1.0', '5.2.0',
-              '6.0.0', '6.1.0', '6.2.0', '6.3.0',
-              '7.0.0', '7.1.0', '7.2.0',
-              '8.0.0', '8.1.0', '8.2.0',
-              '9.1.0', '9.2.0']
-  versions.each do |version|
-    api_version = Gem::Version.new(version)
-
-    if Api::PROJ_VERSION >= api_version
-      require_relative "./api_#{api_version.segments[0]}_#{api_version.segments[1]}"
-    end
-  end
-
-  # Add in the experimental api
-  require_relative "./api_experimental"
 end
+
