@@ -68,9 +68,26 @@ module Proj
       super(ptr, context)
     end
 
-    def convert_to_other_method(new_method_epsg_code, new_method_name)
-      ptr = Api.proj_convert_conversion_to_other_method(self.context, self, new_method_epsg_code, new_method_name)
-      self.create_object(ptr, context)
+    # Return an equivalent projection. Currently implemented:
+    # * EPSG_CODE_METHOD_MERCATOR_VARIANT_A (1SP) to EPSG_CODE_METHOD_MERCATOR_VARIANT_B (2SP)
+    # * EPSG_CODE_METHOD_MERCATOR_VARIANT_B (2SP) to EPSG_CODE_METHOD_MERCATOR_VARIANT_A (1SP)
+    # * EPSG_CODE_METHOD_LAMBERT_CONIC_CONFORMAL_1SP to EPSG_CODE_METHOD_LAMBERT_CONIC_CONFORMAL_2SP
+    # * EPSG_CODE_METHOD_LAMBERT_CONIC_CONFORMAL_2SP to EPSG_CODE_METHOD_LAMBERT_CONIC_CONFORMAL_1SP
+    #
+    # @param new_method_epsg_code [String] EPSG code of the target method. Or nil in which case new_method_name must be specified.
+    # @param new_method_name [String] EPSG or PROJ target method name. Or nil in which case new_method_epsg_code must be specified
+    #
+    # @return [Conversion]
+    def convert_to_other_method(new_method_epsg_code: nil, new_method_name: nil)
+      ptr = Api.proj_convert_conversion_to_other_method(self.context, self,
+                                                        new_method_epsg_code ? new_method_epsg_code: 0,
+                                                        new_method_name)
+
+      if ptr.null?
+        Error.check_context(context)
+      end
+
+      self.class.create_object(ptr, context)
     end
   end
 end

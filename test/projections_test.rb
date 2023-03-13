@@ -400,7 +400,7 @@ class ProjectionsTest < AbstractTest
 
   def test_mercator_variant_a
     context = Proj::Context.new
-    proj = Proj::Conversion.mercator_variant_a(context, center_lat:0, center_long: 0,
+    proj = Proj::Conversion.mercator_variant_a(context, center_lat: 0, center_long: 0,
                                                scale: 0,
                                                false_easting: 0, false_northing: 0,
                                                ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
@@ -410,7 +410,7 @@ class ProjectionsTest < AbstractTest
 
   def test_mercator_variant_b
     context = Proj::Context.new
-    proj = Proj::Conversion.mercator_variant_b(context, latitude_first_parallel:0, center_long: 0,
+    proj = Proj::Conversion.mercator_variant_b(context, latitude_first_parallel: 0, center_long: 0,
                                                false_easting: 0, false_northing: 0,
                                                ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
                                                linear_unit_name: "Metre", linear_unit_conv_factor: 1.0)
@@ -419,7 +419,7 @@ class ProjectionsTest < AbstractTest
 
   def test_popular_visualisation_pseudo_mercator
     context = Proj::Context.new
-    proj = Proj::Conversion.popular_visualisation_pseudo_mercator(context, center_lat:0, center_long: 0,
+    proj = Proj::Conversion.popular_visualisation_pseudo_mercator(context, center_lat: 0, center_long: 0,
                                                                   false_easting: 0, false_northing: 0,
                                                                   ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
                                                                   linear_unit_name: "Metre", linear_unit_conv_factor: 1.0)
@@ -437,7 +437,7 @@ class ProjectionsTest < AbstractTest
 
   def test_new_zealand_mapping_grid
     context = Proj::Context.new
-    proj = Proj::Conversion.new_zealand_mapping_grid(context, center_lat:0, center_long: 0,
+    proj = Proj::Conversion.new_zealand_mapping_grid(context, center_lat: 0, center_long: 0,
                                                      false_easting: 0, false_northing: 0,
                                                      ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
                                                      linear_unit_name: "Metre", linear_unit_conv_factor: 1.0)
@@ -446,7 +446,7 @@ class ProjectionsTest < AbstractTest
 
   def test_oblique_stereographic
     context = Proj::Context.new
-    proj = Proj::Conversion.oblique_stereographic(context, center_lat:0, center_long: 0,
+    proj = Proj::Conversion.oblique_stereographic(context, center_lat: 0, center_long: 0,
                                                   scale: 0,
                                                   false_easting: 0, false_northing: 0,
                                                   ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
@@ -511,7 +511,7 @@ class ProjectionsTest < AbstractTest
 
   def test_stereographic
     context = Proj::Context.new
-    proj = Proj::Conversion.stereographic(context, center_lat:0, center_long: 0,
+    proj = Proj::Conversion.stereographic(context, center_lat: 0, center_long: 0,
                                           scale: 0,
                                           false_easting: 0, false_northing: 0,
                                           ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
@@ -594,7 +594,7 @@ class ProjectionsTest < AbstractTest
 
   def test_quadrilateralized_spherical_cube
     context = Proj::Context.new
-    proj = Proj::Conversion.quadrilateralized_spherical_cube(context, center_lat:0, center_long: 0,
+    proj = Proj::Conversion.quadrilateralized_spherical_cube(context, center_lat: 0, center_long: 0,
                                                              false_easting: 0, false_northing: 0,
                                                              ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
                                                              linear_unit_name: "Metre", linear_unit_conv_factor: 1.0)

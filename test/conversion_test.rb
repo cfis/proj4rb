@@ -319,4 +319,48 @@ class ConversionTest < AbstractTest
       assert(last.equivalent_to?(operation, :PJ_COMP_STRICT))
     end
   end
+
+  def test_convert_conversion_to_other_method
+    context = Proj::Context.new
+    coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LONGITUDE_LATITUDE, context)
+
+    crs = Proj::Crs.create_geographic(context, name: "WGS 84", datum_name: "World Geodetic System 1984", ellps_name: "WGS 84",
+                                      semi_major_meter: 6378137, inv_flattening: 298.257223563,
+                                      prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0, pm_angular_units: "Degree", pm_units_conv: 0.0174532925199433,
+                                      coordinate_system: coordinate_system)
+
+    mercator = Proj::Conversion.mercator_variant_a(context, center_lat: 0, center_long: 1,
+                                                   scale: 0.99,
+                                                   false_easting: 2, false_northing: 3,
+                                                   ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
+                                                   linear_unit_name: "Metre", linear_unit_conv_factor: 1.0)
+
+    cartesian = Proj::CoordinateSystem.create_cartesian_2d(context, :PJ_CART2D_EASTING_NORTHING)
+
+    projected = Proj::Crs.create_projected(context, name: "My CRS", geodetic_crs: crs,
+                                           conversion: mercator, coordinate_system: cartesian)
+
+    conversion = projected.coordinate_operation
+    assert_equal(:PJ_TYPE_CONVERSION, conversion.proj_type)
+
+    # Error - Don't set code or method name
+    new_conversion = conversion.convert_to_other_method
+    refute(new_conversion)
+
+    # 9805 is epsg code mercator variant b
+    new_conversion = conversion.convert_to_other_method(new_method_epsg_code: 9805)
+    assert(new_conversion)
+    refute(new_conversion.equivalent_to?(conversion, :PJ_COMP_STRICT))
+    assert(new_conversion.equivalent_to?(conversion, :PJ_COMP_EQUIVALENT))
+
+    new_conversion = conversion.convert_to_other_method(new_method_name: "Mercator (variant B)")
+    assert(new_conversion)
+    refute(new_conversion.equivalent_to?(conversion, :PJ_COMP_STRICT))
+    assert(new_conversion.equivalent_to?(conversion, :PJ_COMP_EQUIVALENT))
+
+    # Convert back
+    new_conversion = conversion.convert_to_other_method(new_method_name: "Mercator (variant A)")
+    assert(new_conversion)
+    assert(new_conversion.equivalent_to?(conversion, :PJ_COMP_STRICT))
+  end
 end
