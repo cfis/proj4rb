@@ -25,9 +25,9 @@ If you are using the old Proj4 namespace, then you can do this:
 
   require 'proj4'
 
-=== Crs
-If you are using Proj 6, or newer, create a coordinate system. To create a coordinate system, you can use CRS codes,
-well-known text (WKT) strings or old-style Proj4 strings (which are deprecated).
+=== CRS
+To create a coordinate system, you can use CRS codes, well-known text (WKT) strings
+ or old-style Proj strings (which are deprecated).
 
     crs1 = Proj::Crs.new('EPSG:4326')
 
@@ -95,6 +95,25 @@ While the inverse transformation looks like this:
     assert_in_delta(3458375.3367194114, to.y, 0.01)
     assert_in_delta(0, to.z, 0.01)
     assert_in_delta(0, to.t, 0.01)
+
+=== Coordinate Operations
+Transformations are a type of Coordinate Operation. PROJ divides coordinate operations into three groups:
+
+* Conversions
+* Projections
+* Transformations
+
+Conversions are coordinate operations that do not exert a change in reference frame. The Ruby bindings support these via the Conversion class. See https://proj.org/operations/conversions/index.html for more information.
+
+Projections are cartographic mappings of the sphere onto the plane. Technically projections are conversions (according to ISO standards), but PROJ distinguishes them from conversions. The Ruby bindings support these
+ via the Projection module which has methods to create many common projections. A list can be found at https://proj.org/operations/projections/index.html.
+
+Transformations are coordinate operations that do cause a change in reference frames. The Ruby bindings support these via the Transformation class.
+
+For more information see https://proj.org/operations/index.html
+
+=== Operation Factory
+The OperationFactoryContext class can be used to build coordinate operations between two CRSes. This is done by first creating a factory and setting appropiate filters. These include spatial filters, accuracy filters, grid availability filters, etc. Once filters are set, then the factory can be queried for a list of possible conversions. For examples, please see the operation_factory_context_test.rb file.
 
 === Coordinate
 Notice the examples above transform Coordinate objects. A Coordinate consists
@@ -173,33 +192,6 @@ The PjObject class defines several methods to create new objects:
 * PjObject.create_from_wkt
 
 The methods will return instances of the correct subclass.
-
-
-== Backwards Compatibility
-Proj versions 5 and higher are *very* different than Proj version 4. Changes are documented at
-https://proj.org/development/migration.html. Note that the gem should gracefully degrade
-(as in newer functionality stops working but older functionality keeps working) depending on
-the version of Proj you are using.
-
-To ensure backwards compatiblity, the Ruby bindings still include the older Point and Projection
-classes. However, these classes are no longer documented in this Readme because the underlying API
-they rely on was removed in Proj 8. So please port your code! But take note of the changes in Proj 6 described below.
-
-Proj 5 introduced the Coordinate, Crs and Tranformation APIs. However, it wasn't until Proj 6 that additional
-metadata APIs were added, so the amount of information about each object is somewhat limited in Proj 5.
-
-Proj 6 makes a big change compared to previous releases that is not well documented (see
-https://github.com/OSGeo/PROJ/pull/1182). When creating tranformations with EPSG values Proj 6
-will assume EPSG axis order and units (typically lat-long degree for geodetic CRS). First,
-this means that lat-long should usually be specified in degrees and not radians (breaking change one).
-Second, the axis order is likely different than what your previous code assumed (breaking change two).
-Note if creating transformations with the deprecated "+init=epsg:XXXX" values, Proj 6 will assume the traditional
-axis order and units (long-lat radians for geodetic CRS).
-
-Bottom line - when porting your code to the new Proj 6 APIs generally:
-
-* Use degrees, not radians
-* Swap the order of the lat and long values
 
 == Tests
 Proj4rb ships with a full test suite designed to work using Proj 6. If you are using an earlier version of Proj,
