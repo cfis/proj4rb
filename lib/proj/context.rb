@@ -177,7 +177,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_context_get_user_writable_directory
     #
-    # @param [Boolean] If set to TRUE, create the directory if it does not exist already. Defaults to false
+    # @param create [Boolean] If true create the directory if it does not exist already. Defaults to false.
     #
     # @return [String] Directory
     def user_directory(create = false)
@@ -206,7 +206,7 @@ module Proj
       end
     end
 
-    # Installs a new {FileApi FileApiImpl}
+    # Installs a new {FileApiImpl FileApi}
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_context_set_fileapi
     def set_file_api(file_api_klass)
@@ -219,7 +219,7 @@ module Proj
       @file_api = file_api_klass.new(self)
     end
 
-    # Installs a new {NetworkApi NetworkApiImpl}
+    # Installs a new {NetworkApiImpl NetworkApi}
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_context_set_network_callbacks
     def set_network_api(network_api_klass)

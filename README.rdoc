@@ -5,7 +5,7 @@ between a number of different coordinate systems and projections.
 == Documentation
 Reference documentation is available at https://rubydoc.info/github/cfis/proj4rb.
 
-Examples can be found in this README file as well as in the {file:Examples.rdoc Examples} file. In addition, the test suite has exapmles of calling almost every API so when in doubt take a look at them!
+Examples can be found in this README file as well as in the Examples file. In addition, the test suite has exapmles of calling almost every API so when in doubt take a look at them!
 
 == Installation
 First install the gem in the usual manner:
@@ -138,7 +138,7 @@ If you prefer to work with a uniform axis order, regardless of the axis orders m
 
 The normalized transformation will return output coordinates in longitude, latitude order for geographic CRSes and easting, northing for most projected CRSes.
 
-For more information see {https://proj.org/faq.html#why-is-the-axis-ordering-in-proj-not-consistent Why Is The Axis Ordering In Proj Not Consistent?}
+For more information see https://proj.org/faq.html#why-is-the-axis-ordering-in-proj-not-consistent.
 
 === Context
 Contexts are used to support multi-threaded programs. The bindings expose this object via Context.current
@@ -149,9 +149,9 @@ Both Crs and Transformation objects take a context object in their constructors.
 to using Context.current
 
 == Network Access
-Proj supports downloading grid files on demand if network access is enabled (it is disabled by default). To enable network use the method {Context#network_enabled=}. To specify the url endpoint use {Context#url=}. Advanced users can replace Proj's networking code, which uses libcurl, with their own implementation. To do this see the NetworkApi class.
+Proj supports downloading grid files on demand if network access is enabled (it is disabled by default). To enable network use the method Context#network_enabled=. To specify the url endpoint use Context#url=. Advanced users can replace Proj's networking code, which uses libcurl, with their own implementation. To do this see the NetworkApi class.
 
-Downloaded grids are cached in a sqlite file named cache.db. To specify the location, size and other characteristics of the cache file refer to the {GridCache} class which is accessible via Context#cache. By default the cache size is 300MB. Caching is on by default but can be disabled via GridCache#enabled=.
+Downloaded grids are cached in a sqlite file named cache.db. To specify the location, size and other characteristics of the cache file refer to the GridCache class which is accessible via Context#cache. By default the cache size is 300MB. Caching is on by default but can be disabled via GridCache#enabled=.
 
 == Error handling
 When an error occurs, a Proj::Error instance will be thrown with the underlying message provided
@@ -172,7 +172,7 @@ The Ruby program itself cannot set this variable and have it work correctly (at 
 For more information see https://proj.org/resource_files.html
 
 == Class Hierarchy
-The proj4rb class hierarchy is based on Proj's class hiearchy which, in turn, is derived from {http://docs.opengeospatial.org/as/18-005r5/18-005r5.html ISO 19111:2019}. It is:
+The proj4rb class hierarchy is based on Proj's class hiearchy which, in turn, is derived from http://docs.opengeospatial.org/as/18-005r5/18-005r5.html. It is:
 
    PjObject
      CoordinateOperationMixin

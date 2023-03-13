@@ -6,7 +6,7 @@ module Proj
                      :unit_conv_factor, :unit_name, :unit_auth_name, :unit_code, :unit_category,
                      keyword_init: true)
 
-  # Coordinate Operations convert {Coordinate coordintates} to a new value. In Proj they are
+  # Coordinate Operations convert {Coordinate coordinates} to a new value. In Proj they are
   # can either by {Conversion conversions} that do not exert a change in reference frame
   # or {Transformation transformations} which do.
   module CoordinateOperationMixin
@@ -168,8 +168,8 @@ module Proj
       self.transform(coord, :PJ_INV)
     end
 
-    # Transforms a {Coordinate} in the specified direction. See {CoordinateOperation#forward forward} and
-    # {CoordinateOperation#inverse inverse}
+    # Transforms a {Coordinate} in the specified direction. See {CoordinateOperationMixin#forward forward} and
+    # {CoordinateOperationMixin#inverse inverse}
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_trans
     #
@@ -212,7 +212,7 @@ module Proj
     # Transforms an array of {Coordinate coordinates}. Individual points that fail to transform
     # will have their components set to Infinity.
     #
-    # @param array [Array<Coordinate>] Coordinates to transform
+    # @param coordinates [Array<Coordinate>] Coordinates to transform
     # @param direction [PJ_DIRECTION] The direction of the transformation
     #
     # @return [Array<Coordinate>] Array of transformed coordinates

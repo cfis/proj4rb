@@ -6,7 +6,7 @@ module Proj
   class Crs < PjObject
     # Create a ProjectedCRS.
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the GeographicCRS. Default is nil.
     # @param geodetic_crs [CRS] Base GeodeticCRS
     # @param conversion [Conversion] Conversion
@@ -25,7 +25,7 @@ module Proj
 
     # Returns a BoundCRS
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param base_crs [CRS] Base CRS
     # @param hub_crs [CRS] HUB CRS
     # @param transformation [Transformation]
@@ -43,7 +43,7 @@ module Proj
 
     # Returns a BoundCRS with a transformation to EPSG:4326 wrapping it
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param crs [CRS] CRS to wrap
     # @param allow_intermediate_crs [String] Specifies if an intermediate CRS may be considered when
     #        computing the possible transformations. Allowed values are:
@@ -69,7 +69,7 @@ module Proj
 
     # Create a a EngineeringCRS
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the CRS. Default is nil.
     #
     # @return [CRS]
@@ -85,7 +85,7 @@ module Proj
 
     # Create a VerticalCRS. For additional functionality see Crs#create_vertical_ex
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the GeographicCRS. Default is nil.
     # @param datum_name [String] Name of the GeodeticReferenceFrame. Default is nil.
     # @param linear_units [String] Name of the angular units. Or nil for meters.
@@ -105,9 +105,9 @@ module Proj
     # Create a Bound Vertical CRS, with a transformation to a hub geographic 3D crs, such as
     # EPSG:4979 or WGS84, using a grid
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param vertical_crs [CRS] A VerticalCRS
-    # @param hub_geographic_3d_crs [CRS] A Geographic 3D CRS
+    # @param hub_crs [CRS] A Geographic 3D CRS
     # @param grid_name [String] Grid name (typically a .gtx file)
     #
     # @return [CRS]
@@ -124,7 +124,7 @@ module Proj
     # Create a VerticalCRS. This is an extended version of Crs#create_vertical that adds
     # the capability of defining a geoid model.
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the GeographicCRS. Default is nil.
     # @param datum_name [String] Name of the GeodeticReferenceFrame. Default is nil.
     # @param datum_auth_name [String] Authority name of the VerticalReferenceFrame. Default is nil.
@@ -157,7 +157,7 @@ module Proj
 
     # Create a CompoundCRS.
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the GeographicCRS. Default is nil.
     # @param horizontal_crs [CRS] A horizontal CRS
     # @param vertical_crs [CRS] A vertical CRS
@@ -175,7 +175,7 @@ module Proj
 
     # Create a GeographicCRS.
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the GeographicCRS. Default is nil.
     # @param datum_name [String] Name of the GeodeticReferenceFrame. Default is nil.
     # @param ellipsoid_name [String] Name of the Ellipsoid. Default is nil.
@@ -188,8 +188,8 @@ module Proj
     # @param coordinate_system [CoordinateSystem] Ellipsoidal coordinate system
     #
     # @return [CRS]
-    def self.create_geographic(context, name:, datum_name:, ellps_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, pm_angular_units:, pm_units_conv:, coordinate_system:)
-      pointer = Api.proj_create_geographic_crs(context, name, datum_name, ellps_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, pm_angular_units, pm_units_conv, coordinate_system)
+    def self.create_geographic(context, name:, datum_name:, ellipsoid_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, pm_angular_units:, pm_angular_units_conv:, coordinate_system:)
+      pointer = Api.proj_create_geographic_crs(context, name, datum_name, ellipsoid_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, pm_angular_units, pm_angular_units_conv, coordinate_system)
 
       if pointer.null?
         Error.check_context(context)
@@ -200,7 +200,7 @@ module Proj
 
     # Create a GeographicCRS from a datum
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the GeographicCRS. Default is nil.
     # @param datum [Datum | DatumEnsemble] Datum or DatumEnsemble
     # @param coordinate_system [CoordinateSystem] Ellipsoidal coordinate system
@@ -218,7 +218,7 @@ module Proj
 
     # Create a GeographicCRS.
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the GeographicCRS. Default is nil.
     # @param datum_name [String] Name of the GeodeticReferenceFrame. Default is nil.
     # @param ellipsoid_name [String] Name of the Ellipsoid. Default is nil.
@@ -232,8 +232,8 @@ module Proj
     # @param linear_units_conv [Double] Conversion factor from linear units to meters. Default is 0 if linear_units is nil
     #
     # @return [CRS]
-    def self.create_geocentric(context, name:, datum_name:, ellps_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, angular_units:, angular_units_conv:, linear_units:, linear_units_conv:)
-      pointer = Api.proj_create_geocentric_crs(context, name, datum_name, ellps_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, angular_units, angular_units_conv, linear_units, linear_units_conv)
+    def self.create_geocentric(context, name:, datum_name:, ellipsoid_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, angular_units:, angular_units_conv:, linear_units:, linear_units_conv:)
+      pointer = Api.proj_create_geocentric_crs(context, name, datum_name, ellipsoid_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, angular_units, angular_units_conv, linear_units, linear_units_conv)
 
       if pointer.null?
         Error.check_context(context)
@@ -244,7 +244,7 @@ module Proj
 
     # Create a GeodeticCRS of geocentric type
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the GeographicCRS. Default is nil.
     # @param datum [Datum | DatumEnsemble] Datum or DatumEnsemble
     # @param linear_units [String] Name of the angular units. Or nil for meters.
@@ -263,7 +263,7 @@ module Proj
 
     # Create a DerivedGeograhicCRS
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param name [String] Name of the GeographicCRS. Default is nil.
     # @param base_geographic_crs [CRS] Base Geographic CRS
     # @param conversion [Conversion] Conversion from the base Geographic to the DerivedGeograhicCRS
@@ -282,7 +282,7 @@ module Proj
 
     # Find GeodeticCRSes that use the specified datum
     #
-    # @param ctx [Context] Context
+    # @param context [Context] Context
     # @param auth_name [string] - Authority name. Default is nil.
     # @param datum_auth_name [String] Datum authority name
     # @param datum_code [String] Datum code
@@ -514,7 +514,7 @@ module Proj
 
     # Return a copy of the CRS with its identifier changed
     #
-    # @param name [String] The new authority name of the CRS
+    # @param auth_name [String] The new authority name of the CRS
     # @param code [String] The new code of the CRS
     #
     # @return [CRS]
@@ -656,7 +656,7 @@ module Proj
     # This is equivalent to using Crs#promote_to_3d
     #
     # @param name [String] CRS name. If nil then the name of this CRS will be used.
-    # @param geog_3D_crs [CRS] Base geographic 3D CRS for the new CRS. Defaults to nil.
+    # @param geog_3d_crs [CRS] Base geographic 3D CRS for the new CRS. Defaults to nil.
     #
     # @return [CRS]
     def projected_3d(name: nil, geog_3d_crs: nil)

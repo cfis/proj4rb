@@ -55,7 +55,7 @@ module Proj
   #
   # @see https://proj.org/development/reference/functions.html#c.proj_info proj_info
   #
-  # @return Array<string> List of search paths
+  # @return [Array<string>] List of search paths
   def self.search_paths
     self.info[:searchpath].split(";")
   end

@@ -2,7 +2,7 @@
 require 'stringio'
 
 module Proj
-  # Conversions are {CoordinateOperationMix coordinate operations} that convert a source
+  # Conversions are {CoordinateOperationMixin coordinate operations} that convert a source
   # {Coordinate coordinate} to a new value. In Proj they are defined as operations that
   # do not exert a change in reference frame while {Transformation transformations } do.
   class Conversion < PjObject
@@ -20,7 +20,6 @@ module Proj
     # @param method_auth_name [String] Method authority name. Default is nil.
     # @param method_code [String] Method code. Default is nil.
     # @param params [Array<Parameter>] Parameter descriptions
-    # @param accuracy [Double] Accuracy of the transformation in meters. A negative value means unknown.
     #
     # @return [Conversion]
     def self.create_conversion(context, name:, auth_name:, code:, method_name:, method_auth_name:, method_code:, params:)

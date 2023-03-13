@@ -205,7 +205,7 @@ module Proj
 
     # Assign a new context to this object
     #
-    # @param [Context] The context to assign to this object
+    # @param value [Context] The context to assign to this object
     def context=(value)
       Api.proj_assign_context(self, value)
     end

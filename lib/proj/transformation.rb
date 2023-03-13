@@ -1,5 +1,5 @@
 module Proj
-  # Transformations are {CoordinateOperationMix coordinate operations} that
+  # Transformations are {CoordinateOperationMixin coordinate operations} that
   # convert {Coordinate coordinates} from one {Crs} to another.
   # In Proj they are defined as operations that exert a change in reference frame
   # while {Conversion conversions } do not.
