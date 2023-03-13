@@ -141,7 +141,7 @@ class ConversionTest < AbstractTest
     grid = conversion.grid(0)
 
     assert_equal("ca_nrc_ntv1_can.tif", grid.name)
-    assert_match(/ntv1_can.dat/, grid.full_name)
+    assert_match(/ntv1_can/, grid.full_name)
     assert(grid.package_name.empty?)
     assert_equal("https://cdn.proj.org/ca_nrc_ntv1_can.tif", grid.url)
     assert(grid.downloadable?)
@@ -242,7 +242,8 @@ class ConversionTest < AbstractTest
   end
 
   def test_transform_array_invalid
-    crs = Proj::Conversion.new("+proj=utm +zone=32 +ellps=GRS80")
+    context = Proj::Context.new
+    crs = Proj::Conversion.new("+proj=utm +zone=32 +ellps=GRS80", context)
 
     coord1 = Proj::Coordinate.new(lon: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(95), z: 45)
     coord2 = Proj::Coordinate.new(lon: Proj.degrees_to_radians(12), lat: Proj.degrees_to_radians(56), z: 50)

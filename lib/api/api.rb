@@ -6,7 +6,8 @@ module Proj
     extend FFI::Library
 
     def self.library_versions
-      ["9_1", # 9.1
+      ["25", # 9.2
+       "9_1", # 9.1
        "22", # 8.0 and 8.1
        "19", # 7.x
        "17", # 6.1 *and* 6.2
@@ -27,6 +28,12 @@ module Proj
                    self.linux_search_paths
                end
 
+      # Remove any paths that don't exist
+      result = result.find_all do |path|
+        File.exist?(path)
+      end
+
+      # Try libproj as catch all
       result << 'libproj'
       result
     end
@@ -44,8 +51,14 @@ module Proj
     end
 
     def self.macos_search_paths
-      # Mac Ports
+      # Mac HomeBrew
       paths1 = self.library_versions.map do |version|
+        "/usr/local/lib/libproj.#{version}.dylib"
+      end
+      paths1 << "/usr/local/lib/libproj.dylib"
+
+      # Mac Ports
+      paths2 = self.library_versions.map do |version|
         case version
           when 15..17
             "/opt/local/lib/proj6/lib/libproj.#{version}.dylib"
@@ -56,12 +69,7 @@ module Proj
         end
       end
 
-      # Mac HomeBrew
-      paths2 = self.library_versions.map do |version|
-        "/usr/local/lib/libproj.#{version}.dylib"
-      end
-
-      paths1 + paths2
+      paths1.compact + paths2.compact
     end
 
     def self.load_library

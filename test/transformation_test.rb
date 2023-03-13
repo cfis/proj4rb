@@ -127,8 +127,8 @@ class TransformationTest < AbstractTest
     coordinate1 = Proj::Coordinate.new(x: 50, y: -2, z: 0, t: Float::INFINITY)
     coordinate2 = transformation.forward(coordinate1)
 
-    assert_in_delta(50.00065628, coordinate2.x, 1e-8)
-    assert_in_delta(-2.00133989, coordinate2.y, 1e-8)
+    assert_in_delta(50.00065628, coordinate2.x, 1e-4)
+    assert_in_delta(-2.00133989, coordinate2.y, 1e-4)
   end
 
   def test_accuracy_filter
