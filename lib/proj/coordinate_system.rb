@@ -43,8 +43,8 @@ module Proj
     # @param cs_type [PJ_COORDINATE_SYSTEM_TYPE] Coordinate system type
     # @param horizontal_angular_unit_name [String] Name of the angular units. Or nil for degree
     # @param horizontal_angular_unit_conv_factor [Float] Conversion factor from the angular unit to radian. Set to 0 if horizontal_angular_unit_name name is degree
-    # @param vertical_linear_unit_name [String] Name of the angular units. Or nil for meter
-    # @param vertical_linear_unit_conv_factor [Float] Conversion factor from the linear unit to meter. Set to 0 if vertical_linear_unit_name name is meter
+    # @param vertical_linear_unit_name [String] Name of the linear units. Or nil for meters.
+    #     # @param vertical_linear_unit_conv_factor [Float] Conversion factor from the linear unit to meter. Set to 0 if vertical_linear_unit_name is meter.
     #
     # @return [CoordinateSystem]
     def self.create_ellipsoidal_3d(cs_type, context, horizontal_angular_unit_name: nil, horizontal_angular_unit_conv_factor: 0, vertical_linear_unit_name: nil, vertical_linear_unit_conv_factor: 0)
