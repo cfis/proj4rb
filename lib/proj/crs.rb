@@ -461,6 +461,14 @@ module Proj
       self.class.create_object(ptr, self.context)
     end
 
+    # Returns whether a CRS has an associated PointMotionOperation
+    #
+    # @return [Boolean]
+    def point_motion_operation?
+      result = Api.proj_crs_get_coordoperation(self.context, self)
+      result == 1 ? true : false
+    end
+
     # Returns the prime meridian
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_get_prime_meridian

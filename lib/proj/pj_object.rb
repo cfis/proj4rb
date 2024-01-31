@@ -31,6 +31,8 @@ module Proj
                      Ellipsoid
                    when :PJ_TYPE_PRIME_MERIDIAN
                      PrimeMeridian
+                   when :PJ_TYPE_COORDINATE_METADATA
+                     CoordinateMetadata
                    else
                      # Return whatever the current class is
                      self
