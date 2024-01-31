@@ -49,9 +49,15 @@ class DatabaseTest < AbstractTest
   end
 
   def test_codes
-    types_with_no_codes = [:PJ_TYPE_TEMPORAL_CRS, :PJ_TYPE_BOUND_CRS, :PJ_TYPE_UNKNOWN, :PJ_TYPE_ENGINEERING_CRS,
+    if Proj::Api::PROJ_VERSION >= '9.3.0'
+      types_with_no_codes = [:PJ_TYPE_TEMPORAL_CRS, :PJ_TYPE_BOUND_CRS, :PJ_TYPE_UNKNOWN, :PJ_TYPE_ENGINEERING_CRS,
                            :PJ_TYPE_TEMPORAL_DATUM, :PJ_TYPE_ENGINEERING_DATUM, :PJ_TYPE_PARAMETRIC_DATUM,
                            :PJ_TYPE_OTHER_COORDINATE_OPERATION, :PJ_TYPE_DERIVED_PROJECTED_CRS, :PJ_TYPE_COORDINATE_METADATA]
+    else
+      types_with_no_codes = [:PJ_TYPE_TEMPORAL_CRS, :PJ_TYPE_BOUND_CRS, :PJ_TYPE_UNKNOWN, :PJ_TYPE_ENGINEERING_CRS,
+                             :PJ_TYPE_TEMPORAL_DATUM, :PJ_TYPE_ENGINEERING_DATUM, :PJ_TYPE_PARAMETRIC_DATUM,
+                             :PJ_TYPE_OTHER_COORDINATE_OPERATION]
+    end
 
     database = Proj::Database.new(Proj::Context.current)
 
