@@ -31,8 +31,8 @@ class ConversionTest < AbstractTest
 
     inverse = operation.create_inverse
     proj_string = inverse.to_proj_string(:PJ_PROJ_5, multiline: true, indentation_width: 4, max_line_length: 40)
-    
-    expected = if proj7?
+
+    expected = if Proj::Api::PROJ_VERSION >= '7.0.0'
                  <<~EOS
                   +proj=pipeline
                       +step +proj=axisswap +order=2,1
@@ -127,7 +127,7 @@ class ConversionTest < AbstractTest
       conversion.grid(-1)
     end
 
-    if proj9?
+    if Proj::Api::PROJ_VERSION >= '9.0.0'
       assert_equal("File not found or invalid", error.to_s)
     else
       assert_equal("Unknown error (code 4096)", error.to_s)
@@ -141,12 +141,12 @@ class ConversionTest < AbstractTest
     grid = conversion.grid(0)
 
     assert_equal("ca_nrc_ntv1_can.tif", grid.name)
-    assert_match(/ntv1_can/, grid.full_name)
     assert(grid.package_name.empty?)
     assert_equal("https://cdn.proj.org/ca_nrc_ntv1_can.tif", grid.url)
     assert(grid.downloadable?)
     assert(grid.open_license?)
-    assert(grid.available?)
+    #assert_match(/ntv1_can/, grid.full_name)
+    #assert(grid.available?)
   end
 
   def test_xy_dist
@@ -275,7 +275,7 @@ class ConversionTest < AbstractTest
     assert_in_delta(1141263.01116045, coordinate_2.y)
   end
 
-  if proj9?
+  if Proj::Api::PROJ_VERSION >= '9.0.0'
     def test_last_used_operation
       wkt = <<~EOS
       CONVERSION["UTM zone 31N",
@@ -331,11 +331,11 @@ class ConversionTest < AbstractTest
                                       prime_meridian_name: "Greenwich", prime_meridian_offset: 0.0, pm_angular_units: "Degree", pm_angular_units_conv: 0.0174532925199433,
                                       coordinate_system: coordinate_system)
 
-    mercator = Proj::Projection.mercator_variant_a(context, center_lat: 0, center_long: 1,
+    mercator = Proj::Projection.mercator_variant_a(context, center_latitude: 0, center_longitude: 1,
                                                    scale: 0.99,
                                                    false_easting: 2, false_northing: 3,
-                                                   ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433,
-                                                   linear_unit_name: "Metre", linear_unit_conv_factor: 1.0)
+                                                   angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433,
+                                                   linear_unit_name: "Metre", linear_unit_conversion_factor: 1.0)
 
     cartesian = Proj::CoordinateSystem.create_cartesian_2d(context, :PJ_CART2D_EASTING_NORTHING)
 

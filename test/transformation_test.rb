@@ -151,7 +151,7 @@ class TransformationTest < AbstractTest
     assert_equal("No operation found matching criteria", error.to_s)
   end
 
-  if proj8?
+  if Proj::Api::PROJ_VERSION >= '8.0.0'
     def test_transform_bounds
       transform = Proj::Transformation.new("EPSG:4326",
                                            "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")

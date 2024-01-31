@@ -51,20 +51,24 @@ class OperationFactoryContextTest < AbstractTest
     index = operations.suggested_operation(:PJ_FWD, coord)
 
     expected = case
-               when proj9?
-                 2
-               else
-                 7
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   3
+                 when Proj::Api::PROJ_VERSION >= '9.0.0'
+                   2
+                 else
+                   7
                end
     assert_equal(expected, index)
 
     operation = operations[index]
 
     expected = case
-               when proj9?
-                 "NAD27 to NAD83 (1)"
-               else
-                 "Ballpark geographic offset from NAD27 to NAD83"
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   "NAD27 to NAD83 (7)"
+                 when Proj::Api::PROJ_VERSION >= '9.0.0'
+                   "NAD27 to NAD83 (1)"
+                 else
+                   "Ballpark geographic offset from NAD27 to NAD83"
                end
 
     assert_equal(expected, operation.name)
@@ -191,7 +195,7 @@ class OperationFactoryContextTest < AbstractTest
     assert_equal(5, operations.count)
   end
 
-  if proj9?
+  if Proj::Api::PROJ_VERSION >= '9.0.0'
     def test_set_area_of_interest_name
       context = Proj::Context.new
       factory_context = Proj::OperationFactoryContext.new(context)

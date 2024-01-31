@@ -505,9 +505,19 @@ class CrsTest < AbstractTest
 
   def test_to_json
     crs = Proj::Crs.new('EPSG:26915')
+
+    schema_version = case
+                       when Proj::Api::PROJ_VERSION >= '9.0.0'
+                         'v0.7'
+                       when Proj::Api::PROJ_VERSION >= '9.3.0'
+                         'v0.5'
+                       else
+                         'v0.4'
+                     end
+
     expected = <<~EOS
       {
-        "$schema": "https://proj.org/schemas/#{proj9? ? 'v0.5' : 'v0.4'}/projjson.schema.json",
+        "$schema": "https://proj.org/schemas/#{schema_version}/projjson.schema.json",
         "type": "ProjectedCRS",
         "name": "NAD83 / UTM zone 15N",
         "base_crs": {
@@ -822,7 +832,7 @@ class CrsTest < AbstractTest
     crs = Proj::Crs.create("EPSG:4326", context)
 
     conversion = Proj::Projection.pole_rotation_grib_convention(context, south_pole_lat_in_unrotated_crs: 2, south_pole_long_in_unrotated_crs: 3,
-                                                                axis_rotation: 4, ang_unit_name: "Degree", ang_unit_conv_factor: 0.0174532925199433)
+                                                                axis_rotation: 4, angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433)
 
     coordinate_system = crs.coordinate_system
 
@@ -922,7 +932,7 @@ class CrsTest < AbstractTest
     crses = Proj::Crs.query_geodetic_from_datum(context, datum_auth_name: "EPSG", datum_code: "6326")
 
     expected = case
-               when proj9?
+               when Proj::Api::PROJ_VERSION >= '9.0.0'
                  12
                else
                  11

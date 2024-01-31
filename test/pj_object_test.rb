@@ -19,20 +19,20 @@ class PjObjectTest < AbstractTest
   def test_equivalent
     from_epsg = Proj::PjObject.create_from_database("EPSG", "7844", :PJ_CATEGORY_CRS)
     from_wkt = Proj::PjObject.create_from_wkt(<<~EOS)
-                    GEOGCRS["GDA2020",
-                      DATUM["GDA2020",
-                          ELLIPSOID["GRS_1980",6378137,298.257222101,
-                              LENGTHUNIT["metre",1]]],
-                      PRIMEM["Greenwich",0,
-                          ANGLEUNIT["Degree",0.0174532925199433]],
-                      CS[ellipsoidal,2],
-                          AXIS["geodetic latitude (Lat)",north,
-                              ORDER[1],
-                              ANGLEUNIT["degree",0.0174532925199433]],
-                          AXIS["geodetic longitude (Lon)",east,
-                              ORDER[2],
-                              ANGLEUNIT["degree",0.0174532925199433]]]"
-                  EOS
+      GEOGCRS["GDA2020",
+        DATUM["GDA2020",
+            ELLIPSOID["GRS_1980",6378137,298.257222101,
+                LENGTHUNIT["metre",1]]],
+        PRIMEM["Greenwich",0,
+            ANGLEUNIT["Degree",0.0174532925199433]],
+        CS[ellipsoidal,2],
+            AXIS["geodetic latitude (Lat)",north,
+                ORDER[1],
+                ANGLEUNIT["degree",0.0174532925199433]],
+            AXIS["geodetic longitude (Lon)",east,
+                ORDER[2],
+                ANGLEUNIT["degree",0.0174532925199433]]]"
+    EOS
 
     assert(from_epsg.equivalent_to?(from_wkt, :PJ_COMP_EQUIVALENT))
   end
@@ -136,7 +136,15 @@ class PjObjectTest < AbstractTest
     objects = Proj::PjObject.create_from_name("WGS 84", context, approximate_match: true,
                                               types: [:PJ_TYPE_GEODETIC_CRS, :PJ_TYPE_PROJECTED_CRS])
 
-    expected = proj9? ? 442 : 440
+    expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   443
+                 when Proj::Api::PROJ_VERSION >= '9.0.0'
+                   442
+                 else
+                   440
+               end
+
     assert_equal(expected, objects.size)
   end
 
@@ -149,23 +157,23 @@ class PjObjectTest < AbstractTest
 
   def test_deprecated_true
     wkt = <<~EOS
-          GEOGCRS["SAD69 (deprecated)",
-              DATUM["South_American_Datum_1969",
-                  ELLIPSOID["GRS 1967",6378160,298.247167427,
-                      LENGTHUNIT["metre",1,
-                          ID["EPSG",9001]]]],
-              PRIMEM["Greenwich",0,
+      GEOGCRS["SAD69 (deprecated)",
+          DATUM["South_American_Datum_1969",
+              ELLIPSOID["GRS 1967",6378160,298.247167427,
+                  LENGTHUNIT["metre",1,
+                      ID["EPSG",9001]]]],
+          PRIMEM["Greenwich",0,
+              ANGLEUNIT["degree",0.0174532925199433,
+                  ID["EPSG",9122]]],
+          CS[ellipsoidal,2],
+              AXIS["latitude",north,
+                  ORDER[1],
                   ANGLEUNIT["degree",0.0174532925199433,
                       ID["EPSG",9122]]],
-              CS[ellipsoidal,2],
-                  AXIS["latitude",north,
-                      ORDER[1],
-                      ANGLEUNIT["degree",0.0174532925199433,
-                          ID["EPSG",9122]]],
-                  AXIS["longitude",east,
-                      ORDER[2],
-                      ANGLEUNIT["degree",0.0174532925199433,
-                          ID["EPSG",9122]]]]
+              AXIS["longitude",east,
+                  ORDER[2],
+                  ANGLEUNIT["degree",0.0174532925199433,
+                      ID["EPSG",9122]]]]
     EOS
 
     crs = Proj::Crs.create(wkt)

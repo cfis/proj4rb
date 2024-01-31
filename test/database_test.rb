@@ -51,7 +51,7 @@ class DatabaseTest < AbstractTest
   def test_codes
     types_with_no_codes = [:PJ_TYPE_TEMPORAL_CRS, :PJ_TYPE_BOUND_CRS, :PJ_TYPE_UNKNOWN, :PJ_TYPE_ENGINEERING_CRS,
                            :PJ_TYPE_TEMPORAL_DATUM, :PJ_TYPE_ENGINEERING_DATUM, :PJ_TYPE_PARAMETRIC_DATUM,
-                           :PJ_TYPE_OTHER_COORDINATE_OPERATION]
+                           :PJ_TYPE_OTHER_COORDINATE_OPERATION, :PJ_TYPE_DERIVED_PROJECTED_CRS, :PJ_TYPE_COORDINATE_METADATA]
 
     database = Proj::Database.new(Proj::Context.current)
 
@@ -97,10 +97,12 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info
 
     expected = case
-               when proj9?
-                 13107
-               else
-                 12609
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   13434
+                 when Proj::Api::PROJ_VERSION >= '9.0.0'
+                   13107
+                 else
+                   12609
                end
     assert_equal(expected, crs_infos.count)
 
@@ -125,10 +127,12 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG")
 
     expected = case
-               when proj9?
-                 7251
-               else
-                 7056
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   7477
+                 when Proj::Api::PROJ_VERSION >= '9.0.0'
+                   7251
+                 else
+                   7056
                end
     assert_equal(expected, crs_infos.count)
   end
@@ -140,10 +144,12 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
-               when proj9?
-                 943
-               else
-                 930
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   997
+                 when Proj::Api::PROJ_VERSION >= '9.0.0'
+                   943
+                 else
+                   930
                end
 
     assert_equal(expected, crs_infos.count)
@@ -156,10 +162,12 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
-               when proj9?
-                 5689
-               else
-                 5534
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   5839
+                 when Proj::Api::PROJ_VERSION >= '9.0.0'
+                   5689
+                 else
+                   5534
                end
 
     assert_equal(expected, crs_infos.count)
@@ -176,7 +184,15 @@ class DatabaseTest < AbstractTest
     params.north_lat_degree = 49.1
 
     crs_infos = database.crs_info("EPSG", params)
-    assert_equal(35, crs_infos.count)
+
+    expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   37
+                 else
+                   35
+               end
+
+    assert_equal(expected, crs_infos.count)
   end
 
   def test_crs_info_bounds_exclusive
@@ -191,7 +207,15 @@ class DatabaseTest < AbstractTest
     params.crs_area_of_use_contains_bbox = 0
 
     crs_infos = database.crs_info("EPSG", params)
-    assert_equal(38, crs_infos.count)
+
+    expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   40
+                 else
+                   38
+               end
+
+    assert_equal(expected, crs_infos.count)
   end
 
   def test_crs_info_celestial_body
@@ -201,10 +225,12 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
-               when proj9?
-                 6723
-               else
-                 6532
+                 when Proj::Api::PROJ_VERSION >= '9.3.0'
+                   6951
+                 when Proj::Api::PROJ_VERSION >= '9.0.0'
+                   6723
+                 else
+                   6532
                end
 
     assert_equal(expected, crs_infos.count)
@@ -237,7 +263,7 @@ class DatabaseTest < AbstractTest
     bodies = database.celestial_bodies
 
     expected = case
-               when proj9?
+               when Proj::Api::PROJ_VERSION >= '9.0.0'
                  176
                else
                  170
@@ -255,7 +281,7 @@ class DatabaseTest < AbstractTest
     bodies = database.celestial_bodies('ESRI')
 
     expected = case
-               when proj9?
+               when Proj::Api::PROJ_VERSION >= '9.0.0'
                  78
                else
                  72
@@ -349,7 +375,7 @@ class DatabaseTest < AbstractTest
     refute(name)
   end
 
-  if proj7?
+  if Proj::Api::PROJ_VERSION >= '7.0.0'
     # This test causes a segmentation fault on proj6
     def test_metadata_invalid
       database = Proj::Database.new(Proj::Context.current)
