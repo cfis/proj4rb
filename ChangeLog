@@ -1,3 +1,8 @@
+4.1.1 - January 30, 2024
+======================
+* Update tests for Proj 9.3
+* Initial support for CoordinateMetadata in Proj 9.4 (not released yet)
+
 4.1.0 - March 12, 2023
 ======================
 * Fix YARD warnings
