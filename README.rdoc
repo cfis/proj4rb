@@ -1,5 +1,5 @@
 = Proj4rb
-This gem provides Ruby bindings for the Proj Library (https://proj.org). The Proj Library supports converting coordinates between a number of different coordinate systems and projections. Note the Proj library used to be know as Proj4.
+This gem provides Ruby bindings for the Proj Library (https://proj.org). The Proj Library supports converting coordinates between a number of different coordinate systems and projections. Note the Proj library used to be known as Proj4.
 
 The bindings support Proj version 4 through the current version (9.3.1). The Proj library and API were completelely written during this time. To support all these versions, the gem dynamically loads code based on the installed Proj version.
 
