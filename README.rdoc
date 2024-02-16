@@ -56,7 +56,7 @@ To create a coordinate system, you can use CRS codes, well-known text (WKT) stri
 
 Notice when using the old-style Proj4 string, the addition of the "+type=crs" value.
 
-If you are using Proj 5 or newer, then you should create a [transformation](#tranformation) using epsg strings. If you are using Proj 4, you need to use the deprecated Projection class (see documentation).
+If you are using Proj 5 or newer, then you should create a transformation[#tranformation] using epsg strings. If you are using Proj 4, you need to use the deprecated Projection class (see documentation).
 
 === Transformation
 After you have created two coordinate systems, you can then create a transformation. For example, if you want to convert coordinates from the `3-degree Gauss-Kruger zone 3` coordinate system to `WGS84` (one version of lat-long) first create a transformation:
