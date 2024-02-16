@@ -6,7 +6,7 @@ The bindings support Proj version 4 through the current version (9.3.1). The Pro
 == Documentation
 Reference documentation is available at https://rubydoc.info/github/cfis/proj4rb.
 
-Examples can be found in this README file as well as in the Examples file. In addition, the test suite has exapmles of calling almost every API so when in doubt take a look at them!
+Examples can be found in this README file as well as in the Examples file. In addition, the test suite has examples of calling almost every API so when in doubt take a look at them!
 
 == Installation
 First install the gem:
@@ -25,8 +25,7 @@ If you are using the old Proj4 namespace, then you can do this:
   require 'proj4'
 
 === CRS
-To create a coordinate system, you can use CRS codes, well-known text (WKT) strings
- or old-style Proj strings (which are deprecated).
+To create a coordinate system, you can use CRS codes, well-known text (WKT) strings or old-style Proj strings (which are deprecated).
 
     crs1 = Proj::Crs.new('EPSG:4326')
 
@@ -57,10 +56,10 @@ To create a coordinate system, you can use CRS codes, well-known text (WKT) stri
 
 Notice when using the old-style Proj4 string, the addition of the "+type=crs" value.
 
-If you are using Proj 5 or newer, then you should create a transformation using epsg strings (see below). If you are using Proj 4, you need to use the deprecated Projection class (see documentation).
+If you are using Proj 5 or newer, then you should create a [transformation](#tranformation) using epsg strings. If you are using Proj 4, you need to use the deprecated Projection class (see documentation).
 
 === Transformation
-After you have created two coordinate systems, you can then create a transformation. For example, if you want to convert coordinates from the "3-degree Gauss-Kruger zone 3" coordinate system to WGS84 (one version of lat-long) first create a transformation:
+After you have created two coordinate systems, you can then create a transformation. For example, if you want to convert coordinates from the `3-degree Gauss-Kruger zone 3` coordinate system to `WGS84` (one version of lat-long) first create a transformation:
 
     crs_gk  = Proj::Crs.new('EPSG:31467')
     crs_wgs84 = Proj::Crs.new('EPSG:4326')
@@ -71,8 +70,7 @@ creating Crs instances. Instead, pass the EPSG information directly to the trans
 
     transform = Proj::Transformation.new('EPSG:31467', 'EPSG:4326')
 
-Once you've created the transformation, you can tranform coordinates using either
-the +forward+ or +inverse+ methods. The forward transformation looks like this:
+Once you've created the transformation, you can tranform coordinates using either the +forward+ or +inverse+ methods. The forward transformation looks like this:
 
     from = Proj::Coordinate.new(x: 5428192.0, y: 3458305.0, z: -5.1790915237)
     to = transform.forward(from)
@@ -101,17 +99,17 @@ Transformations are a type of Coordinate Operation. PROJ divides coordinate oper
 
 Conversions are coordinate operations that do not exert a change in reference frame. The Ruby bindings support these via the Conversion class. See https://proj.org/operations/conversions/index.html for more information.
 
-Projections are cartographic mappings of the sphere onto the plane. Technically projections are conversions (according to ISO standards), but PROJ distinguishes them from conversions. The Ruby bindings support these via the Projection module which has methods to create many common projections. A list can be found at https://proj.org/operations/projections/index.html.
+Projections are cartographic mappings of a sphere onto a plane. Technically projections are conversions (according to ISO standards), but PROJ distinguishes them from conversions. The Ruby bindings support these via the Projection module which has methods to create many common projections. A list can be found at https://proj.org/operations/projections/index.html.
 
 Transformations are coordinate operations that do cause a change in reference frames. The Ruby bindings support these via the Transformation class.
 
 For more information see https://proj.org/operations/index.html
 
 === Operation Factory
-The OperationFactoryContext class can be used to build coordinate operations between two CRSes. This is done by first creating a factory and setting appropiate filters. These include spatial filters, accuracy filters, grid availability filters, etc. Once filters are set, then the factory can be queried for a list of possible conversions. For examples, please see the operation_factory_context_test.rb file.
+The `OperationFactoryContext` class can be used to build coordinate operations between two CRSes. This is done by first creating a factory and setting appropiate filters. These include spatial filters, accuracy filters, grid availability filters, etc. Once filters are set, then the factory can be queried for a list of possible conversions. For examples, please see the operation_factory_context_test.rb file.
 
 === Coordinate
-Notice the examples above transform Coordinate objects. A Coordinate consists of up to four double values to represent three directions plus time. In general you will need to fill out at least the first two values:
+Notice the examples above transform Coordinate objects. A Coordinate consists of up to four double values to represent three directions plus time. In general you will need to fill in at least the first two values:
 
     from = Proj::Coordinate.new(x: 5428192.0, y: 3458305.0, z: -5.1790915237)
     from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
@@ -119,11 +117,11 @@ Notice the examples above transform Coordinate objects. A Coordinate consists of
 Lam is longitude and phi is latitude.
 
 === Axis Order
-By default tranformations accept coordinates expressed in the units and axis order of the source CRS and return transformed coordinates in the units and axis order of the target CRS.
+By default, tranformations accept coordinates expressed in the units and axis order of the source CRS and return transformed coordinates in the units and axis order of the target CRS.
 
 For most geographic CRSes, the units will be in degrees. For geographic CRSes defined by the EPSG authority, the order of coordinates is latitude and then longitude.
 
-For projected CRSes, the units will vary (metre, us-foot, etc.). For projected CRS defined by the EPSG authority, and with EAST / NORTH directions, the order might may be east and then north or north and then east.
+For projected CRSes, the units will vary (metre, us-foot, etc.). For projected CRSes defined by the EPSG authority, and with EAST / NORTH directions, the order might may be east and then north or north and then east.
 
 If you prefer to work with a uniform axis order, regardless of the axis orders mandated by the source and target CRSes, then call the Context#normalize_for_visualization method:
 
@@ -139,18 +137,18 @@ Contexts are used to support multi-threaded programs. The bindings expose this o
 Both Crs and Transformation objects take a context object in their constructors. If none is passed, they default to using Context.current
 
 == Network Access
-Proj supports downloading grid files on demand if network access is enabled (it is disabled by default). To enable network use the method Context#network_enabled=. To specify the url endpoint use Context#url=. Advanced users can replace Proj's networking code, which uses libcurl, with their own implementation. To do this see the NetworkApi class.
+Proj supports downloading grid files on demand if network access is enabled (it is disabled by default). To enable network use the method `Context#network_enabled=`. To specify the url endpoint use `Context#url=`. Advanced users can replace Proj's networking code, which uses libcurl, with their own implementation. To do this see the `NetworkApi` class.
 
-Downloaded grids are cached in a sqlite file named cache.db. To specify the location, size and other characteristics of the cache file refer to the GridCache class which is accessible via Context#cache. By default the cache size is 300MB. Caching is on by default but can be disabled via GridCache#enabled=.
+Downloaded grids are cached in a sqlite file named cache.db. To specify the location, size and other characteristics of the cache file refer to the `GridCache` class which is accessible via `Context#cache`. By default the cache size is 300MB. Caching is on by default but can be disabled via `GridCache#enabled=`.
 
 == Error handling
-When an error occurs, a Proj::Error instance will be thrown with the underlying message provided from the Proj library.
+When an error occurs, a `Proj::Error` instance will be thrown with the underlying message provided from the Proj library.
 
 == Finding Proj Library (PROJ_LIB_PATH)
-proj4rb will search in a number of well-known locations for the libproj shared library. You can override this by specifying the full path to the library using the PROJ_LIB_PATH environmental variable.
+proj4rb will search in a number of well-known locations for the libproj shared library. You can override this by specifying the full path to the library using the `PROJ_LIB_PATH` environmental variable.
 
 == Finding Proj Files (PROJ_DATA)
-Starting with version 6, Proj stores its information (datums, ellipsoids, prime meridians, coordinate systems, units, etc) in a sqlite file called proj.db. If Proj cannot find its database an exception will be raised. In this case, you can set the environmental variable PROJ_DATA to point to the folder that contains the proj.db file. Note PROJ_LIB must be set by whatever launches your Ruby program. The Ruby program itself cannot set this variable and have it work correctly (at least not on windows).
+Starting with version 6, Proj stores its information (datums, ellipsoids, prime meridians, coordinate systems, units, etc) in a sqlite file called proj.db. If Proj cannot find its database an exception will be raised. In this case, you can set the environmental variable `PROJ_DATA` to point to the folder that contains the proj.db file. Note PROJ_LIB must be set *before* Ruby is launched. Ruby itself cannot set this variable and have it work correctly (at least not on windows).
 
 For more information see https://proj.org/resource_files.html
 
@@ -161,9 +159,11 @@ The proj4rb class hierarchy is based on Proj's class hiearchy which, in turn, is
      CoordinateOperationMixin
        Conversion
        Transformation
+     CoordinateMetadata
      CoordinateSystem
      Crs
      Datum
+     DatumEnsemble
      Ellipsoid
      PrimeMerdian
 
@@ -177,13 +177,11 @@ The PjObject class defines several methods to create new objects:
 The methods will return instances of the correct subclass.
 
 == Tests
-Proj4rb ships with a full test suite designed to work using Proj 6. If you are using an earlier version of Proj, then expect *many* test failures.
+Proj4rb ships with a full test suite designed to work using Proj 6 and higher. If you are using an earlier version of Proj, then expect *many* test failures.
 
 == License
 Proj4rb is released under the MIT license.
 
 == Authors
-The proj4rb Ruby bindings were started by Guilhem Vellut with most of the code 
-written by Jochen Topf.  Charlie Savage ported the code to Windows and added 
-the Windows build infrastructure. Later, he rewrote the code to support
-Proj version 5, 6, 7, 8 and 9 and ported it to use FFI.
+The proj4rb Ruby bindings were started by Guilhem Vellut with most of the code written by Jochen Topf.  Charlie Savage ported the code to Windows and added 
+the Windows build infrastructure. Later, he rewrote the code to support Proj version 5, 6, 7, 8 and 9 and ported it to use FFI.
