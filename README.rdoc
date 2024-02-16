@@ -141,6 +141,8 @@ Proj supports downloading grid files on demand if network access is enabled (it 
 
 Downloaded grids are cached in a sqlite file named cache.db. To specify the location, size and other characteristics of the cache file refer to the `GridCache` class which is accessible via `Context#cache`. By default the cache size is 300MB. Caching is on by default but can be disabled via `GridCache#enabled=`.
 
+For more information see the proj networking[https://proj.org/en/latest/usage/network.html#how-to-enable-network-capabilities] documentation.
+
 == Error handling
 When an error occurs, a `Proj::Error` instance will be thrown with the underlying message provided from the Proj library.
 
