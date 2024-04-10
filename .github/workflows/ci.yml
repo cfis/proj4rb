@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: CPU architecture
+        run: uname -p
       - name: Install Proj (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
