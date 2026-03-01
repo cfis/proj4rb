@@ -1,0 +1,54 @@
+[project]
+
+site_name = "proj4rb"
+site_description = "Ruby bindings for the Proj coordinate transformation library"
+site_url = "https://cfis.github.io/proj4rb/"
+
+repo_name = "cfis/proj4rb"
+repo_url = "https://github.com/cfis/proj4rb"
+
+nav = [
+  { "Home" = "index.md" },
+  { "CRS" = "crs.md" },
+  { "Coordinate Operations" = "coordinate_operations.md" },
+  { "Geodetic Objects" = "geodetic_objects.md" },
+  { "Database" = "database.md" },
+  { "Grids" = "grids.md" },
+  { "Contexts" = "contexts.md" },
+  { "Serialization" = "serialization.md" },
+  { "Examples" = "examples.md" },
+  { "Configuration" = "configuration.md" },
+]
+
+[project.theme]
+
+variant = "classic"
+
+features = [
+  "navigation.top",
+  "search.highlight",
+  "content.code.copy",
+]
+
+[[project.theme.palette]]
+scheme = "default"
+primary = "indigo"
+accent = "indigo"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "indigo"
+accent = "indigo"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[project.markdown_extensions.tables]
+
+[project.markdown_extensions.pymdownx.highlight]
+
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
+]
