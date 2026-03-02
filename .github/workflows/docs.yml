@@ -5,7 +5,10 @@ on:
     branches: [master]
     paths:
       - 'docs/**'
+      - 'lib/**'
+      - 'yard_templates/**'
       - 'zensical.toml'
+      - '.yardopts'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
@@ -29,11 +32,23 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: false
+
       - name: Install zensical
         run: pip install zensical
 
-      - name: Build docs
+      - name: Install YARD
+        run: gem install yard
+
+      - name: Build guide docs
         run: zensical build --clean
+
+      - name: Build API reference
+        run: yardoc --output-dir site/reference
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

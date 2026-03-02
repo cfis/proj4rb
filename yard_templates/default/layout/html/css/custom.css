@@ -1,0 +1,427 @@
+/* proj4rb YARD theme — matches zensical indigo color scheme */
+
+:root {
+  --primary: #3f51b5;
+  --primary-light: #c5cae9;
+  --primary-dark: #303f9f;
+  --accent: #536dfe;
+  --text: #37474f;
+  --text-light: #607d8b;
+  --bg: #fafafa;
+  --bg-card: #ffffff;
+  --border: #e0e0e0;
+  --border-light: #eeeeee;
+  --code-bg: #f5f5f5;
+  --code-border: #e8e8e8;
+  --code-text: #c62828;
+  --link: #3f51b5;
+  --link-hover: #1a237e;
+  --highlight: #e8eaf6;
+  --signature-bg: #e8eaf6;
+  --signature-border: #c5cae9;
+  --nav-bg: #fafafa;
+  --nav-border: #e0e0e0;
+  --tag-bg: #e8eaf6;
+  --tag-border: #c5cae9;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+/* Base */
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+}
+
+
+/* Main content area */
+#main {
+  background: var(--bg-card);
+  padding: 2em;
+  padding-top: 0.5em;
+  line-height: 1.6;
+}
+
+/* Navigation sidebar */
+.nav_wrap {
+  background: var(--nav-bg);
+  border-right: 1px solid var(--nav-border);
+}
+
+#nav {
+  border-right: 1px solid var(--nav-border);
+}
+
+/* Headings */
+h1 {
+  font-size: 1.75em;
+  font-weight: 600;
+  color: var(--primary-dark);
+  border-top: 2px solid var(--primary-light);
+  padding-top: 0.75em;
+  margin-top: 1.25em;
+}
+
+h1.noborder {
+  border-top: 0;
+}
+
+h1.title {
+  color: var(--primary-dark);
+  font-size: 1.8em;
+}
+
+h2 {
+  font-size: 1.35em;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 2px solid var(--primary-light);
+  padding-bottom: 0.4em;
+}
+
+h2 small a {
+  background: var(--highlight);
+  border: 1px solid var(--border);
+  border-bottom: 0;
+  color: var(--primary);
+  border-top-left-radius: 5px;
+}
+
+/* Links */
+a {
+  color: var(--link);
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+#content a, #content a:visited {
+  color: var(--link);
+}
+
+#content a:hover {
+  color: var(--link-hover);
+  background: var(--highlight);
+}
+
+/* Docstrings and tags */
+.docstring, .tags, #filecontents {
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.docstring p > code, .docstring p > tt,
+.tags p > code, .tags p > tt {
+  color: var(--code-text);
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.summary_desc .object_link a, .docstring .object_link a {
+  font-family: var(--font-mono);
+  color: var(--primary);
+  background: var(--highlight);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.95em;
+}
+
+/* Method signatures */
+p.signature, h3.signature {
+  font-family: var(--font-mono);
+  font-size: 1em;
+  font-weight: normal;
+  padding: 10px 14px;
+  background: var(--signature-bg);
+  border: 1px solid var(--signature-border);
+  border-radius: 6px;
+  border-left: 4px solid var(--primary);
+  margin-top: 1.25em;
+}
+
+/* Method details */
+.method_details {
+  border-top: 1px solid var(--border-light);
+  margin-top: 2em;
+  padding-top: 0.5em;
+}
+
+/* Summary list */
+ul.summary {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.summary_signature {
+  padding: 6px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.summary_signature:hover {
+  background: var(--highlight);
+  border-color: var(--signature-border);
+}
+
+.summary_desc {
+  font-family: var(--font-sans);
+  font-size: 1em;
+  margin-left: 32px;
+  color: var(--text-light);
+}
+
+/* Tags section (params, returns, see) */
+.tags .tag_title {
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 4px;
+}
+
+.tags ul {
+  margin-top: 5px;
+  padding-left: 24px;
+}
+
+.tags ul li {
+  margin-bottom: 4px;
+  line-height: 1.6;
+}
+
+.tags ul .name {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tags .examples .tag_title {
+  color: var(--primary-dark);
+}
+
+/* Overload signatures */
+.tags .overload .overload_item .signature {
+  background: var(--highlight);
+  border: 1px solid var(--signature-border);
+  border-radius: 4px;
+  padding: 4px 10px;
+}
+
+/* Notes */
+.note {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin: 16px 0;
+  background: var(--bg);
+}
+
+.note.title {
+  border-radius: 4px;
+  font-size: 0.85em;
+  padding: 3px 8px;
+}
+
+.note.title.constructor {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: #fff;
+}
+
+.note.title.readonly {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: #fff;
+}
+
+.note.title.writeonly {
+  background: #43a047;
+  border-color: #2e7d32;
+  color: #fff;
+}
+
+.note.deprecated {
+  background: #fce4ec;
+  border-color: #ef9a9a;
+}
+
+.note.todo {
+  background: #fff8e1;
+  border-color: #ffe082;
+}
+
+/* Box info (class metadata) */
+.box_info dl dt {
+  background: var(--highlight);
+  border-color: var(--border);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.box_info dl dd {
+  border-color: var(--border);
+}
+
+.box_info dl:nth-child(odd) > * { background: var(--bg); }
+.box_info dl:nth-child(even) > * { background: var(--bg-card); }
+
+/* Tables */
+#filecontents table, .docstring table {
+  border-collapse: collapse;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+#filecontents table th, #filecontents table td,
+.docstring table th, .docstring table td {
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+}
+
+#filecontents table tr:nth-child(odd),
+.docstring table tr:nth-child(odd) { background: var(--bg); }
+
+#filecontents table tr:nth-child(even),
+.docstring table tr:nth-child(even) { background: var(--bg-card); }
+
+#filecontents table th, .docstring table th {
+  background: var(--highlight);
+  font-weight: 600;
+}
+
+/* Code blocks */
+#filecontents pre.code, .docstring pre.code,
+.tags pre.example {
+  padding: 14px 18px;
+  border: 1px solid var(--code-border);
+  background: var(--code-bg);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* Inline code outside pre */
+*:not(pre) > code {
+  padding: 2px 5px;
+  border: 1px solid var(--code-border);
+  background: var(--code-bg);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* Source code toggle */
+.source_code {
+  border-left: 4px solid var(--primary-light);
+  margin-top: 8px;
+  padding: 4px 12px;
+}
+
+/* Search */
+#search a {
+  background: var(--highlight);
+  border: 1px solid var(--signature-border);
+  color: var(--primary);
+  fill: var(--primary);
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  box-shadow: none;
+}
+
+#search a:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  fill: var(--primary-dark);
+}
+
+#search a.active {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: #fff;
+  fill: #fff;
+}
+
+/* Footer */
+#footer {
+  border-top: 1px solid var(--border);
+  color: var(--text-light);
+}
+
+#footer a, #footer a:visited {
+  color: var(--text);
+  border-bottom: 1px dotted var(--border);
+}
+
+#footer a:hover {
+  color: var(--primary);
+}
+
+/* Menu */
+#menu .title {
+  color: var(--primary-dark);
+}
+
+#menu a, #menu a:visited {
+  color: var(--text);
+  border-bottom: 1px dotted var(--border);
+}
+
+#menu a:hover {
+  color: var(--primary);
+}
+
+/* TOC */
+#toc {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 16px 24px;
+}
+
+/* Constants */
+dl.constants dt {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Inherited */
+h3.inherited {
+  font-family: var(--font-sans);
+  color: var(--text-light);
+}
+
+/* Full tree */
+ul.fullTree li {
+  padding-top: 16px;
+  padding-bottom: 12px;
+}
+
+/* Alternating list items */
+li.r1 { background: var(--bg); }
+li.r2 { background: var(--bg-card); }
+
+/* Deprecated */
+#content ul.summary li.deprecated .summary_signature a,
+#content ul.summary li.deprecated .summary_signature a:visited {
+  text-decoration: line-through;
+  color: var(--text-light);
+}
+
+/* Mobile nav panel */
+@media (max-width: 920px) {
+  #nav {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    box-shadow: -4px 4px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+  }
+}

@@ -1,1 +1,1 @@
---no-private --protected lib/**/*.rb - Examples.rdoc
+--no-private --protected --template-path yard_templates lib/**/*.rb

@@ -4,7 +4,7 @@ Ruby bindings for the [Proj](https://proj.org) coordinate transformation library
 
 ## Documentation
 
-Reference documentation is available at [rubydoc.info/github/cfis/proj4rb](https://rubydoc.info/github/cfis/proj4rb).
+Reference documentation is available at [API Reference](reference/).
 
 Examples can be found in the [Examples](examples.md) page. In addition, the test suite has examples of calling almost every API so when in doubt take a look at them.
 

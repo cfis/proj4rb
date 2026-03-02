@@ -1,0 +1,59 @@
+/* proj4rb YARD sidebar theme — matches zensical indigo color scheme */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  background: #fafafa;
+}
+
+h1 {
+  font-size: 1.3em;
+  font-weight: 600;
+  color: #303f9f;
+}
+
+.fixed_header {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+a, a:visited {
+  color: #3f51b5;
+  text-decoration: none;
+}
+
+li.odd { background: #f5f5f5; }
+li.even { background: #fafafa; }
+
+.item:hover {
+  background: #e8eaf6;
+}
+
+li.clicked > .item {
+  background: #3f51b5;
+  color: #e8eaf6;
+}
+
+li.clicked > .item a, li.clicked > .item a:visited {
+  color: #fff;
+}
+
+#search input {
+  border: 1px solid #c5cae9;
+  border-radius: 4px;
+  padding: 3px 6px;
+}
+
+#search input:focus {
+  border-color: #3f51b5;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.15);
+}
+
+#full_list_nav a, #nav a:visited {
+  color: #3f51b5;
+}
+
+#full_list_nav a:hover {
+  color: #1a237e;
+}
