@@ -1,4 +1,5 @@
 format: FFI
+project: proj
 input: /usr/include
 output: lib/api
 module: Proj::Api

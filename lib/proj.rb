@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-require_relative 'api/_ffi'
+require_relative 'api/proj_ffi'
 
 module Proj
   # Compatibility constant used by wrapper classes
