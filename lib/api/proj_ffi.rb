@@ -36,5 +36,6 @@ module Proj
   end
 end
 
+require_relative 'proj_version'
 require_relative './proj'
 require_relative './proj_experimental'

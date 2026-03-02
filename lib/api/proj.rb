@@ -1,15 +1,5 @@
 module Proj
   module Api
-    PROJ_VERSION_MAJOR = 9
-    PROJ_VERSION_MINOR = 6
-    PROJ_VERSION_PATCH = 2
-    # libclang cannot evaluate macro expressions, so ruby-bindgen cannot emit this computed constant.
-    # Must be added manually after each regeneration.
-    PROJ_VERSION_NUMBER = PROJ_VERSION_MAJOR * 10000 + PROJ_VERSION_MINOR * 100 + PROJ_VERSION_PATCH
-    PJ_DEFAULT_CTX = 0
-    PROJ_ERR_INVALID_OP = 1024
-    PROJ_ERR_COORD_TRANSFM = 2048
-    PROJ_ERR_OTHER = 4096
     attach_variable :PjRelease, :pj_release, :string
     typedef :pointer, :PjArea
 
@@ -144,17 +134,6 @@ module Proj
              :lp, PjLp
     end
 
-    class PjInfo < FFI::Struct
-      layout :major, :int,
-             :minor, :int,
-             :patch, :int,
-             :release, :string,
-             :version, :string,
-             :searchpath, :string,
-             :paths, :pointer,
-             :path_count, :ulong
-    end
-
     class PjProjInfo < FFI::Struct
       layout :id, :string,
              :description, :string,
@@ -265,7 +244,6 @@ module Proj
     attach_function :proj_errno_reset, :proj_errno_reset, [:pointer], :int
     attach_function :proj_errno_restore, :proj_errno_restore, [:pointer, :int], :int
     attach_function :proj_factors, :proj_factors, [:pointer, PjCoord.by_value], P5Factors.by_value
-    attach_function :proj_info, :proj_info, [], PjInfo.by_value
     attach_function :proj_pj_info, :proj_pj_info, [:pointer], PjProjInfo.by_value
     attach_function :proj_grid_info, :proj_grid_info, [:string], PjGridInfo.by_value
     attach_function :proj_init_info, :proj_init_info, [:string], PjInitInfo.by_value
@@ -491,12 +469,12 @@ module Proj
     attach_function :proj_create_cs, :proj_create_cs, [:pointer, PjCoordinateSystemType, :int, :pointer], :pointer
     attach_function :proj_create_conversion, :proj_create_conversion, [:pointer, :string, :string, :string, :string, :string, :string, :int, :pointer], :pointer
     attach_function :proj_create_transformation, :proj_create_transformation, [:pointer, :string, :string, :string, :pointer, :pointer, :pointer, :string, :string, :string, :int, :pointer, :double], :pointer
-    if PROJ_VERSION_NUMBER >= 50100
+    if proj_version >= 50100
       attach_function :proj_errno_string, :proj_errno_string, [:int], :string
       attach_function :proj_log_level, :proj_log_level, [:pointer, PjLogLevel], PjLogLevel
       attach_function :proj_log_func, :proj_log_func, [:pointer, :pointer, :pj_log_function], :void
     end
-    if PROJ_VERSION_NUMBER >= 60000
+    if proj_version >= 60000
       attach_function :proj_context_set_file_finder, :proj_context_set_file_finder, [:pointer, :proj_file_finder, :pointer], :void
       attach_function :proj_context_set_search_paths, :proj_context_set_search_paths, [:pointer, :int, :pointer], :void
       attach_function :proj_context_use_proj4_init_rules, :proj_context_use_proj4_init_rules, [:pointer, :int], :void
@@ -656,10 +634,10 @@ module Proj
       attach_function :proj_create_conversion_spherical_cross_track_height, :proj_create_conversion_spherical_cross_track_height, [:pointer, :double, :double, :double, :double, :string, :double, :string, :double], :pointer
       attach_function :proj_create_conversion_equal_earth, :proj_create_conversion_equal_earth, [:pointer, :double, :double, :double, :string, :double, :string, :double], :pointer
     end
-    if PROJ_VERSION_NUMBER >= 60100
+    if proj_version >= 60100
       attach_function :proj_normalize_for_visualization, :proj_normalize_for_visualization, [:pointer, :pointer], :pointer
     end
-    if PROJ_VERSION_NUMBER >= 60200
+    if proj_version >= 60200
       attach_function :proj_create_crs_to_crs_from_pj, :proj_create_crs_to_crs_from_pj, [:pointer, :pointer, :pointer, :pointer, :pointer], :pointer
       attach_function :proj_cleanup, :proj_cleanup, [], :void
       attach_function :proj_context_set_autoclose_database, :proj_context_set_autoclose_database, [:pointer, :int], :void
@@ -671,7 +649,7 @@ module Proj
       attach_function :proj_concatoperation_get_step_count, :proj_concatoperation_get_step_count, [:pointer, :pointer], :int
       attach_function :proj_concatoperation_get_step, :proj_concatoperation_get_step, [:pointer, :pointer, :int], :pointer
     end
-    if PROJ_VERSION_NUMBER >= 60300
+    if proj_version >= 60300
       attach_function :proj_is_equivalent_to_with_ctx, :proj_is_equivalent_to_with_ctx, [:pointer, :pointer, :pointer, PjComparisonCriterion], :int
       attach_function :proj_coordoperation_create_inverse, :proj_coordoperation_create_inverse, [:pointer, :pointer], :pointer
       attach_function :proj_create_ellipsoidal_3d_cs, :proj_create_ellipsoidal_3D_cs, [:pointer, PjEllipsoidalCs3dType, :string, :double, :string, :double], :pointer
@@ -685,7 +663,7 @@ module Proj
       attach_function :proj_create_conversion_vertical_perspective, :proj_create_conversion_vertical_perspective, [:pointer, :double, :double, :double, :double, :double, :double, :string, :double, :string, :double], :pointer
       attach_function :proj_create_conversion_pole_rotation_grib_convention, :proj_create_conversion_pole_rotation_grib_convention, [:pointer, :double, :double, :double, :string, :double], :pointer
     end
-    if PROJ_VERSION_NUMBER >= 70000
+    if proj_version >= 70000
       attach_function :proj_context_set_fileapi, :proj_context_set_fileapi, [:pointer, ProjFileApi.by_ref, :pointer], :int
       attach_function :proj_context_set_sqlite3_vfs_name, :proj_context_set_sqlite3_vfs_name, [:pointer, :string], :void
       attach_function :proj_context_set_network_callbacks, :proj_context_set_network_callbacks, [:pointer, :proj_network_open_cbk_type, :proj_network_close_cbk_type, :proj_network_get_header_value_cbk_type, :proj_network_read_range_type, :pointer], :int
@@ -701,7 +679,7 @@ module Proj
       callback :proj_download_file_progress_cbk_callback, [:pointer, :double, :pointer], :int
       attach_function :proj_download_file, :proj_download_file, [:pointer, :string, :int, :proj_download_file_progress_cbk_callback, :pointer], :int
     end
-    if PROJ_VERSION_NUMBER >= 70100
+    if proj_version >= 70100
       attach_function :proj_context_get_url_endpoint, :proj_context_get_url_endpoint, [:pointer], :string
       attach_function :proj_context_get_user_writable_directory, :proj_context_get_user_writable_directory, [:pointer, :int], :string
       attach_function :proj_degree_input, :proj_degree_input, [:pointer, PjDirection], :int
@@ -711,7 +689,7 @@ module Proj
       attach_function :proj_operation_factory_context_set_allow_ballpark_transformations, :proj_operation_factory_context_set_allow_ballpark_transformations, [:pointer, :pointer, :int], :void
       attach_function :proj_get_suggested_operation, :proj_get_suggested_operation, [:pointer, :pointer, PjDirection, PjCoord.by_value], :int
     end
-    if PROJ_VERSION_NUMBER >= 70200
+    if proj_version >= 70200
       attach_function :proj_context_clone, :proj_context_clone, [:pointer], :pointer
       attach_function :proj_context_set_ca_bundle_path, :proj_context_set_ca_bundle_path, [:pointer, :string], :void
       attach_function :proj_crs_get_datum_ensemble, :proj_crs_get_datum_ensemble, [:pointer, :pointer], :pointer
@@ -721,11 +699,11 @@ module Proj
       attach_function :proj_datum_ensemble_get_member, :proj_datum_ensemble_get_member, [:pointer, :pointer, :int], :pointer
       attach_function :proj_dynamic_datum_get_frame_reference_epoch, :proj_dynamic_datum_get_frame_reference_epoch, [:pointer, :pointer], :double
     end
-    if PROJ_VERSION_NUMBER >= 80000
+    if proj_version >= 80000
       attach_function :proj_context_errno_string, :proj_context_errno_string, [:pointer, :int], :string
       attach_function :proj_crs_is_derived, :proj_crs_is_derived, [:pointer, :pointer], :int
     end
-    if PROJ_VERSION_NUMBER >= 80100
+    if proj_version >= 80100
       attach_function :proj_context_get_database_structure, :proj_context_get_database_structure, [:pointer, :pointer], :pointer
       attach_function :proj_get_geoid_models_from_database, :proj_get_geoid_models_from_database, [:pointer, :string, :string, :pointer], :pointer
       attach_function :proj_get_celestial_body_list_from_database, :proj_get_celestial_body_list_from_database, [:pointer, :string, :pointer], :pointer
@@ -735,32 +713,32 @@ module Proj
       attach_function :proj_get_insert_statements, :proj_get_insert_statements, [:pointer, :pointer, :pointer, :string, :string, :int, :pointer, :pointer], :pointer
       attach_function :proj_get_celestial_body_name, :proj_get_celestial_body_name, [:pointer, :pointer], :string
     end
-    if PROJ_VERSION_NUMBER >= 80200
+    if proj_version >= 80200
       attach_function :proj_trans_bounds, :proj_trans_bounds, [:pointer, :pointer, PjDirection, :double, :double, :double, :double, :pointer, :pointer, :pointer, :pointer, :int], :int
       attach_function :proj_create_conversion_pole_rotation_netcdf_cf_convention, :proj_create_conversion_pole_rotation_netcdf_cf_convention, [:pointer, :double, :double, :double, :string, :double], :pointer
     end
-    if PROJ_VERSION_NUMBER >= 90100
+    if proj_version >= 90100
       attach_function :proj_area_set_name, :proj_area_set_name, [:pointer, :string], :void
       attach_function :proj_trans_get_last_used_operation, :proj_trans_get_last_used_operation, [:pointer], :pointer
       attach_function :proj_operation_factory_context_set_area_of_interest_name, :proj_operation_factory_context_set_area_of_interest_name, [:pointer, :pointer, :string], :void
     end
-    if PROJ_VERSION_NUMBER >= 90200
+    if proj_version >= 90200
       attach_function :proj_get_domain_count, :proj_get_domain_count, [:pointer], :int
       attach_function :proj_get_scope_ex, :proj_get_scope_ex, [:pointer, :int], :string
       attach_function :proj_coordinate_metadata_get_epoch, :proj_coordinate_metadata_get_epoch, [:pointer, :pointer], :double
       attach_function :proj_create_conversion_tunisia_mining_grid, :proj_create_conversion_tunisia_mining_grid, [:pointer, :double, :double, :double, :double, :string, :double, :string, :double], :pointer
     end
-    if PROJ_VERSION_NUMBER >= 90400
+    if proj_version >= 90400
       attach_function :proj_crs_has_point_motion_operation, :proj_crs_has_point_motion_operation, [:pointer, :pointer], :int
       attach_function :proj_coordinate_metadata_create, :proj_coordinate_metadata_create, [:pointer, :pointer, :double], :pointer
       attach_function :proj_create_conversion_lambert_conic_conformal_1sp_variant_b, :proj_create_conversion_lambert_conic_conformal_1sp_variant_b, [:pointer, :double, :double, :double, :double, :double, :double, :string, :double, :string, :double], :pointer
     end
-    if PROJ_VERSION_NUMBER >= 90500
+    if proj_version >= 90500
       attach_function :proj_context_set_user_writable_directory, :proj_context_set_user_writable_directory, [:pointer, :string, :int], :void
       attach_function :proj_coordoperation_requires_per_coordinate_input_time, :proj_coordoperation_requires_per_coordinate_input_time, [:pointer, :pointer], :int
       attach_function :proj_create_conversion_local_orthographic, :proj_create_conversion_local_orthographic, [:pointer, :double, :double, :double, :double, :double, :double, :string, :double, :string, :double], :pointer
     end
-    if PROJ_VERSION_NUMBER >= 90600
+    if proj_version >= 90600
       attach_function :proj_trans_bounds_3d, :proj_trans_bounds_3D, [:pointer, :pointer, PjDirection, :double, :double, :double, :double, :double, :double, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :int], :int
     end
   end

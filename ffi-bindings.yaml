@@ -22,9 +22,11 @@ library_versions:
   - "12"
   - "11"
 
-version_macro: PROJ_VERSION_NUMBER
-
 symbols:
+  skip:
+    - PJ_INFO
+    - proj_info
+
   versions:
     # 5.1.0
     50100:

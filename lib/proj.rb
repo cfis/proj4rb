@@ -4,7 +4,8 @@ require_relative 'api/proj_ffi'
 
 module Proj
   # Compatibility constant used by wrapper classes
-  PROJ_VERSION = Gem::Version.new("#{Api::PROJ_VERSION_MAJOR}.#{Api::PROJ_VERSION_MINOR}.#{Api::PROJ_VERSION_PATCH}")
+  info = Api.proj_info
+  PROJ_VERSION = Gem::Version.new("#{info[:major]}.#{info[:minor]}.#{info[:patch]}")
   Api::PROJ_VERSION = PROJ_VERSION
 end
 

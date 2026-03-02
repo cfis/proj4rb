@@ -87,19 +87,13 @@ Run ruby-bindgen to regenerate the FFI bindings:
 bundle exec ruby-bindgen ffi-bindings.yaml
 ```
 
-### 5. Manual fixes after regeneration
+### 5. Version detection
 
-After regenerating, apply these manual changes to `lib/api/proj.rb`:
-
-**Add `PROJ_VERSION_NUMBER`:** libclang cannot evaluate macro expressions, so ruby-bindgen cannot emit the computed `PROJ_VERSION_NUMBER` constant. The generated version guards (`if PROJ_VERSION_NUMBER >= ...`) depend on it. After the `PROJ_VERSION_PATCH` line, add:
-
-```ruby
-PROJ_VERSION_NUMBER = PROJ_VERSION_MAJOR * 10000 + PROJ_VERSION_MINOR * 100 + PROJ_VERSION_PATCH
-```
+Version guards in the generated bindings call `proj_version`, a method defined in `lib/api/proj_version.rb`. This file is user-maintained (not overwritten by ruby-bindgen) and reads the runtime library version via `proj_info`. No manual fixes are needed after regeneration.
 
 ### Version number format
 
-PROJ uses the `PROJ_VERSION_NUMBER` macro, computed as `major * 10000 + minor * 100 + patch`. Examples:
+PROJ version numbers are computed as `major * 10000 + minor * 100 + patch`. Examples:
 - 5.0.0 → 50000 (baseline, no version guard)
 - 6.0.0 → 60000
 - 9.4.0 → 90400
