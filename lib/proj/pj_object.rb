@@ -84,7 +84,7 @@ module Proj
     #
     # @param auth_name [String] Authority name (must not be nil)
     # @param code  [String] Object code (must not be nil)
-    # @param category [PJ_CATEGORY] A PJ_CATEGORY enum value
+    # @param category [PjCategory] A PjCategory enum value
     # @param use_alternative_grid_names [Boolean] Whether PROJ alternative grid names should be substituted to the official grid names. Only used on transformations. Defaults to false
     # @param context [Context] Context. If nil the current context is used
     #
@@ -111,15 +111,15 @@ module Proj
     # @param name [String] Search value, must be at least two characters
     # @param context [Context] Context. If nil the current context is used
     # @param auth_name [String] Authority name or nil for all authorities. Default is nil
-    # @param types [Array<PJ_TYPE>] Types of objects to search for or nil for all types. Default is nil
+    # @param types [Array<PjType>] Types of objects to search for or nil for all types. Default is nil
     # @param approximate_match  [Boolean] Whether approximate name identification is allowed. Default is false
     # @param limit [Integer] The maximum number of results to return, use 0 for all results. Default is 0
     #
     # @return [PjObjects] Found objects
     def self.create_from_name(name, context, auth_name: nil, types: nil, approximate_match: false, limit: 0)
       if types
-        types_ptr = FFI::MemoryPointer.new(Api::PJ_TYPE.native_type, types.size)
-        types_ptr.write_array_of_int(types.map { |symbol| Api::PJ_TYPE[symbol]})
+        types_ptr = FFI::MemoryPointer.new(Api::PjType.native_type, types.size)
+        types_ptr.write_array_of_int(types.map { |symbol| Api::PjType[symbol]})
         types_count = types.size
       else
         types_ptr = nil
@@ -147,7 +147,7 @@ module Proj
       out_warnings = FFI::MemoryPointer.new(:pointer)
       out_grammar_errors = FFI::MemoryPointer.new(:pointer)
 
-      # @param wkt_type [PJ_WKT_TYPE] WKT version to output. Defaults to PJ_WKT2_2018
+      # @param wkt_type [PjWktType] WKT version to output. Defaults to PJ_WKT2_2018
       # @param multiline [Boolean] Specifies if output span multiple lines. Defaults to true.
       # @param indentation_width [Integer] Specifies the indentation level. Defaults to 4.
       #
@@ -241,7 +241,7 @@ module Proj
     # @see https://proj.org/development/reference/functions.html#c.proj_is_equivalent_to_with_ctx
     #
     # @param other [PjObject] Object to compare to
-    # @param comparison [PJ_COMPARISON_CRITERION] Comparison criterion
+    # @param comparison [PjComparisonCriterion] Comparison criterion
     #
     # @return [Boolean] True if the objects are equivalent, otherwise false
     def equivalent_to?(other, comparison)
@@ -266,7 +266,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_pj_info
     #
-    # @return [PJ_PROJ_INFO]
+    # @return [PjProjInfo]
     def info
       Api.proj_pj_info(self)
     end
@@ -321,7 +321,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_get_type
     #
-    # @return [PJ_TYPE]
+    # @return [PjType]
     def proj_type
       Api.proj_get_type(self)
     end
@@ -539,7 +539,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_angular_input
     #
-    # @param direction []PJ_DIRECTION] Direction of transformation
+    # @param direction [PjDirection] Direction of transformation
     def angular_input?(direction)
       result = Api.proj_angular_input(self, direction)
       result == 1 ? true : false
@@ -549,7 +549,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_angular_output
     #
-    # @param direction []PJ_DIRECTION] Direction of transformation
+    # @param direction [PjDirection] Direction of transformation
     def angular_output?(direction)
       result = Api.proj_angular_output(self, direction)
       result == 1 ? true : false
@@ -559,7 +559,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_degree_input
     #
-    # @param direction []PJ_DIRECTION] Direction of transformation
+    # @param direction [PjDirection] Direction of transformation
     def degree_input?(direction)
       result = Api.proj_degree_input(self, direction)
       result == 1 ? true : false
@@ -569,7 +569,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_degree_output
     #
-    # @param direction []PJ_DIRECTION] Direction of transformation
+    # @param direction [PjDirection] Direction of transformation
     def degree_output?(direction)
       result = Api.proj_degree_output(self, direction)
       result == 1 ? true : false
@@ -579,7 +579,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_as_proj_string
     #
-    # @param proj_version [PJ_PROJ_STRING_TYPE] The proj version. Defaults to :PJ_PROJ_5
+    # @param proj_version [PjProjStringType] The proj version. Defaults to :PJ_PROJ_5
     # @param use_approx_tmerc [Boolean] True adds the +approx flag to +proj=tmerc or +proj=utm. Defaults to false
     # @param multiline [Boolean] Specifies if output span multiple lines. Defaults to false.
     # @param indentation_width [Integer] Specifies the indentation level. Defaults to 2.
@@ -618,7 +618,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_as_wkt
     #
-    # @param wkt_type [PJ_WKT_TYPE] WKT version to output. Defaults to PJ_WKT2_2018
+    # @param wkt_type [PjWktType] WKT version to output. Defaults to PJ_WKT2_2018
     # @param multiline [Boolean] Specifies if output span multiple lines. Defaults to true.
     # @param indentation_width [Integer] Specifies the indentation level. Defaults to 4.
     #

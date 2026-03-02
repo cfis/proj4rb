@@ -58,7 +58,7 @@ module Proj
       options = {"ALLOW_INTERMEDIATE_CRS": allow_intermediate_crs}
       options_ptr = create_options_pointer(options)
 
-      pointer = Api.proj_crs_create_bound_crs_to_WGS84(context, crs, options_ptr)
+      pointer = Api.proj_crs_create_bound_crs_to_wgs84(context, crs, options_ptr)
 
       if pointer.null?
         Error.check_context(context)
@@ -625,7 +625,7 @@ module Proj
     #
     # @return [Crs]
     def promote_to_3d(name: nil)
-      ptr = Api.proj_crs_promote_to_3D(self.context, name, self)
+      ptr = Api.proj_crs_promote_to_3d(self.context, name, self)
 
       if ptr.null?
         Error.check_object(self)
@@ -640,7 +640,7 @@ module Proj
     #
     # @return [Crs]
     def demote_to_2d(name: nil)
-      ptr = Api.proj_crs_demote_to_2D(self.context, name, self)
+      ptr = Api.proj_crs_demote_to_2d(self.context, name, self)
 
       if ptr.null?
         Error.check_object(self)
@@ -668,7 +668,7 @@ module Proj
     #
     # @return [Crs]
     def projected_3d(name: nil, geog_3d_crs: nil)
-      ptr = Api.proj_crs_create_projected_3D_crs_from_2D(self.context, name, self, geog_3d_crs)
+      ptr = Api.proj_crs_create_projected_3d_crs_from_2d(self.context, name, self, geog_3d_crs)
 
       if ptr.null?
         Error.check_object(self)

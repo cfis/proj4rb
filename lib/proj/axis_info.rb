@@ -27,11 +27,11 @@ module Proj
       @unit_code = unit_code
     end
 
-    # Returns axis information in PJ_AXIS_DESCRIPTION structure
+    # Returns axis information in PjAxisDescription structure
     #
-    # @return [PJ_AXIS_DESCRIPTION]
+    # @return [PjAxisDescription]
     def to_description
-      Api::PJ_AXIS_DESCRIPTION.create(name: name, abbreviation: abbreviation, direction: direction,
+      Api::PjAxisDescription.create(name: name, abbreviation: abbreviation, direction: direction,
                                       unit_conv_factor: unit_conv_factor, unit_name: name, unit_type: self.unit_type)
     end
     

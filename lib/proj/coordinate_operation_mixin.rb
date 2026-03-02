@@ -173,7 +173,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_trans
     #
-    # @param direction [PJ_DIRECTION] Direction of transformation (:PJ_FWD or :PJ_INV)
+    # @param direction [PjDirection] Direction of transformation (:PJ_FWD or :PJ_INV)
     # @param coord [Coordinate]
     #
     # @return [Coordinate]
@@ -188,7 +188,7 @@ module Proj
     # @see https://proj.org/development/reference/functions.html#c.proj_trans_bounds
     #
     # @param bounds [Area] Bounding box in source CRS (target CRS if direction is inverse).
-    # @param direction [PJ_DIRECTION] The direction of the transformation.
+    # @param direction [PjDirection] The direction of the transformation.
     # @param densify_points [Integer] Recommended to use 21. This is the number of points to use to densify the bounding polygon in the transformation.
     #
     # @return [Area] Bounding box in target CRS (target CRS if direction is inverse).
@@ -213,14 +213,14 @@ module Proj
     # will have their components set to Infinity.
     #
     # @param coordinates [Array<Coordinate>] Coordinates to transform
-    # @param direction [PJ_DIRECTION] The direction of the transformation
+    # @param direction [PjDirection] The direction of the transformation
     #
     # @return [Array<Coordinate>] Array of transformed coordinates
     def transform_array(coordinates, direction)
-      coords_ptr = FFI::MemoryPointer.new(Api::PJ_COORD, coordinates.size)
+      coords_ptr = FFI::MemoryPointer.new(Api::PjCoord, coordinates.size)
       coordinates.each_with_index do |coordinate, i|
-        pj_coord = Api::PJ_COORD.new(coords_ptr[i])
-        pj_coord.to_ptr.__copy_from__(coordinate.to_ptr, Api::PJ_COORD.size)
+        pj_coord = Api::PjCoord.new(coords_ptr[i])
+        pj_coord.to_ptr.__copy_from__(coordinate.to_ptr, Api::PjCoord.size)
       end
 
       int = Api.proj_trans_array(self, direction, coordinates.size, coords_ptr)
@@ -230,7 +230,7 @@ module Proj
 
       result = Array.new(coordinates.size)
       0.upto(coordinates.size) do |i|
-        pj_coord = Api::PJ_COORD.new(coords_ptr[i])
+        pj_coord = Api::PjCoord.new(coords_ptr[i])
         result[i] = Coordinate.from_coord(pj_coord)
       end
       result
@@ -241,7 +241,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_roundtrip
     #
-    # @param direction [PJ_DIRECTION] The starting direction of transformation
+    # @param direction [PjDirection] The starting direction of transformation
     # @param iterations [Integer] The number of roundtrip transformations
     # @param coordinate [Coordinate] The input coordinate
     #

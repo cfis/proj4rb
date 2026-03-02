@@ -125,7 +125,7 @@ class OperationFactoryContextTest < AbstractTest
   def test_grid_availability
     context = Proj::Context.new
     factory_context = Proj::OperationFactoryContext.new(context)
-    factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_USE
+    factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_USED_FOR_SORTING
   end
 
   def test_use_proj_alternative_grid_names

@@ -2,16 +2,15 @@
 module Proj
   class Parameters
     # @!visibility private
-    def self.finalize(pointer)
+    def self.finalize(params)
       proc do
-        Api.proj_get_crs_list_parameters_destroy(pointer)
+        Api.proj_get_crs_list_parameters_destroy(params)
       end
     end
 
     def initialize
-      pointer = Api.proj_get_crs_list_parameters_create
-      @params = Api::PROJ_CRS_LIST_PARAMETERS.new(pointer)
-      ObjectSpace.define_finalizer(self, self.class.finalize(pointer))
+      @params = Api.proj_get_crs_list_parameters_create
+      ObjectSpace.define_finalizer(self, self.class.finalize(@params))
     end
 
     def to_ptr
@@ -24,7 +23,7 @@ module Proj
       unless @params[:types].null?
         ints = @params[:types].read_array_of_int(@params[:types_count])
         ints.each do |int|
-          result << Api::PJ_TYPE[int]
+          result << Api::PjType[int]
         end
       end
       result
@@ -32,7 +31,7 @@ module Proj
 
     def types=(values)
       ptr = FFI::MemoryPointer.new(:int, values.size)
-      ints = values.map {|symbol| Api::PJ_TYPE[symbol]}
+      ints = values.map {|symbol| Api::PjType[symbol]}
       ptr.write_array_of_int(ints)
 
       @params[:types] = ptr
@@ -96,12 +95,12 @@ module Proj
     end
 
     def celestial_body_name
-      @params[:celestial_body_name].read_string_to_null
+      @params[:celestial_body_name]
     end
 
     def celestial_body_name=(value)
       ptr = FFI::MemoryPointer.from_string(value)
-      @params[:celestial_body_name] = ptr
+      @params.pointer.put_pointer(@params.offset_of(:celestial_body_name), ptr)
     end
   end
 end

@@ -3,11 +3,11 @@ module Proj
     # Returns a list of ellipsoids that are built into Proj. A more comprehensive
     # list is stored in the Proj database and can be queried via PjObject#create_from_database
     def self.built_in
-      pointer_to_array = FFI::Pointer.new(Api::PJ_ELLPS, Api.proj_list_ellps)
+      pointer_to_array = FFI::Pointer.new(Api::PjEllps, Api.proj_list_ellps)
 
       result = Array.new
       0.step do |i|
-        pj_ellps = Api::PJ_ELLPS.new(pointer_to_array[i])
+        pj_ellps = Api::PjEllps.new(pointer_to_array[i])
         break result if pj_ellps[:id].nil?
         result << pj_ellps
       end

@@ -6,16 +6,16 @@ module Proj
     # Create a CoordinateSystem
     #
     # @param context [Context] The context associated with the CoordinateSystem
-    # @param cs_type [PJ_COORDINATE_SYSTEM_TYPE] Coordinate system type
-    # @param axes [Array<PJ_AXIS_DESCRIPTION>] Array of Axes
+    # @param cs_type [PjCoordinateSystemType] Coordinate system type
+    # @param axes [Array<PjAxisDescription>] Array of Axes
     #
     # @return [CoordinateSystem]
     def self.create(cs_type, axes, context)
-      axes_ptr = FFI::MemoryPointer.new(Api::PJ_AXIS_DESCRIPTION, axes.size)
+      axes_ptr = FFI::MemoryPointer.new(Api::PjAxisDescription, axes.size)
       axes.each_with_index do |axis, i|
-        axis_description_target = Api::PJ_AXIS_DESCRIPTION.new(axes_ptr[i])
+        axis_description_target = Api::PjAxisDescription.new(axes_ptr[i])
         axis_description_source = axis.to_description
-        axis_description_target.to_ptr.__copy_from__(axis_description_source.to_ptr, Api::PJ_AXIS_DESCRIPTION.size)
+        axis_description_target.to_ptr.__copy_from__(axis_description_source.to_ptr, Api::PjAxisDescription.size)
       end
 
       pointer = Api.proj_create_cs(context, cs_type, axes.count, axes_ptr)
@@ -26,13 +26,13 @@ module Proj
     # Create an Ellipsoidal 2D CoordinateSystem
     #
     # @param context [Context] The context associated with the CoordinateSystem
-    # @param cs_type [PJ_COORDINATE_SYSTEM_TYPE] Coordinate system type
+    # @param cs_type [PjCoordinateSystemType] Coordinate system type
     # @param unit_name [String] Name of the angular units. Or nil for degree
     # @param unit_conv_factor [Float] Conversion factor from the angular unit to radian. Set to 0 if unit name is degree
     #
     # @return [CoordinateSystem]
     def self.create_ellipsoidal_2d(cs_type, context, unit_name: nil, unit_conv_factor: 0)
-      pointer = Api.proj_create_ellipsoidal_2D_cs(context, cs_type, unit_name, unit_conv_factor)
+      pointer = Api.proj_create_ellipsoidal_2d_cs(context, cs_type, unit_name, unit_conv_factor)
       Error.check_context(context)
       self.create_object(pointer, context)
     end
@@ -40,7 +40,7 @@ module Proj
     # Create an Ellipsoidal 3D CoordinateSystem
     #
     # @param context [Context] The context associated with the CoordinateSystem
-    # @param cs_type [PJ_COORDINATE_SYSTEM_TYPE] Coordinate system type
+    # @param cs_type [PjCoordinateSystemType] Coordinate system type
     # @param horizontal_angular_unit_name [String] Name of the angular units. Or nil for degree
     # @param horizontal_angular_unit_conv_factor [Float] Conversion factor from the angular unit to radian. Set to 0 if horizontal_angular_unit_name name is degree
     # @param vertical_linear_unit_name [String] Name of the linear units. Or nil for meters.
@@ -48,7 +48,7 @@ module Proj
     #
     # @return [CoordinateSystem]
     def self.create_ellipsoidal_3d(cs_type, context, horizontal_angular_unit_name: nil, horizontal_angular_unit_conv_factor: 0, vertical_linear_unit_name: nil, vertical_linear_unit_conv_factor: 0)
-      pointer = Api.proj_create_ellipsoidal_3D_cs(context, cs_type, horizontal_angular_unit_name, horizontal_angular_unit_conv_factor, vertical_linear_unit_name, vertical_linear_unit_conv_factor)
+      pointer = Api.proj_create_ellipsoidal_3d_cs(context, cs_type, horizontal_angular_unit_name, horizontal_angular_unit_conv_factor, vertical_linear_unit_name, vertical_linear_unit_conv_factor)
       Error.check_context(context)
       self.create_object(pointer, context)
     end
@@ -56,13 +56,13 @@ module Proj
     # Create a CartesiansCS 2D coordinate system
     #
     # @param context [Context] The context associated with the CoordinateSystem
-    # @param cs_type [PJ_COORDINATE_SYSTEM_TYPE] Coordinate system type
+    # @param cs_type [PjCoordinateSystemType] Coordinate system type
     # @param unit_name [String] Name of the unit. Default is nil.
     # @param unit_conv_factor [Float] Unit conversion factor to SI. Default is 0.
     #
     # @return [CoordinateSystem]
     def self.create_cartesian_2d(context, cs_type, unit_name: nil, unit_conv_factor: 0)
-      pointer = Api.proj_create_cartesian_2D_cs(context, cs_type, unit_name, unit_conv_factor)
+      pointer = Api.proj_create_cartesian_2d_cs(context, cs_type, unit_name, unit_conv_factor)
       Error.check_context(context)
       self.create_object(pointer, context)
     end
@@ -71,7 +71,7 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_cs_get_type
     #
-    # @return [PJ_COORDINATE_SYSTEM_TYPE]
+    # @return [PjCoordinateSystemType]
     def cs_type
       result = Api.proj_cs_get_type(self.context, self)
       if result == :PJ_CS_TYPE_UNKNOWN

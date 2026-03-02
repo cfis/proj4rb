@@ -93,7 +93,11 @@ class CrsTest < AbstractTest
       crs = Proj::Crs.create_from_wkt(wkt)
     end
 
-    expected = "Cannot find expected parameter Latitude of natural origin. Cannot find expected parameter Longitude of natural origin. Cannot find expected parameter False easting. Cannot find expected parameter False northing. Parameter latitude_of_origi found but not expected for this method. The WKT string lacks a value for Scale factor at natural origin. Default it to 1."
+    if Proj::Api::PROJ_VERSION >= '9.6.0'
+      expected = "The WKT string lacks a value for Scale factor at natural origin. Default it to 1.. Cannot find expected parameter Latitude of natural origin. Cannot find expected parameter Longitude of natural origin. Cannot find expected parameter False easting. Cannot find expected parameter False northing. Parameter latitude_of_origi found but not expected for this method"
+    else
+      expected = "Cannot find expected parameter Latitude of natural origin. Cannot find expected parameter Longitude of natural origin. Cannot find expected parameter False easting. Cannot find expected parameter False northing. Parameter latitude_of_origi found but not expected for this method. The WKT string lacks a value for Scale factor at natural origin. Default it to 1."
+    end
     assert_equal(expected, err.strip)
 
     assert_equal(:PJ_TYPE_PROJECTED_CRS, crs.proj_type)
@@ -520,7 +524,7 @@ class CrsTest < AbstractTest
         "$schema": "https://proj.org/schemas/#{schema_version}/projjson.schema.json",
         "type": "ProjectedCRS",
         "name": "NAD83 / UTM zone 15N",
-        "base_crs": {
+        "base_crs": {#{Proj::Api::PROJ_VERSION >= '9.6.0' ? "\n    \"type\": \"GeographicCRS\"," : ''}
           "name": "NAD83",
           "datum": {
             "type": "GeodeticReferenceFrame",

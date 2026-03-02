@@ -84,7 +84,7 @@ module Proj
     # @see https://proj.org/development/reference/functions.html#c.proj_get_codes_from_database
     #
     # @param auth_name [String] Authority name. Must not be nil.
-    # @param pj_type [PJ_TYPE] Proj Object type.
+    # @param pj_type [PjType] Proj Object type.
     # @param allow_deprecated [Boolean] Specifies if deprecated objects should be returned. Default is false.
     #
     # @return [Strings] Returned authority codes
@@ -113,11 +113,12 @@ module Proj
     # @return [Array<CrsInfo>] Returned crs infos
     def crs_info(auth_name = nil, parameters = nil)
       out_result_count = FFI::MemoryPointer.new(:int)
-      ptr = Api.proj_get_crs_info_list_from_database(self.context, auth_name, parameters, out_result_count)
+      params = parameters.is_a?(Parameters) ? parameters.instance_variable_get(:@params) : parameters
+      ptr = Api.proj_get_crs_info_list_from_database(self.context, auth_name, params, out_result_count)
 
       result = out_result_count.read_int.times.map do |index|
         index_ptr = ptr + (index * FFI::Pointer::SIZE)
-        struct = Api::PROJ_CRS_INFO.new(index_ptr.read_pointer)
+        struct = Api::ProjCrsInfo.new(index_ptr.read_pointer)
         CrsInfo.from_proj_crs_info(struct)
       end
 
@@ -200,7 +201,7 @@ module Proj
         struct = Api::ProjCelestialBodyInfo.new(body_ptr)
 
         # Now map this to a Ruby Struct
-        CelestialBody.new(struct[:auth_name], struct[:name])
+        CelestialBody.new(struct[:auth_name].read_string_to_null, struct[:name].read_string_to_null)
       end
 
       Api.proj_celestial_body_list_destroy(ptr)
@@ -255,14 +256,14 @@ module Proj
 
       result = Array.new(count)
       count.times do |i|
-        unit_info = Api::PROJ_UNIT_INFO.new(array_p_units[i])
+        unit_info = Api::ProjUnitInfo.new(array_p_units[i])
 
-        result[i] = Unit.new(unit_info[:auth_name],
-                             unit_info[:code],
-                             unit_info[:name],
-                             unit_info[:category],
+        result[i] = Unit.new(unit_info[:auth_name].read_string_to_null,
+                             unit_info[:code].read_string_to_null,
+                             unit_info[:name].read_string_to_null,
+                             unit_info[:category].read_string_to_null,
                              unit_info[:conv_factor],
-                             unit_info[:proj_short_name],
+                             unit_info[:proj_short_name].null? ? nil : unit_info[:proj_short_name].read_string_to_null,
                              unit_info[:deprecated])
       end
 

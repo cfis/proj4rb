@@ -13,7 +13,7 @@ module Proj
     # @!attribute [r] unit_name
     #   @return [String] Param unit_name
     # @!attribute [r] unit_type
-    #   @return [PJ_UNIT_TYPE] Unit type
+    #   @return [PjUnitType] Unit type
     attr_reader :name, :auth_name, :code, :value,
                 :unit_conv_factor, :unit_name, :unit_type
 
@@ -27,11 +27,11 @@ module Proj
       @unit_type = unit_type
     end
 
-    # Returns param information in PJ_PARAM_DESCRIPTION structure
+    # Returns param information in PjParamDescription structure
     #
-    # @return [PJ_PARAM_DESCRIPTION]
+    # @return [PjParamDescription]
     def to_description
-      Api::PJ_PARAM_DESCRIPTION.create(name: name, auth_name: auth_name, code: code, value: value,
+      Api::PjParamDescription.create(name: name, auth_name: auth_name, code: code, value: value,
                                        unit_conv_factor: unit_conv_factor, unit_name: name, unit_type: unit_type)
     end
   end

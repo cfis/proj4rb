@@ -45,7 +45,11 @@ class SessionTest < AbstractTest
     statements = session.get_insert_statements(crs, "HOBU", "XXXX")
     assert_equal(4, statements.count)
 
-    expected = "INSERT INTO geodetic_datum VALUES('HOBU','GEODETIC_DATUM_XXXX','GDA2020','','EPSG','7019','EPSG','8901',NULL,NULL,NULL,NULL,0);"
+    expected = if Proj::Api::PROJ_VERSION >= '9.6.0'
+                 "INSERT INTO geodetic_datum VALUES('HOBU','GEODETIC_DATUM_XXXX','GDA2020','','EPSG','7019','EPSG','8901',NULL,NULL,NULL,NULL,NULL,0);"
+               else
+                 "INSERT INTO geodetic_datum VALUES('HOBU','GEODETIC_DATUM_XXXX','GDA2020','','EPSG','7019','EPSG','8901',NULL,NULL,NULL,NULL,0);"
+               end
     assert_equal(expected, statements[0])
   end
 

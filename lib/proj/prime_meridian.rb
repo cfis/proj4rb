@@ -3,10 +3,10 @@ module Proj
     # Returns a list of Prime Meridians that are built into Proj. A more comprehensive
     # list is stored in the Proj database and can be queried via PjObject#create_from_database
     def self.built_in
-      pointer_to_array = FFI::Pointer.new(Api::PJ_PRIME_MERIDIANS, Api.proj_list_prime_meridians)
+      pointer_to_array = FFI::Pointer.new(Api::PjPrimeMeridians, Api.proj_list_prime_meridians)
       result = Array.new
       0.step do |i|
-        prime_meridian_info = Api::PJ_PRIME_MERIDIANS.new(pointer_to_array[i])
+        prime_meridian_info = Api::PjPrimeMeridians.new(pointer_to_array[i])
         break result if prime_meridian_info[:id].nil?
         result << prime_meridian_info
       end

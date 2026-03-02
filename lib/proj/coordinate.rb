@@ -31,7 +31,7 @@ module Proj
                    o: nil, p: nil, k: nil,
                    e: nil, n: nil) #u: nil
 
-      @coord = Api::PJ_COORD.new
+      @coord = Api::PjCoord.new
 
       keys = if x && y && z && t
                [:x, :y, :z, :t]

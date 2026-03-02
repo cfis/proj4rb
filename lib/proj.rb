@@ -1,7 +1,15 @@
 # encoding: UTF-8
 
-require_relative 'api/api'
+require_relative 'api/_ffi'
 
+module Proj
+  # Compatibility constant used by wrapper classes
+  PROJ_VERSION = Gem::Version.new("#{Api::PROJ_VERSION_MAJOR}.#{Api::PROJ_VERSION_MINOR}.#{Api::PROJ_VERSION_PATCH}")
+  Api::PROJ_VERSION = PROJ_VERSION
+end
+
+require_relative 'proj/pj_axis_description'
+require_relative 'proj/pj_param_description'
 require_relative 'proj/pj_object'
 require_relative 'proj/pj_objects'
 require_relative 'proj/coordinate_operation_mixin'

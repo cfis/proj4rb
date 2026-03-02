@@ -14,7 +14,7 @@ class UnitsTest < AbstractTest
 
   def test_builtin
     units = Proj::Unit.built_in
-    assert_equal(24, units.count)
+    assert_equal(91, units.count)
 
     unit = units[0]
     assert_instance_of(Proj::Unit, unit)

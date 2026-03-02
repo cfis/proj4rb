@@ -6,9 +6,9 @@ module Proj
                 :area_name, :projection_method_name, :celestial_body_name
 
     def self.from_proj_crs_info(proj_crs_info)
-      data = { auth_name: proj_crs_info[:auth_name],
-               code: proj_crs_info[:code],
-               name: proj_crs_info[:name],
+      data = { auth_name: proj_crs_info[:auth_name].read_string_to_null,
+               code: proj_crs_info[:code].read_string_to_null,
+               name: proj_crs_info[:name].read_string_to_null,
                crs_type: proj_crs_info[:type],
                deprecated: proj_crs_info[:deprecated] == 1 ? true : false,
                bbox_valid: proj_crs_info[:bbox_valid] == 1 ? true : false,
@@ -16,11 +16,11 @@ module Proj
                south_lat_degree: proj_crs_info[:south_lat_degree],
                east_lon_degree: proj_crs_info[:east_lon_degree],
                north_lat_degree: proj_crs_info[:north_lat_degree],
-               area_name: proj_crs_info[:area_name],
-               projection_method_name: proj_crs_info[:projection_method_name]}
+               area_name: proj_crs_info[:area_name].read_string_to_null,
+               projection_method_name: proj_crs_info[:projection_method_name].null? ? nil : proj_crs_info[:projection_method_name].read_string_to_null}
 
       if Api::PROJ_VERSION >= Gem::Version.new('8.1.0')
-        data[:celestial_body_name] = proj_crs_info[:celestial_body_name]
+        data[:celestial_body_name] = proj_crs_info[:celestial_body_name].null? ? nil : proj_crs_info[:celestial_body_name].read_string_to_null
       end
 
       new(**data)

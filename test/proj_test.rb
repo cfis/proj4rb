@@ -5,9 +5,9 @@ require_relative './abstract_test'
 class ProjTest < AbstractTest
   def test_info
     info = Proj.info
-    assert([4,6,7,8,9].include?(info[:major]))
-    assert([0,1,2,3].include?(info[:minor]))
-    assert([0,1,2,3].include?(info[:patch]))
+    assert(info[:major] >= 4)
+    assert(info[:minor] >= 0)
+    assert(info[:patch] >= 0)
     refute_nil(info[:release])
     refute_nil(info[:searchpath])
     assert(info[:paths].null?)

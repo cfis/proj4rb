@@ -23,11 +23,11 @@ module Proj
     #
     # @return [Conversion]
     def self.create_conversion(context, name:, auth_name:, code:, method_name:, method_auth_name:, method_code:, params:)
-      params_ptr = FFI::MemoryPointer.new(Api::PJ_PARAM_DESCRIPTION, params.size)
+      params_ptr = FFI::MemoryPointer.new(Api::PjParamDescription, params.size)
       params.each_with_index do |param, i|
-        param_description_target = Api::PJ_PARAM_DESCRIPTION.new(params_ptr[i])
+        param_description_target = Api::PjParamDescription.new(params_ptr[i])
         param_description_source = param.to_description
-        param_description_target.to_ptr.__copy_from__(param_description_source.to_ptr, Api::PJ_PARAM_DESCRIPTION.size)
+        param_description_target.to_ptr.__copy_from__(param_description_source.to_ptr, Api::PjParamDescription.size)
       end
 
       pointer = Api.proj_create_conversion(context, name, auth_name, code, method_name, method_auth_name, method_code, params.size, params_ptr)

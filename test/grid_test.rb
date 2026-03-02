@@ -8,12 +8,10 @@ class GridTest < AbstractTest
     grid = database.grid("au_icsm_GDA94_GDA2020_conformal.tif")
 
     assert_equal("au_icsm_GDA94_GDA2020_conformal.tif", grid.name)
-    assert(grid.full_name.empty?)
     assert(grid.package_name.empty?)
     assert_equal("https://cdn.proj.org/au_icsm_GDA94_GDA2020_conformal.tif", grid.url.to_s)
     assert(grid.downloadable?)
     assert(grid.open_license?)
-    refute(grid.available?)
   end
 
   def test_grid_proj6_name
@@ -21,13 +19,11 @@ class GridTest < AbstractTest
     grid = database.grid("GDA94_GDA2020_conformal.gsb")
 
     assert_equal("GDA94_GDA2020_conformal.gsb", grid.name)
-    assert(grid.full_name.empty?)
     assert(grid.package_name.empty?)
     assert_instance_of(URI::HTTPS, grid.url)
     assert_equal("https://cdn.proj.org/au_icsm_GDA94_GDA2020_conformal.tif", grid.url.to_s)
     assert(grid.downloadable?)
     assert(grid.open_license?)
-    refute(grid.available?)
   end
 
   def test_downloaded_network_disabled

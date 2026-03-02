@@ -137,6 +137,8 @@ class PjObjectTest < AbstractTest
                                               types: [:PJ_TYPE_GEODETIC_CRS, :PJ_TYPE_PROJECTED_CRS])
 
     expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.6.0'
+                   462
                  when Proj::Api::PROJ_VERSION >= '9.3.0'
                    443
                  when Proj::Api::PROJ_VERSION >= '9.0.0'

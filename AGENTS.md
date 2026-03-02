@@ -84,7 +84,17 @@ Add a new section under `symbols.versions` in `ffi-bindings.yaml` using the PROJ
 Run ruby-bindgen to regenerate the FFI bindings:
 
 ```
-ruby-bindgen ffi-bindings.yaml
+bundle exec ruby-bindgen ffi-bindings.yaml
+```
+
+### 5. Manual fixes after regeneration
+
+After regenerating, apply these manual changes to `lib/api/proj.rb`:
+
+**Add `PROJ_VERSION_NUMBER`:** libclang cannot evaluate macro expressions, so ruby-bindgen cannot emit the computed `PROJ_VERSION_NUMBER` constant. The generated version guards (`if PROJ_VERSION_NUMBER >= ...`) depend on it. After the `PROJ_VERSION_PATCH` line, add:
+
+```ruby
+PROJ_VERSION_NUMBER = PROJ_VERSION_MAJOR * 10000 + PROJ_VERSION_MINOR * 100 + PROJ_VERSION_PATCH
 ```
 
 ### Version number format
@@ -94,6 +104,11 @@ PROJ uses the `PROJ_VERSION_NUMBER` macro, computed as `major * 10000 + minor * 
 - 6.0.0 → 60000
 - 9.4.0 → 90400
 - 9.7.0 → 90700
+
+## GitHub CLI
+- `gh` is available and authenticated with READ-ONLY access
+- DO NOT use `gh` to create, update, or modify anything (no PRs, issues, comments, releases, etc.)
+- Use `gh` only to read information: view CI runs, check PR status, read issues, etc.
 
 ## Conventions
 - Namespace: `Proj::` (e.g., `Proj::Crs`, `Proj::Transformation`, `Proj::Coordinate`)

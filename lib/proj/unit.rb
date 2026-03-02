@@ -16,37 +16,10 @@ module Proj
     #   @return [Boolean] Whether the object is deprecated
     attr_reader :auth_name, :code, :name, :category, :conv_factor, :proj_short_name, :deprecated
 
-    # Returns a list of built in Units. This is deprecated. Use Database#units instead
+    # Returns a list of built in Units.
     def self.built_in(auth_name: nil, category: nil, allow_deprecated: false)
-      # First get linear units
-      pointer_to_array = FFI::Pointer.new(Api::PJ_UNITS, Api.proj_list_units)
-      result = Array.new
-      0.step do |i|
-        unit_info = Api::PJ_UNITS.new(pointer_to_array[i])
-        break if unit_info[:id].nil?
-        result << self.new('PROJ', unit_info[:id], unit_info[:name],
-                           'length', unit_info[:factor], unit_info[:id], false)
-      end
-
-      # Now get angular linear units
-      if Api.method_defined?(:proj_list_angular_units)
-        pointer_to_array = FFI::Pointer.new(Api::PJ_UNITS, Api.proj_list_angular_units)
-        0.step do |i|
-          unit_info = Api::PJ_UNITS.new(pointer_to_array[i])
-          break result if unit_info[:id].nil?
-          result << self.new('PROJ', unit_info[:id], unit_info[:name],
-                             'angular', unit_info[:factor], unit_info[:id], false)
-        end
-      end
-
-      if auth_name
-        result = result.find_all {|unit_info| unit_info.auth_name == auth_name}
-      end
-
-      if category
-        result = result.find_all {|unit_info| unit_info.category == category}
-      end
-      result
+      database = Database.new(Context.current)
+      database.units(auth_name: auth_name, category: category, allow_deprecated: allow_deprecated)
     end
 
     # Create a new Unit

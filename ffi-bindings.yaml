@@ -1,0 +1,360 @@
+format: FFI
+input: /usr/include
+output: lib/api
+module: Proj::Api
+match:
+  - proj.h
+  - proj_experimental.h
+
+library_names:
+  - proj
+
+library_versions:
+  - "25"
+  - "9_1"
+  - "22"
+  - "19"
+  - "17"
+  - "15"
+  - "14"
+  - "13"
+  - "12"
+  - "11"
+
+version_macro: PROJ_VERSION_NUMBER
+
+symbols:
+  versions:
+    # 5.1.0
+    50100:
+      - proj_log_level
+      - proj_log_func
+      - proj_errno_string
+
+    # 6.0.0
+    60000:
+      - proj_clone
+      - proj_get_name
+      - proj_get_id_auth_name
+      - proj_get_id_code
+      - proj_get_type
+      - proj_is_crs
+      - proj_is_equivalent_to
+      - proj_is_deprecated
+      - proj_get_source_crs
+      - proj_get_target_crs
+      - proj_area_create
+      - proj_area_set_bbox
+      - proj_get_area_of_use
+      - proj_area_destroy
+      - proj_as_wkt
+      - proj_as_proj_string
+      - proj_string_list_destroy
+      - proj_create_from_name
+      - proj_get_non_deprecated
+      - proj_identify
+      - proj_list_get_count
+      - proj_list_get
+      - proj_list_destroy
+      - proj_int_list_destroy
+      - proj_context_set_file_finder
+      - proj_context_set_search_paths
+      - proj_list_angular_units
+      - proj_crs_info_list_destroy
+      - proj_get_crs_list_parameters_create
+      - proj_get_crs_list_parameters_destroy
+      - proj_context_set_database_path
+      - proj_context_get_database_path
+      - proj_context_get_database_metadata
+      - proj_get_authorities_from_database
+      - proj_get_codes_from_database
+      - proj_get_crs_info_list_from_database
+      - proj_uom_get_info_from_database
+      - proj_crs_get_geodetic_crs
+      - proj_crs_get_horizontal_datum
+      - proj_crs_get_sub_crs
+      - proj_crs_get_datum
+      - proj_crs_get_coordinate_system
+      - proj_cs_get_type
+      - proj_cs_get_axis_count
+      - proj_cs_get_axis_info
+      - proj_crs_get_coordoperation
+      - proj_coordoperation_get_accuracy
+      - proj_coordoperation_get_method_info
+      - proj_coordoperation_get_towgs84_values
+      - proj_coordoperation_get_param_count
+      - proj_coordoperation_get_param_index
+      - proj_coordoperation_get_param
+      - proj_coordoperation_has_ballpark_transformation
+      - proj_coordoperation_is_instantiable
+      - proj_coordoperation_get_grid_used_count
+      - proj_coordoperation_get_grid_used
+      - proj_create_operation_factory_context
+      - proj_operation_factory_context_destroy
+      - proj_create_operations
+      - proj_operation_factory_context_set_desired_accuracy
+      - proj_operation_factory_context_set_area_of_interest
+      - proj_operation_factory_context_set_crs_extent_use
+      - proj_operation_factory_context_set_spatial_criterion
+      - proj_operation_factory_context_set_grid_availability_use
+      - proj_operation_factory_context_set_use_proj_alternative_grid_names
+      - proj_operation_factory_context_set_allow_use_intermediate_crs
+      - proj_operation_factory_context_set_allowed_intermediate_crs
+      - proj_get_ellipsoid
+      - proj_ellipsoid_get_parameters
+      - proj_get_prime_meridian
+      - proj_prime_meridian_get_parameters
+      - proj_create_from_wkt
+      - proj_create_from_database
+      - proj_context_guess_wkt_dialect
+      - proj_context_use_proj4_init_rules
+      - proj_context_get_use_proj4_init_rules
+      # experimental (>= 6.0.0)
+      - proj_assign_context
+      - proj_create_cs
+      - proj_create_cartesian_2D_cs
+      - proj_create_ellipsoidal_2D_cs
+      - proj_create_geographic_crs
+      - proj_create_geographic_crs_from_datum
+      - proj_create_geocentric_crs
+      - proj_create_geocentric_crs_from_datum
+      - proj_crs_alter_geodetic_crs
+      - proj_crs_alter_cs_angular_unit
+      - proj_crs_alter_cs_linear_unit
+      - proj_crs_alter_parameters_linear_unit
+      - proj_create_engineering_crs
+      - proj_create_vertical_crs
+      - proj_create_compound_crs
+      - proj_create_projected_crs
+      - proj_crs_create_bound_crs
+      - proj_crs_create_bound_crs_to_WGS84
+      - proj_alter_name
+      - proj_alter_id
+      - proj_create_transformation
+      - proj_create_conversion
+      - proj_convert_conversion_to_other_method
+      - proj_create_conversion_utm
+      - proj_create_conversion_transverse_mercator
+      - proj_create_conversion_gauss_schreiber_transverse_mercator
+      - proj_create_conversion_transverse_mercator_south_oriented
+      - proj_create_conversion_two_point_equidistant
+      - proj_create_conversion_tunisia_mapping_grid
+      - proj_create_conversion_albers_equal_area
+      - proj_create_conversion_lambert_conic_conformal_1sp
+      - proj_create_conversion_lambert_conic_conformal_2sp
+      - proj_create_conversion_lambert_conic_conformal_2sp_michigan
+      - proj_create_conversion_lambert_conic_conformal_2sp_belgium
+      - proj_create_conversion_azimuthal_equidistant
+      - proj_create_conversion_guam_projection
+      - proj_create_conversion_bonne
+      - proj_create_conversion_lambert_cylindrical_equal_area_spherical
+      - proj_create_conversion_lambert_cylindrical_equal_area
+      - proj_create_conversion_cassini_soldner
+      - proj_create_conversion_equidistant_conic
+      - proj_create_conversion_eckert_i
+      - proj_create_conversion_eckert_ii
+      - proj_create_conversion_eckert_iii
+      - proj_create_conversion_eckert_iv
+      - proj_create_conversion_eckert_v
+      - proj_create_conversion_eckert_vi
+      - proj_create_conversion_equidistant_cylindrical
+      - proj_create_conversion_equidistant_cylindrical_spherical
+      - proj_create_conversion_gall
+      - proj_create_conversion_goode_homolosine
+      - proj_create_conversion_interrupted_goode_homolosine
+      - proj_create_conversion_geostationary_satellite_sweep_x
+      - proj_create_conversion_geostationary_satellite_sweep_y
+      - proj_create_conversion_gnomonic
+      - proj_create_conversion_hotine_oblique_mercator_variant_a
+      - proj_create_conversion_hotine_oblique_mercator_variant_b
+      - proj_create_conversion_hotine_oblique_mercator_two_point_natural_origin
+      - proj_create_conversion_laborde_oblique_mercator
+      - proj_create_conversion_international_map_world_polyconic
+      - proj_create_conversion_krovak_north_oriented
+      - proj_create_conversion_krovak
+      - proj_create_conversion_lambert_azimuthal_equal_area
+      - proj_create_conversion_miller_cylindrical
+      - proj_create_conversion_mercator_variant_a
+      - proj_create_conversion_mercator_variant_b
+      - proj_create_conversion_popular_visualisation_pseudo_mercator
+      - proj_create_conversion_mollweide
+      - proj_create_conversion_new_zealand_mapping_grid
+      - proj_create_conversion_oblique_stereographic
+      - proj_create_conversion_orthographic
+      - proj_create_conversion_american_polyconic
+      - proj_create_conversion_polar_stereographic_variant_a
+      - proj_create_conversion_polar_stereographic_variant_b
+      - proj_create_conversion_robinson
+      - proj_create_conversion_sinusoidal
+      - proj_create_conversion_stereographic
+      - proj_create_conversion_van_der_grinten
+      - proj_create_conversion_wagner_i
+      - proj_create_conversion_wagner_ii
+      - proj_create_conversion_wagner_iii
+      - proj_create_conversion_wagner_iv
+      - proj_create_conversion_wagner_v
+      - proj_create_conversion_wagner_vi
+      - proj_create_conversion_wagner_vii
+      - proj_create_conversion_quadrilateralized_spherical_cube
+      - proj_create_conversion_spherical_cross_track_height
+      - proj_create_conversion_equal_earth
+      - proj_query_geodetic_crs_from_datum
+
+    # 6.1.0
+    60100:
+      - proj_normalize_for_visualization
+
+    # 6.2.0
+    60200:
+      - proj_cleanup
+      - proj_as_projjson
+      - proj_create_crs_to_crs_from_pj
+      - proj_grid_get_info_from_database
+      - proj_context_set_autoclose_database
+      - proj_operation_factory_context_set_discard_superseded
+      - proj_get_remarks
+      - proj_get_scope
+      - proj_concatoperation_get_step_count
+      - proj_concatoperation_get_step
+
+    # 6.3.0
+    60300:
+      - proj_is_equivalent_to_with_ctx
+      - proj_coordoperation_create_inverse
+      # experimental (>= 6.3.0)
+      - proj_create_ellipsoidal_3D_cs
+      - proj_create_derived_geographic_crs
+      - proj_is_derived_crs
+      - proj_crs_promote_to_3D
+      - proj_crs_create_projected_3D_crs_from_2D
+      - proj_crs_demote_to_2D
+      - proj_create_vertical_crs_ex
+      - proj_crs_create_bound_vertical_crs
+      - proj_create_conversion_vertical_perspective
+      - proj_create_conversion_pole_rotation_grib_convention
+
+    # 7.0.0
+    70000:
+      - proj_context_set_fileapi
+      - proj_is_download_needed
+      - proj_download_file
+      - proj_context_set_network_callbacks
+      - proj_context_is_network_enabled
+      - proj_context_set_enable_network
+      - proj_context_set_url_endpoint
+      - proj_context_set_sqlite3_vfs_name
+      - proj_grid_cache_set_enable
+      - proj_grid_cache_set_filename
+      - proj_grid_cache_set_max_size
+      - proj_grid_cache_set_ttl
+      - proj_grid_cache_clear
+
+    # 7.1.0
+    70100:
+      - proj_degree_input
+      - proj_degree_output
+      - proj_get_units_from_database
+      - proj_unit_list_destroy
+      - proj_operation_factory_context_set_allow_ballpark_transformations
+      - proj_get_suggested_operation
+      - proj_context_get_url_endpoint
+      - proj_context_get_user_writable_directory
+
+    # 7.2.0
+    70200:
+      - proj_context_clone
+      - proj_context_set_ca_bundle_path
+      - proj_crs_get_datum_ensemble
+      - proj_crs_get_datum_forced
+      - proj_datum_ensemble_get_member_count
+      - proj_datum_ensemble_get_accuracy
+      - proj_datum_ensemble_get_member
+      - proj_dynamic_datum_get_frame_reference_epoch
+
+    # 8.0.0
+    80000:
+      - proj_crs_is_derived
+      - proj_context_errno_string
+
+    # 8.1.0
+    80100:
+      - proj_context_get_database_structure
+      - proj_get_geoid_models_from_database
+      - proj_suggests_code_for
+      - proj_string_destroy
+      - proj_get_celestial_body_list_from_database
+      - proj_get_celestial_body_name
+      - proj_celestial_body_list_destroy
+      - proj_insert_object_session_create
+      - proj_insert_object_session_destroy
+      - proj_get_insert_statements
+
+    # 8.2.0
+    80200:
+      - proj_trans_bounds
+      # experimental (>= 8.2.0)
+      - proj_create_conversion_pole_rotation_netcdf_cf_convention
+
+    # 9.1.0
+    90100:
+      - proj_trans_get_last_used_operation
+      - proj_operation_factory_context_set_area_of_interest_name
+      - proj_area_set_name
+
+    # 9.2.0
+    90200:
+      - proj_rtodms2
+      - proj_get_area_of_use_ex
+      - proj_get_domain_count
+      - proj_get_scope_ex
+      - proj_coordinate_metadata_get_epoch
+      # experimental (>= 9.2.0)
+      - proj_create_conversion_tunisia_mining_grid
+
+    # 9.4.0
+    90400:
+      - proj_coordinate_metadata_create
+      - proj_crs_has_point_motion_operation
+      - proj_create_conversion_lambert_conic_conformal_1sp_variant_b
+
+    # 9.5.0
+    90500:
+      - proj_context_set_user_writable_directory
+      - proj_coordoperation_requires_per_coordinate_input_time
+      - proj_create_conversion_local_orthographic
+
+    # 9.6.0
+    90600:
+      - proj_trans_bounds_3D
+
+    # 9.7.0
+    90700:
+      - proj_geod_direct
+
+  overrides:
+    # Output buffer: char *s is caller-allocated, function writes into it and returns same pointer
+    proj_rtodms2: "[:pointer, :ulong, :double, :int, :int], :pointer"
+    # Return must be :pointer so caller can free via proj_string_destroy
+    proj_suggests_code_for: "[:pointer, :pointer, :string, :int, :pointer], :pointer"
+    # Takes a pointer to free, not an input string
+    proj_string_destroy: "[:pointer], :void"
+    # Bool returns: C returns int 0/1, but Ruby 0 is truthy so must use :bool
+    proj_is_crs: "[:pointer], :bool"
+    proj_get_area_of_use: "[:pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool"
+    proj_get_area_of_use_ex: "[:pointer, :pointer, :int, :pointer, :pointer, :pointer, :pointer, :pointer], :bool"
+    proj_cs_get_axis_info: "[:pointer, :pointer, :int, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool"
+    # size_t vs ulong: on 64-bit Windows size_t is 8 bytes but ulong is 4 bytes
+    proj_trans_generic: "[:pointer, PjDirection, :pointer, :size_t, :size_t, :pointer, :size_t, :size_t, :pointer, :size_t, :size_t, :pointer, :size_t, :size_t], :size_t"
+    proj_trans_array: "[:pointer, PjDirection, :size_t, :pointer], :int"
+    # Struct array parameters: C takes int count + Struct* array, not a single struct by reference
+    proj_create_cs: "[:pointer, PjCoordinateSystemType, :int, :pointer], :pointer"
+    proj_create_conversion: "[:pointer, :string, :string, :string, :string, :string, :string, :int, :pointer], :pointer"
+    proj_create_transformation: "[:pointer, :string, :string, :string, :pointer, :pointer, :pointer, :string, :string, :string, :int, :pointer, :double], :pointer"
+    # Linked list returns: C returns pointer to null-terminated array of structs
+    proj_list_operations: "[], :pointer"
+    proj_list_ellps: "[], :pointer"
+    proj_list_prime_meridians: "[], :pointer"
+
+clang:
+  args:
+    - "-I/usr/lib/clang/21/include"

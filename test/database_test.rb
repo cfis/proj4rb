@@ -49,7 +49,11 @@ class DatabaseTest < AbstractTest
   end
 
   def test_codes
-    if Proj::Api::PROJ_VERSION >= '9.3.0'
+    if Proj::Api::PROJ_VERSION >= '9.6.0'
+      types_with_no_codes = [:PJ_TYPE_TEMPORAL_CRS, :PJ_TYPE_BOUND_CRS, :PJ_TYPE_UNKNOWN,
+                             :PJ_TYPE_TEMPORAL_DATUM, :PJ_TYPE_PARAMETRIC_DATUM,
+                             :PJ_TYPE_DERIVED_PROJECTED_CRS, :PJ_TYPE_COORDINATE_METADATA]
+    elsif Proj::Api::PROJ_VERSION >= '9.3.0'
       types_with_no_codes = [:PJ_TYPE_TEMPORAL_CRS, :PJ_TYPE_BOUND_CRS, :PJ_TYPE_UNKNOWN, :PJ_TYPE_ENGINEERING_CRS,
                            :PJ_TYPE_TEMPORAL_DATUM, :PJ_TYPE_ENGINEERING_DATUM, :PJ_TYPE_PARAMETRIC_DATUM,
                            :PJ_TYPE_OTHER_COORDINATE_OPERATION, :PJ_TYPE_DERIVED_PROJECTED_CRS, :PJ_TYPE_COORDINATE_METADATA]
@@ -61,7 +65,7 @@ class DatabaseTest < AbstractTest
 
     database = Proj::Database.new(Proj::Context.current)
 
-    Proj::Api::PJ_TYPE.symbols.each do |type|
+    Proj::Api::PjType.symbols.each do |type|
       codes = database.codes('EPSG', type)
       if types_with_no_codes.include?(type)
         assert(codes.empty?)
@@ -74,28 +78,17 @@ class DatabaseTest < AbstractTest
   def test_authorities
     database = Proj::Database.new(Proj::Context.current)
     authorities = database.authorities
-    assert_equal(7, authorities.count)
+    expected_authorities = case
+                           when Proj::Api::PROJ_VERSION >= '9.6.0'
+                             ['EPSG', 'ESRI', 'IAU_2015', 'IGNF', 'NKG', 'NRCAN', 'OGC', 'PROJ']
+                           else
+                             ['EPSG', 'ESRI', 'IAU_2015', 'IGNF', 'NKG', 'OGC', 'PROJ']
+                           end
 
-    authority = authorities[0]
-    assert_equal('EPSG', authority)
-
-    authority = authorities[1]
-    assert_equal('ESRI', authority)
-
-    authority = authorities[2]
-    assert_equal('IAU_2015', authority)
-
-    authority = authorities[3]
-    assert_equal('IGNF', authority)
-
-    authority = authorities[4]
-    assert_equal('NKG', authority)
-
-    authority = authorities[5]
-    assert_equal('OGC', authority)
-
-    authority = authorities[6]
-    assert_equal('PROJ', authority)
+    assert_equal(expected_authorities.count, authorities.count)
+    expected_authorities.each_with_index do |expected, i|
+      assert_equal(expected, authorities[i])
+    end
   end
 
   def test_crs_info
@@ -103,6 +96,8 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info
 
     expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.6.0'
+                   13636
                  when Proj::Api::PROJ_VERSION >= '9.3.0'
                    13434
                  when Proj::Api::PROJ_VERSION >= '9.0.0'
@@ -133,6 +128,8 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG")
 
     expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.6.0'
+                   7644
                  when Proj::Api::PROJ_VERSION >= '9.3.0'
                    7477
                  when Proj::Api::PROJ_VERSION >= '9.0.0'
@@ -150,6 +147,8 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.6.0'
+                   1045
                  when Proj::Api::PROJ_VERSION >= '9.3.0'
                    997
                  when Proj::Api::PROJ_VERSION >= '9.0.0'
@@ -168,6 +167,8 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.6.0'
+                   5910
                  when Proj::Api::PROJ_VERSION >= '9.3.0'
                    5839
                  when Proj::Api::PROJ_VERSION >= '9.0.0'
@@ -192,6 +193,8 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.6.0'
+                   42
                  when Proj::Api::PROJ_VERSION >= '9.3.0'
                    37
                  else
@@ -215,6 +218,8 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.6.0'
+                   45
                  when Proj::Api::PROJ_VERSION >= '9.3.0'
                    40
                  else
@@ -231,6 +236,8 @@ class DatabaseTest < AbstractTest
     crs_infos = database.crs_info("EPSG", params)
 
     expected = case
+                 when Proj::Api::PROJ_VERSION >= '9.6.0'
+                   7119
                  when Proj::Api::PROJ_VERSION >= '9.3.0'
                    6951
                  when Proj::Api::PROJ_VERSION >= '9.0.0'
