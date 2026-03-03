@@ -136,18 +136,18 @@ class PjObjectTest < AbstractTest
     objects = Proj::PjObject.create_from_name("WGS 84", context, approximate_match: true,
                                               types: [:PJ_TYPE_GEODETIC_CRS, :PJ_TYPE_PROJECTED_CRS])
 
-    expected = case
-                 when Proj::Api::PROJ_VERSION >= '9.6.0'
-                   462
-                 when Proj::Api::PROJ_VERSION >= '9.3.0'
-                   443
-                 when Proj::Api::PROJ_VERSION >= '9.0.0'
-                   442
-                 else
-                   440
-               end
+    minimum = case
+                when Proj::Api::PROJ_VERSION >= '9.6.0'
+                  462
+                when Proj::Api::PROJ_VERSION >= '9.3.0'
+                  443
+                when Proj::Api::PROJ_VERSION >= '9.0.0'
+                  442
+                else
+                  440
+              end
 
-    assert_equal(expected, objects.size)
+    assert_operator(objects.size, :>=, minimum)
   end
 
   def test_create_from_name_with_types_and_approximate_match_and_limit

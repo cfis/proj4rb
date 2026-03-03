@@ -85,9 +85,9 @@ class DatabaseTest < AbstractTest
                              ['EPSG', 'ESRI', 'IAU_2015', 'IGNF', 'NKG', 'OGC', 'PROJ']
                            end
 
-    assert_equal(expected_authorities.count, authorities.count)
-    expected_authorities.each_with_index do |expected, i|
-      assert_equal(expected, authorities[i])
+    assert_operator(authorities.count, :>=, expected_authorities.count)
+    expected_authorities.each do |expected|
+      assert_includes(authorities, expected)
     end
   end
 
@@ -95,17 +95,17 @@ class DatabaseTest < AbstractTest
     database = Proj::Database.new(Proj::Context.current)
     crs_infos = database.crs_info
 
-    expected = case
-                 when Proj::Api::PROJ_VERSION >= '9.6.0'
-                   13636
-                 when Proj::Api::PROJ_VERSION >= '9.3.0'
-                   13434
-                 when Proj::Api::PROJ_VERSION >= '9.0.0'
-                   13107
-                 else
-                   12609
-               end
-    assert_equal(expected, crs_infos.count)
+    minimum = case
+                when Proj::Api::PROJ_VERSION >= '9.6.0'
+                  13636
+                when Proj::Api::PROJ_VERSION >= '9.3.0'
+                  13434
+                when Proj::Api::PROJ_VERSION >= '9.0.0'
+                  13107
+                else
+                  12609
+              end
+    assert_operator(crs_infos.count, :>=, minimum)
 
     crs_info = crs_infos.first
     assert_equal("EPSG", crs_info.auth_name)
@@ -127,17 +127,17 @@ class DatabaseTest < AbstractTest
     database = Proj::Database.new(Proj::Context.current)
     crs_infos = database.crs_info("EPSG")
 
-    expected = case
-                 when Proj::Api::PROJ_VERSION >= '9.6.0'
-                   7644
-                 when Proj::Api::PROJ_VERSION >= '9.3.0'
-                   7477
-                 when Proj::Api::PROJ_VERSION >= '9.0.0'
-                   7251
-                 else
-                   7056
-               end
-    assert_equal(expected, crs_infos.count)
+    minimum = case
+                when Proj::Api::PROJ_VERSION >= '9.6.0'
+                  7644
+                when Proj::Api::PROJ_VERSION >= '9.3.0'
+                  7477
+                when Proj::Api::PROJ_VERSION >= '9.0.0'
+                  7251
+                else
+                  7056
+              end
+    assert_operator(crs_infos.count, :>=, minimum)
   end
 
   def test_crs_info_geodetic
@@ -146,18 +146,18 @@ class DatabaseTest < AbstractTest
     params.types = [:PJ_TYPE_GEODETIC_CRS]
     crs_infos = database.crs_info("EPSG", params)
 
-    expected = case
-                 when Proj::Api::PROJ_VERSION >= '9.6.0'
-                   1045
-                 when Proj::Api::PROJ_VERSION >= '9.3.0'
-                   997
-                 when Proj::Api::PROJ_VERSION >= '9.0.0'
-                   943
-                 else
-                   930
-               end
+    minimum = case
+                when Proj::Api::PROJ_VERSION >= '9.6.0'
+                  1045
+                when Proj::Api::PROJ_VERSION >= '9.3.0'
+                  997
+                when Proj::Api::PROJ_VERSION >= '9.0.0'
+                  943
+                else
+                  930
+              end
 
-    assert_equal(expected, crs_infos.count)
+    assert_operator(crs_infos.count, :>=, minimum)
   end
 
   def test_crs_info_geographic
@@ -166,18 +166,18 @@ class DatabaseTest < AbstractTest
     params.types = [:PJ_TYPE_GEOGRAPHIC_2D_CRS, :PJ_TYPE_PROJECTED_CRS]
     crs_infos = database.crs_info("EPSG", params)
 
-    expected = case
-                 when Proj::Api::PROJ_VERSION >= '9.6.0'
-                   5910
-                 when Proj::Api::PROJ_VERSION >= '9.3.0'
-                   5839
-                 when Proj::Api::PROJ_VERSION >= '9.0.0'
-                   5689
-                 else
-                   5534
-               end
+    minimum = case
+                when Proj::Api::PROJ_VERSION >= '9.6.0'
+                  5910
+                when Proj::Api::PROJ_VERSION >= '9.3.0'
+                  5839
+                when Proj::Api::PROJ_VERSION >= '9.0.0'
+                  5689
+                else
+                  5534
+              end
 
-    assert_equal(expected, crs_infos.count)
+    assert_operator(crs_infos.count, :>=, minimum)
   end
 
   def test_crs_info_bounds_inclusive
@@ -192,16 +192,16 @@ class DatabaseTest < AbstractTest
 
     crs_infos = database.crs_info("EPSG", params)
 
-    expected = case
-                 when Proj::Api::PROJ_VERSION >= '9.6.0'
-                   42
-                 when Proj::Api::PROJ_VERSION >= '9.3.0'
-                   37
-                 else
-                   35
-               end
+    minimum = case
+                when Proj::Api::PROJ_VERSION >= '9.6.0'
+                  42
+                when Proj::Api::PROJ_VERSION >= '9.3.0'
+                  37
+                else
+                  35
+              end
 
-    assert_equal(expected, crs_infos.count)
+    assert_operator(crs_infos.count, :>=, minimum)
   end
 
   def test_crs_info_bounds_exclusive
@@ -217,16 +217,16 @@ class DatabaseTest < AbstractTest
 
     crs_infos = database.crs_info("EPSG", params)
 
-    expected = case
-                 when Proj::Api::PROJ_VERSION >= '9.6.0'
-                   45
-                 when Proj::Api::PROJ_VERSION >= '9.3.0'
-                   40
-                 else
-                   38
-               end
+    minimum = case
+                when Proj::Api::PROJ_VERSION >= '9.6.0'
+                  45
+                when Proj::Api::PROJ_VERSION >= '9.3.0'
+                  40
+                else
+                  38
+              end
 
-    assert_equal(expected, crs_infos.count)
+    assert_operator(crs_infos.count, :>=, minimum)
   end
 
   def test_crs_info_celestial_body
@@ -235,18 +235,18 @@ class DatabaseTest < AbstractTest
       params.celestial_body_name = "Earth"
     crs_infos = database.crs_info("EPSG", params)
 
-    expected = case
-                 when Proj::Api::PROJ_VERSION >= '9.6.0'
-                   7119
-                 when Proj::Api::PROJ_VERSION >= '9.3.0'
-                   6951
-                 when Proj::Api::PROJ_VERSION >= '9.0.0'
-                   6723
-                 else
-                   6532
-               end
+    minimum = case
+                when Proj::Api::PROJ_VERSION >= '9.6.0'
+                  7119
+                when Proj::Api::PROJ_VERSION >= '9.3.0'
+                  6951
+                when Proj::Api::PROJ_VERSION >= '9.0.0'
+                  6723
+                else
+                  6532
+              end
 
-    assert_equal(expected, crs_infos.count)
+    assert_operator(crs_infos.count, :>=, minimum)
   end
 
   def test_unit

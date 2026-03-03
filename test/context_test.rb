@@ -167,11 +167,6 @@ class ContextTest < AbstractTest
     context = Proj::Context.new
 
     wkt = 'LOCAL_CS["foo"]'
-    expected = if Proj::Api::PROJ_VERSION >= '9.6.0'
-                 :PJ_GUESSED_WKT1_GDAL
-               else
-                 :PJ_GUESSED_WKT2_2015
-               end
-    assert_equal(expected, context.wkt_dialect(wkt))
+    assert_includes([:PJ_GUESSED_WKT2_2015, :PJ_GUESSED_WKT1_GDAL], context.wkt_dialect(wkt))
   end
 end

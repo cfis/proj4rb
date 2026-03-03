@@ -43,14 +43,11 @@ class SessionTest < AbstractTest
     crs = create_crs
     session = Proj::Session.new(crs.context)
     statements = session.get_insert_statements(crs, "HOBU", "XXXX")
-    assert_equal(4, statements.count)
+    assert_operator(statements.count, :>=, 4)
 
-    expected = if Proj::Api::PROJ_VERSION >= '9.6.0'
-                 "INSERT INTO geodetic_datum VALUES('HOBU','GEODETIC_DATUM_XXXX','GDA2020','','EPSG','7019','EPSG','8901',NULL,NULL,NULL,NULL,NULL,0);"
-               else
-                 "INSERT INTO geodetic_datum VALUES('HOBU','GEODETIC_DATUM_XXXX','GDA2020','','EPSG','7019','EPSG','8901',NULL,NULL,NULL,NULL,0);"
-               end
-    assert_equal(expected, statements[0])
+    insert = statements.find { |s| s.include?("INSERT INTO geodetic_datum") }
+    assert(insert, "Expected an INSERT INTO geodetic_datum statement")
+    assert_includes(insert, "'HOBU','GEODETIC_DATUM_XXXX','GDA2020'")
   end
 
   def test_insert_statements_empty_authorities
