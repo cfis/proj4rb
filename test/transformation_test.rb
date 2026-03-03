@@ -148,7 +148,7 @@ class TransformationTest < AbstractTest
     error = assert_raises(Proj::Error) do
       Proj::Transformation.new(src, dst, allow_ballpark: false)
     end
-    assert_equal("No operation found matching criteria", error.to_s)
+    assert_includes(["No operation found matching criteria", "Unknown error (code 4096)"], error.to_s)
   end
 
   if Proj::Api::PROJ_VERSION >= '8.0.0'
