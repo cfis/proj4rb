@@ -6,17 +6,21 @@ class FileApiTest < AbstractTest
   def setup
     super
     # Make sure FileAPI callbacks are not GCed
-    #GC.stress = true
+    GC.stress = true
   end
 
   def teardown
+    # Clean up downloaded grid so other tests aren't affected
+    context = Proj::Context.new
+    context.network_enabled = true
+    grid = Proj::Grid.new("dk_sdfe_dvr90.tif", context)
+    grid.delete
     super
     GC.stress = false
   end
 
 
   def test_read
-    skip "This test causes a segfault due to the way Proj cleans up on shutdown"
     context = Proj::Context.new
     # Network needs to be on for grid delete to work
     context.network_enabled = true
@@ -44,13 +48,9 @@ class FileApiTest < AbstractTest
     assert_in_delta(12, new_coord.lon)
     assert_in_delta(56, new_coord.lat)
     assert_in_delta(36.5909996032715, new_coord.z, 1e-10)
-
-    context.destroy
   end
 
   def test_write
-    skip "This test causes a segfault due to the way Proj cleans up on shutdown"
-
     context = Proj::Context.new
     context.network_enabled = true
 
