@@ -7,9 +7,7 @@ module Proj
         # Get the proj type
         type = Api.proj_get_type(pointer)
 
-        # If we can create a derived classes, but we do not want to call their
-        # initializers since we already have a valid PROJ object that we
-        # just have to wrap
+        # Determine the appropriate wrapper class
         klass = case type
                    when :PJ_TYPE_CRS, :PJ_TYPE_GEODETIC_CRS, :PJ_TYPE_GEOCENTRIC_CRS,
                         :PJ_TYPE_GEOGRAPHIC_2D_CRS, :PJ_TYPE_GEOGRAPHIC_3D_CRS,
@@ -38,11 +36,12 @@ module Proj
                      self
                    end
 
-        # Now setup the instance variables
+        # The wrapper classes create their own proj objects via the C API, 
+        # but we already have a proj object. So we cannot call their
+        # initializers. But we do want to call PjObject intializer to 
+        # set intance variables and setup finalizers
         result = klass.allocate
-        result.instance_variable_set(:@pointer, pointer)
-        result.instance_variable_set(:@context, context)
-
+        PjObject.instance_method(:initialize).bind(result).call(pointer, context)
         result
       end
     end
