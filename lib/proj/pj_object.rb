@@ -202,6 +202,13 @@ module Proj
       @pointer = Api.proj_clone(original.context, original)
 
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
+
+    # Explicitly free the underlying PROJ object.
+    def destroy
+      Api.proj_destroy(@pointer)
+      @pointer = FFI::Pointer::NULL
+      ObjectSpace.undefine_finalizer(self)
+      nil
     end
 
     # Assign a new context to this object

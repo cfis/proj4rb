@@ -186,4 +186,12 @@ class PjObjectTest < AbstractTest
     crs = Proj::Crs.create_from_database("EPSG", "4326", :PJ_CATEGORY_CRS)
     refute(crs.deprecated?)
   end
+
+  def test_destroy
+    object = Proj::PjObject.create("+proj=longlat")
+    refute(object.to_ptr.null?)
+
+    object.destroy
+    assert(object.to_ptr.null?)
+  end
 end
