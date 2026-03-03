@@ -10,6 +10,8 @@ match:
 library_names:
   - proj
 
+version_check: proj_version
+
 library_versions:
   - "25"
   - "9_1"
