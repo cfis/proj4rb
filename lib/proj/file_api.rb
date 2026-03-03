@@ -1,7 +1,7 @@
 module Proj
   module FileApiCallbacks
     def install_callbacks(context)
-      proj_file_api = Api::PROJ_FILE_API.new
+      proj_file_api = Api::ProjFileApi.new
       proj_file_api[:version] = 1
 
       # Store procs to instance variables so they don't get garbage collected
