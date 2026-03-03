@@ -169,4 +169,12 @@ class ContextTest < AbstractTest
     wkt = 'LOCAL_CS["foo"]'
     assert_includes([:PJ_GUESSED_WKT2_2015, :PJ_GUESSED_WKT1_GDAL], context.wkt_dialect(wkt))
   end
+
+  def test_destroy
+    context = Proj::Context.new
+    refute(context.to_ptr.null?)
+
+    context.destroy
+    assert(context.to_ptr.null?)
+  end
 end

@@ -48,6 +48,14 @@ module Proj
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
     end
 
+    # Explicitly free the underlying PROJ context.
+    def destroy
+      Api.proj_context_destroy(@pointer)
+      @pointer = FFI::Pointer::NULL
+      ObjectSpace.undefine_finalizer(self)
+      nil
+    end
+
     def to_ptr
       @pointer
     end
