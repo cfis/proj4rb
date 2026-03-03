@@ -228,7 +228,7 @@ module Proj
         raise("#{network_api_klass} must be a class whose initializer has single argument which is a context")
       end
 
-      # There is no API to "uninstall" a FileApi. Thus it needs to stay alive
+      # There is no API to "uninstall" a NetworkApi. Thus it needs to stay alive
       # until the context is GCed
       @network_api = network_api_klass.new(self)
     end
