@@ -179,8 +179,12 @@ module Proj
     end
 
     # @!visibility private
-    def self.finalize(pointer)
+    # @!visibility private
+    def self.finalize(pointer, context)
       proc do
+        # Keep context alive until the PJ object is destroyed. With custom file/network
+        # callbacks, proj_destroy() may re-enter callbacks tied to the context.
+        context
         Api.proj_destroy(pointer)
       end
     end
@@ -191,7 +195,7 @@ module Proj
       end
       @pointer = pointer
       @context = context
-      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
+      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer, @context))
     end
 
     def initialize_copy(original)
@@ -201,7 +205,8 @@ module Proj
 
       @pointer = Api.proj_clone(original.context, original)
 
-      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
+      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer, @context))
+    end
 
     # Explicitly free the underlying PROJ object.
     def destroy
