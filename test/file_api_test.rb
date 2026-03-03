@@ -1,6 +1,7 @@
 # encoding: UTF-8
 
 require_relative './abstract_test'
+require_relative './file_api_example'
 
 class FileApiTest < AbstractTest
   def setup
@@ -34,7 +35,7 @@ class FileApiTest < AbstractTest
     context.network_enabled = false
 
     # Hook up a custom FileApiImpl
-    context.set_file_api(Proj::FileApiImpl)
+    context.set_file_api(Proj::FileApiExample)
 
     conversion = Proj::Conversion.new(<<~EOS, context)
           +proj=pipeline
@@ -58,7 +59,7 @@ class FileApiTest < AbstractTest
     grid = Proj::Grid.new("dk_sdfe_dvr90.tif", context)
     grid.delete
 
-    context.set_file_api(Proj::FileApiImpl)
+    context.set_file_api(Proj::FileApiExample)
     grid.download
 
     assert(grid.downloaded?)

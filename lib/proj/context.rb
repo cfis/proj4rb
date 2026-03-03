@@ -217,9 +217,29 @@ module Proj
       end
     end
 
-    # Installs a new {FileApiImpl FileApi}
+    # Installs a custom file API that PROJ will use for all file operations.
+    #
+    # The class must include {FileApiCallbacks} and implement the following methods
+    # that receive a file handle as their first argument:
+    #
+    # * +open(path, access_mode)+ - Open a file. Return a file object or nil on error.
+    # * +read(file, size_bytes)+ - Read size_bytes from file, return data string.
+    # * +write(file, data)+ - Write data to file, return bytes written.
+    # * +seek(file, offset, whence)+ - Seek within file.
+    # * +tell(file)+ - Return current file position.
+    # * +close(file)+ - Close the file.
+    # * +exists(path)+ - Return true if file exists.
+    # * +mkdir(path)+ - Create directory, return true on success.
+    # * +unlink(path)+ - Remove file, return true on success.
+    # * +rename(original_path, new_path)+ - Rename file, return true on success.
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_context_set_fileapi
+    # @see FileApiCallbacks
+    #
+    # @example
+    #   context.set_file_api(MyCustomFileApi)
+    #
+    # @param file_api_klass [Class] A class whose initializer accepts a single Context argument
     def set_file_api(file_api_klass)
       unless file_api_klass.kind_of?(Class)
         raise("#{file_api_klass} must be a class whose initializer has single argument which is a context")
