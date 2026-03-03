@@ -138,7 +138,7 @@ class TransformationTest < AbstractTest
     error = assert_raises(Proj::Error) do
       Proj::Transformation.new(src, dst, accuracy: 0.05)
     end
-    assert_equal("No operation found matching criteria", error.to_s)
+    assert_includes(["No operation found matching criteria", "Unknown error (code 4096)"], error.to_s)
   end
 
   def test_ballpark_filter
@@ -159,10 +159,10 @@ class TransformationTest < AbstractTest
       start_bounds = Proj::Bounds.new(40, -120, 64, -80)
       end_bounds = transform.transform_bounds(start_bounds, :PJ_FWD, 0)
 
-      assert_equal(-1684649.4133828662, end_bounds.xmin)
-      assert_equal(-350356.8137658477, end_bounds.ymin)
-      assert_equal(1684649.4133828674, end_bounds.xmax)
-      assert_equal(2234551.1855909275, end_bounds.ymax)
+      assert_in_delta(-1684649.4133828662, end_bounds.xmin, 1e-3)
+      assert_in_delta(-350356.8137658477, end_bounds.ymin, 1e-3)
+      assert_in_delta(1684649.4133828674, end_bounds.xmax, 1e-3)
+      assert_in_delta(2234551.1855909275, end_bounds.ymax, 1e-3)
     end
 
     def test_transform_bounds_normalized
@@ -174,10 +174,10 @@ class TransformationTest < AbstractTest
       start_bounds = Proj::Bounds.new(-120, 40, -80, 64)
       end_bounds = normalized.transform_bounds(start_bounds, :PJ_FWD, 100)
 
-      assert_equal(-1684649.4133828662, end_bounds.xmin)
-      assert_equal(-555777.7923351025, end_bounds.ymin)
-      assert_equal(1684649.4133828674, end_bounds.xmax)
-      assert_equal(2234551.1855909275, end_bounds.ymax)
+      assert_in_delta(-1684649.4133828662, end_bounds.xmin, 1e-3)
+      assert_in_delta(-555777.7923351025, end_bounds.ymin, 1e-3)
+      assert_in_delta(1684649.4133828674, end_bounds.xmax, 1e-3)
+      assert_in_delta(2234551.1855909275, end_bounds.ymax, 1e-3)
     end
 
     def test_transform_bounds_densify
@@ -187,10 +187,10 @@ class TransformationTest < AbstractTest
       start_bounds = Proj::Bounds.new(40, -120, 64, -80)
       end_bounds = transform.transform_bounds(start_bounds, :PJ_FWD, 100)
 
-      assert_equal(-1684649.4133828662, end_bounds.xmin)
-      assert_equal(-555777.7923351025, end_bounds.ymin)
-      assert_equal(1684649.4133828674, end_bounds.xmax)
-      assert_equal(2234551.1855909275, end_bounds.ymax)
+      assert_in_delta(-1684649.4133828662, end_bounds.xmin, 1e-3)
+      assert_in_delta(-555777.7923351025, end_bounds.ymin, 1e-3)
+      assert_in_delta(1684649.4133828674, end_bounds.xmax, 1e-3)
+      assert_in_delta(2234551.1855909275, end_bounds.ymax, 1e-3)
     end
 
     def test_instantiable

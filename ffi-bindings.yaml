@@ -15,6 +15,7 @@ version_check: proj_version
 library_versions:
   - "25"
   - "9_1"
+  - "9"
   - "22"
   - "19"
   - "17"

@@ -10,7 +10,7 @@ module Proj
     end
 
     def self.library_versions
-      ["9_1", "25", "22", "19", "17", "15", "14", "13", "12", "11"]
+      ["9_1", "9", "25", "22", "19", "17", "15", "14", "13", "12", "11"]
     end
 
     def self.search_names
@@ -19,11 +19,12 @@ module Proj
         result << "lib#{name}"
         self.library_versions.each do |version|
           case RbConfig::CONFIG['host_os']
-            when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
-              result << "lib#{name}-#{version}"
-              result << "lib#{name}_#{version}"
             when /darwin|mac os/
               result << "lib#{name}.#{version}"
+            when /mingw/
+              result << "lib#{name}-#{version}"
+            when /mswin/
+              result << "#{name}_#{version}"
             else
               result << "lib#{name}.so.#{version}"
           end

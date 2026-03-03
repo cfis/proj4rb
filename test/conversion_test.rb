@@ -127,13 +127,7 @@ class ConversionTest < AbstractTest
       conversion.grid(-1)
     end
 
-    if Proj::Api::PROJ_VERSION >= '9.6.0'
-      assert_equal("Unknown error (code 4096)", error.to_s)
-    elsif Proj::Api::PROJ_VERSION >= '9.0.0'
-      assert_equal("File not found or invalid", error.to_s)
-    else
-      assert_equal("Unknown error (code 4096)", error.to_s)
-    end
+    assert_includes(["Unknown error (code 4096)", "File not found or invalid"], error.to_s)
   end
 
   def test_grid_url

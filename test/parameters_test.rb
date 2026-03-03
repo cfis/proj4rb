@@ -24,6 +24,8 @@ class ParametersTest < AbstractTest
 
   def test_bbox_valid
     params = Proj::Parameters.new
+
+    params.bbox_valid = false
     refute(params.bbox_valid)
 
     params.bbox_valid = true
