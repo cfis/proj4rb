@@ -3,20 +3,8 @@
 require_relative './abstract_test'
 
 class NetworkApiTest < AbstractTest
-  def setup
-    super
-    # Make sure downloader callbacks are not GCed
-    #GC.stress = true
-  end
-
-  def teardown
-    super
-    GC.stress = false
-  end
-
   def test_download
-    skip "This test causes a segfault due to the way Proj cleans up on shutdown"
-
+    #skip "Custom NetworkApiImpl does not properly handle grid downloads"
     context = Proj::Context.new
     context.network_enabled = true
 

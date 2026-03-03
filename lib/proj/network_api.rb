@@ -22,7 +22,7 @@ module Proj
       out_size_read.write(:size_t, out_size)
       buffer.write_bytes(data, 0, out_size)
 
-      # Return fake handle
+      # Return a non-NULL opaque handle in case of success
       FFI::MemoryPointer.new(:size_t)
     end
 
@@ -30,8 +30,7 @@ module Proj
       self.close
     end
 
-    def header_value_callback(context, handle, header_name_ptr, user_data)
-      header_name = header_name_ptr.read_string_to_null
+    def header_value_callback(context, handle, header_name, user_data)
       value = self.header_value(header_name)
       FFI::MemoryPointer.from_string(value)
     end
