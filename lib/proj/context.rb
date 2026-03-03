@@ -182,7 +182,9 @@ module Proj
     #
     # @return [String] Directory
     def user_directory(create = false)
-      Api.proj_context_get_user_writable_directory(self, create ? 1 : 0)
+      path = Api.proj_context_get_user_writable_directory(self, create ? 1 : 0)
+      # Normalizes path names
+      File.expand_path(path)
     end
 
     # Sets the paths that Proj will search when opening one of its resource files
