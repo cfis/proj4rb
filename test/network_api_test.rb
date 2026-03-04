@@ -1,10 +1,10 @@
 # encoding: UTF-8
 
 require_relative './abstract_test'
+require_relative './network_api_example'
 
 class NetworkApiTest < AbstractTest
   def test_download
-    #skip "Custom NetworkApiImpl does not properly handle grid downloads"
     context = Proj::Context.new
     context.network_enabled = true
 
@@ -15,7 +15,7 @@ class NetworkApiTest < AbstractTest
     context.cache.clear
 
     # Install custom network api
-    context.set_network_api(Proj::NetworkApiImpl)
+    context.set_network_api(Proj::NetworkApiExample)
 
     conversion = Proj::Conversion.new(<<~EOS, context)
           +proj=pipeline

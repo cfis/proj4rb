@@ -250,7 +250,7 @@ module Proj
       @file_api = file_api_klass.new(self)
     end
 
-    # Installs a new {NetworkApiImpl NetworkApi}
+    # Installs a new {NetworkApiCallbacks NetworkApi}
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_context_set_network_callbacks
     def set_network_api(network_api_klass)
