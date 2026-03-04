@@ -187,11 +187,11 @@ module Proj
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_trans_bounds
     #
-    # @param bounds [Area] Bounding box in source CRS (target CRS if direction is inverse).
+    # @param bounds [Bounds] Bounding box in source CRS (target CRS if direction is inverse).
     # @param direction [PjDirection] The direction of the transformation.
     # @param densify_points [Integer] Recommended to use 21. This is the number of points to use to densify the bounding polygon in the transformation.
     #
-    # @return [Area] Bounding box in target CRS (target CRS if direction is inverse).
+    # @return [Bounds] Bounding box in target CRS (target CRS if direction is inverse).
     def transform_bounds(bounds, direction, densify_points = 21)
       out_xmin = FFI::MemoryPointer.new(:double)
       out_ymin = FFI::MemoryPointer.new(:double)
