@@ -117,6 +117,14 @@ class CoordinateSystemTest < AbstractTest
     assert_equal("9122", axis_info.unit_code)
   end
 
+  def test_axis_info_to_description_uses_unit_name
+    axis_info = Proj::AxisInfo.new(name: "Latitude", abbreviation: "lat", direction: "north",
+                                   unit_conv_factor: 0.017453292519943295, unit_name: "degree",
+                                   unit_auth_name: "EPSG", unit_code: "9122")
+    description = axis_info.to_description
+    assert_equal("degree", description[:unit_name].read_string_to_null)
+  end
+
   def test_axes
     crs = Proj::Crs.new('EPSG:4326')
     cs = crs.coordinate_system

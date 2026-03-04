@@ -32,7 +32,7 @@ module Proj
     # @return [PjAxisDescription]
     def to_description
       Api::PjAxisDescription.create(name: name, abbreviation: abbreviation, direction: direction,
-                                      unit_conv_factor: unit_conv_factor, unit_name: name, unit_type: self.unit_type)
+                                    unit_conv_factor: unit_conv_factor, unit_name: unit_name, unit_type: self.unit_type)
     end
     
     def unit_type
