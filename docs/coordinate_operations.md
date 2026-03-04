@@ -61,13 +61,14 @@ from = Proj::Coordinate.new(lam: 48.9906726079, phi: 8.4302123334)
 
 ## Operation Factory
 
-The `OperationFactoryContext` class can be used to build coordinate operations between two CRSes. Create a factory, set appropriate filters (spatial, accuracy, grid availability, etc.), then query for a list of possible conversions.
+The `OperationFactoryContext` class can be used to build coordinate operations between two CRS objects. Create a factory, set appropriate filters (spatial, accuracy, grid availability, etc.), then query for a list of possible operations.
 
 ```ruby
 source = Proj::Crs.create_from_database("EPSG", "4267", :PJ_CATEGORY_CRS)
 target = Proj::Crs.create_from_database("EPSG", "4269", :PJ_CATEGORY_CRS)
+context = Proj::Context.new
 
-factory_context = Proj::OperationFactoryContext.new
+factory_context = Proj::OperationFactoryContext.new(context)
 factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
 factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
 

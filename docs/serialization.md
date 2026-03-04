@@ -36,7 +36,7 @@ crs = Proj::PjObject.create_from_wkt(wkt)
 You can also guess the WKT dialect:
 
 ```ruby
-dialect = Proj::Context.current.database.guess_wkt_dialect(wkt)
+dialect = Proj::Context.current.wkt_dialect(wkt)
 ```
 
 ## PROJJSON

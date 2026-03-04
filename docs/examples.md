@@ -81,13 +81,14 @@ assert_in_delta(1141263.01116045, coordinate_2.y)
 
 ## Operation Factory Context
 
-Operation Factory Contexts are used to build coordinate operations between two CRSes. This example finds the best available conversion between EPSG 4267 and 4269.
+Operation Factory contexts are used to build coordinate operations between two CRS objects. This example finds the best available operation between EPSG 4267 and 4269.
 
 ```ruby
 source = Proj::Crs.create_from_database("EPSG", "4267", :PJ_CATEGORY_CRS)
 target = Proj::Crs.create_from_database("EPSG", "4269", :PJ_CATEGORY_CRS)
+context = Proj::Context.new
 
-factory_context = Proj::OperationFactoryContext.new
+factory_context = Proj::OperationFactoryContext.new(context)
 factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
 factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
 

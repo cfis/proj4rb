@@ -6,7 +6,20 @@ Ruby bindings for the [Proj](https://proj.org) coordinate transformation library
 
 Reference documentation is available at [API Reference](reference/).
 
-Examples can be found in the [Examples](examples.md) page. In addition, the test suite has examples of calling almost every API so when in doubt take a look at them.
+Guides:
+
+- [Configuration](configuration.md)
+- [Contexts](contexts.md)
+- [Coordinate Operations](coordinate_operations.md)
+- [Coordinate Reference Systems](crs.md)
+- [Database](database.md)
+- [Examples](examples.md)
+- [Geodetic Objects](geodetic_objects.md)
+- [Grids](grids.md)
+- [Serialization](serialization.md)
+- [ruby-bindgen / FFI bindings](ruby_bindgen.md)
+
+In addition, the test suite has examples of calling almost every API so when in doubt take a look at them.
 
 ## Installation
 
@@ -63,6 +76,21 @@ The `PjObject` class defines several methods to create new objects:
 - `PjObject.create_from_wkt`
 
 These methods return instances of the correct subclass.
+
+## What Is New By PROJ Version
+
+- **PROJ 9.4**
+  - `Crs#point_motion_operation?` uses `proj_crs_has_point_motion_operation`.
+  - Added `Projection.lambert_conic_conformal_1sp_variant_b`.
+- **PROJ 9.5**
+  - Added `Context#set_user_writable_directory`.
+  - Added `CoordinateOperationMixin#requires_per_coordinate_input_time?`.
+  - Added `Projection.local_orthographic`.
+- **PROJ 9.6**
+  - Added `Bounds3d`.
+  - Added `CoordinateOperationMixin#transform_bounds_3d`.
+
+Some APIs are version-gated. See [Configuration](configuration.md#version-gated-apis).
 
 ## License
 

@@ -37,16 +37,16 @@ Notice when using the old-style Proj4 string, the addition of the `+type=crs` va
 
 By default transformations accept coordinates in the units and axis order of the source CRS and return transformed coordinates in the units and axis order of the target CRS.
 
-For most geographic CRSes, the units will be in degrees. For geographic CRSes defined by the EPSG authority, the order is latitude then longitude.
+For most geographic CRS definitions, the units will be in degrees. For geographic CRS definitions from EPSG, the order is latitude then longitude.
 
-For projected CRSes, the units vary (metre, us-foot, etc.). For projected CRSes defined by the EPSG authority with EAST/NORTH directions, the order may be east then north, or north then east.
+For projected CRS definitions, the units vary (metre, us-foot, etc.). For projected CRS definitions from EPSG with EAST/NORTH directions, the order may be east then north, or north then east.
 
-If you prefer a uniform axis order regardless of the source and target CRSes, call `normalize_for_visualization`:
+If you prefer a uniform axis order regardless of the source and target CRS objects, call `normalize_for_visualization`:
 
 ```ruby
 normalized = transform.normalize_for_visualization
 ```
 
-The normalized transformation will return longitude/latitude order for geographic CRSes and easting/northing for most projected CRSes.
+The normalized transformation will return longitude/latitude order for geographic CRS objects and easting/northing for most projected CRS objects.
 
 For more information see [proj.org/faq](https://proj.org/faq.html#why-is-the-axis-ordering-in-proj-not-consistent).

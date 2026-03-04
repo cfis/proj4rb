@@ -12,6 +12,22 @@ Note: `PROJ_DATA` must be set before Ruby launches.
 
 For more information see [proj.org/resource_files](https://proj.org/resource_files.html).
 
+## Version-Gated APIs
+
+Some APIs are only available when linked against a sufficiently new PROJ runtime. Check the runtime version with `Proj::Api::PROJ_VERSION`:
+
+```ruby
+if Proj::Api::PROJ_VERSION >= Gem::Version.new("9.6.0")
+  # call 9.6+ APIs
+end
+```
+
+Recent examples:
+
+- `>= 9.4.0`: `Crs#point_motion_operation?`
+- `>= 9.5.0`: `Context#set_user_writable_directory`, `Projection.local_orthographic`, `CoordinateOperationMixin#requires_per_coordinate_input_time?`
+- `>= 9.6.0`: `Bounds3d`, `CoordinateOperationMixin#transform_bounds_3d`
+
 ## Development
 
 ### Running Tests
