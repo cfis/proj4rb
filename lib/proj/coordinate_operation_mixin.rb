@@ -209,6 +209,39 @@ module Proj
       Bounds.new(out_xmin.read_double, out_ymin.read_double, out_xmax.read_double, out_ymax.read_double)
     end
 
+    # Transform 3D boundary densifying the edges to account for nonlinear transformations
+    # and extracting the outermost bounds.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_trans_bounds_3D
+    #
+    # @param bounds [Bounds3d] Bounding box in source CRS (target CRS if direction is inverse).
+    # @param direction [PjDirection] The direction of the transformation.
+    # @param densify_points [Integer] Number of points to use to densify the bounding polygon in the transformation.
+    #
+    # @return [Bounds3d] Bounding box in target CRS (target CRS if direction is inverse).
+    def transform_bounds_3d(bounds, direction, densify_points = 21)
+      out_xmin = FFI::MemoryPointer.new(:double)
+      out_ymin = FFI::MemoryPointer.new(:double)
+      out_zmin = FFI::MemoryPointer.new(:double)
+      out_xmax = FFI::MemoryPointer.new(:double)
+      out_ymax = FFI::MemoryPointer.new(:double)
+      out_zmax = FFI::MemoryPointer.new(:double)
+
+      result = Api.proj_trans_bounds_3d(self.context, self, direction,
+                                        bounds.xmin, bounds.ymin, bounds.zmin,
+                                        bounds.xmax, bounds.ymax, bounds.zmax,
+                                        out_xmin, out_ymin, out_zmin,
+                                        out_xmax, out_ymax, out_zmax,
+                                        densify_points)
+
+      unless result == 0
+        Error.check_object(self)
+      end
+
+      Bounds3d.new(out_xmin.read_double, out_ymin.read_double, out_zmin.read_double,
+                   out_xmax.read_double, out_ymax.read_double, out_zmax.read_double)
+    end
+
     # Transforms an array of {Coordinate coordinates}. Individual points that fail to transform
     # will have their components set to Infinity.
     #
