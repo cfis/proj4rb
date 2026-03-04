@@ -417,7 +417,7 @@ module Proj
       result = Api.proj_get_area_of_use(self.context, self,
                                         p_west_lon_degree, p_south_lat_degree, p_east_lon_degree, p_north_lat_degree,
                                         p_name)
-      if result != 1
+      unless result
         Error.check_object(self)
       end
 

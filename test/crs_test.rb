@@ -280,6 +280,20 @@ class CrsTest < AbstractTest
     assert_in_delta(90.0, crs.area_of_use.north_lat_degree, 0.1)
   end
 
+  def test_area_of_use_stale_errno
+    # Leave stale errno on the context via a failed operation.
+    # proj_get_area_of_use returns :bool, so the check must use `unless result`
+    # not `result != 1` (since true != 1 is always true in Ruby).
+    context = Proj::Context.new
+    assert_raises(Proj::Error) do
+      Proj::Conversion.new("invalid_projection_string", context)
+    end
+
+    crs = Proj::Crs.new('EPSG:4326', context)
+    area = crs.area_of_use
+    assert_equal('World.', area.name)
+  end
+
   def test_derived
     crs = Proj::Crs.new('EPSG:4326')
     refute(crs.derived?)

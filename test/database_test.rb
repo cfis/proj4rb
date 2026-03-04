@@ -27,13 +27,13 @@ class DatabaseTest < AbstractTest
   end
 
   def test_set_path_error
-    database = Proj::Database.new(Proj::Context.current)
+    context = Proj::Context.new
+    database = Proj::Database.new(context)
 
     error = assert_raises(Proj::Error) do
       database.path = "test.db"
     end
-    # This error is sometimes "Unknown error (code 4096)"
-    # assert_equal("Invalid value for an argument", error.to_s)
+    assert_includes(["Invalid value for an argument", "Unknown error (code 4096)"], error.to_s)
   end
 
   def test_structure
