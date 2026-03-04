@@ -235,6 +235,8 @@ class ConversionTest < AbstractTest
     assert_equal(6210141.326748009, coord.y)
     assert_equal(50, coord.z)
     assert_equal(0, coord.t)
+
+    assert_equal(2, new_coords.size)
   end
 
   def test_transform_array_invalid

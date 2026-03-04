@@ -229,7 +229,7 @@ module Proj
       end
 
       result = Array.new(coordinates.size)
-      0.upto(coordinates.size) do |i|
+      coordinates.size.times do |i|
         pj_coord = Api::PjCoord.new(coords_ptr[i])
         result[i] = Coordinate.from_coord(pj_coord)
       end
