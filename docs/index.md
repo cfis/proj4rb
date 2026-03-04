@@ -68,6 +68,23 @@ PjObject
   PrimeMeridian
 ```
 
+Additional supporting classes:
+
+```
+Area
+Bounds
+Bounds3d
+Coordinate
+Context
+Database
+GridCache
+Operation
+OperationFactoryContext
+Parameter
+Session
+Unit
+```
+
 The `PjObject` class defines several methods to create new objects:
 
 - `PjObject.create`
@@ -89,6 +106,8 @@ These methods return instances of the correct subclass.
 - **PROJ 9.6**
   - Added `Bounds3d`.
   - Added `CoordinateOperationMixin#transform_bounds_3d`.
+- **PROJ 9.7**
+  - Added `PjObject#geod_direct`.
 
 Some APIs are version-gated. See [Configuration](configuration.md#version-gated-apis).
 

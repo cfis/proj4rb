@@ -76,3 +76,24 @@ operations = factory_context.create_operations(source, target)
 ```
 
 See the [Examples](examples.md) page and `operation_factory_context_test.rb` for more details.
+
+## Transforming Bounds
+
+Use `transform_bounds` to transform a bounding box between coordinate reference systems. The method densifies the edges to account for nonlinear transformations:
+
+```ruby
+transform = Proj::Transformation.new('EPSG:4326', 'EPSG:3857')
+
+bounds = Proj::Bounds.new(10.0, 50.0, 20.0, 60.0)
+result = transform.transform_bounds(bounds, :PJ_FWD)
+
+puts "xmin: #{result.xmin}, ymin: #{result.ymin}"
+puts "xmax: #{result.xmax}, ymax: #{result.ymax}"
+```
+
+For 3D bounds transformations (PROJ 9.6+), use `transform_bounds_3d` with a `Bounds3d`:
+
+```ruby
+bounds = Proj::Bounds3d.new(10.0, 50.0, 0.0, 20.0, 60.0, 1000.0)
+result = transform.transform_bounds_3d(bounds, :PJ_FWD)
+```
