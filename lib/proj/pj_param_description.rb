@@ -1,17 +1,27 @@
 module Proj
   module Api
     class PjParamDescription
+      attr_accessor :retained_ptrs
+
       def self.create(name:, auth_name: nil, code: nil, value:, unit_name: nil, unit_conv_factor:, unit_type:)
         result = PjParamDescription.new
-        # String fields are const char* (:string) so we write pointers directly to the underlying memory
-        result.pointer.put_pointer(result.offset_of(:name), FFI::MemoryPointer.from_string(name))
-        result.pointer.put_pointer(result.offset_of(:auth_name), auth_name ? FFI::MemoryPointer.from_string(auth_name) : FFI::Pointer::NULL)
-        result.pointer.put_pointer(result.offset_of(:code), code ? FFI::MemoryPointer.from_string(code) : FFI::Pointer::NULL)
+        result.retained_ptrs = []
+        result.put_string(:name, name)
+        result.put_string(:auth_name, auth_name)
+        result.put_string(:code, code)
         result[:value] = value
-        result.pointer.put_pointer(result.offset_of(:unit_name), unit_name ? FFI::MemoryPointer.from_string(unit_name) : FFI::Pointer::NULL)
+        result.put_string(:unit_name, unit_name)
         result[:unit_conv_factor] = unit_conv_factor
         result[:unit_type] = unit_type
         result
+      end
+
+      # Write a string into a :string field and retain the pointer to prevent GC.
+      def put_string(field, value)
+        return if value.nil?
+        ptr = FFI::MemoryPointer.from_string(value)
+        @retained_ptrs << ptr
+        pointer.put_pointer(offset_of(field), ptr)
       end
     end
   end
