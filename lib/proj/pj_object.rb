@@ -549,6 +549,20 @@ module Proj
       Coordinate.from_coord(ptr)
     end
 
+    # Compute the endpoint from a start point, initial azimuth, and distance.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_geod_direct
+    #
+    # @param coord [Coordinate] Start coordinate (lon/lat in radians)
+    # @param azi1 [Float] Forward azimuth at the start point (radians)
+    # @param s12 [Float] Distance from the start point (meters)
+    #
+    # @return [Coordinate] Endpoint coordinate and reverse azimuth
+    def geod_direct(coord, azi1, s12)
+      ptr = Api.proj_geod_direct(self, coord, azi1, s12)
+      Coordinate.from_coord(ptr)
+    end
+
     # Returns if an operation expects input in radians
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_angular_input

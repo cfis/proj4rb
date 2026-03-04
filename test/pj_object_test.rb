@@ -207,4 +207,42 @@ class PjObjectTest < AbstractTest
     object.destroy
     assert(object.to_ptr.null?)
   end
+
+  if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.7.0')
+    def test_geod_direct
+      object = Proj::PjObject.create("+proj=longlat +datum=WGS84 +type=crs")
+      coord = Proj::Coordinate.new(lam: 0.0, phi: 0.0)
+      api_singleton = Proj::Api.singleton_class
+      had_original = Proj::Api.respond_to?(:proj_geod_direct)
+
+      if had_original
+        api_singleton.class_eval do
+          alias_method :__orig_proj_geod_direct, :proj_geod_direct
+        end
+      end
+
+      api_singleton.class_eval do
+        define_method(:proj_geod_direct) do |_object, _coord, _azi1, _s12|
+          Proj::Api.proj_coord(1.0, 2.0, 3.0, 4.0)
+        end
+      end
+
+      result = object.geod_direct(coord, 5.0, 6.0)
+      assert_equal(1.0, result.x)
+      assert_equal(2.0, result.y)
+      assert_equal(3.0, result.z)
+      assert_equal(4.0, result.t)
+    ensure
+      api_singleton.class_eval do
+        remove_method :proj_geod_direct
+      end
+
+      if had_original
+        api_singleton.class_eval do
+          alias_method :proj_geod_direct, :__orig_proj_geod_direct
+          remove_method :__orig_proj_geod_direct
+        end
+      end
+    end
+  end
 end
