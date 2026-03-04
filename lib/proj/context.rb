@@ -197,6 +197,16 @@ module Proj
       File.expand_path(path)
     end
 
+    # Sets the user directory used to save grid files.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_context_set_user_writable_directory
+    #
+    # @param path [String] Directory path
+    # @param create [Boolean] If true, create the directory if needed. Defaults to true.
+    def set_user_writable_directory(path, create: true)
+      Api.proj_context_set_user_writable_directory(self, path, create ? 1 : 0)
+    end
+
     # Sets the paths that Proj will search when opening one of its resource files
     # such as the proj.db database, grids, etc.
     #

@@ -1765,5 +1765,32 @@ module Proj
 
       Conversion.create_object(ptr, context)
     end
+
+    # Create a new local_orthographic projection
+    #
+    # @see https://proj.org/operations/projections/index.html
+    #
+    # @param context [Context] Proj Context
+    # @param latitude_nat_origin [Float] Latitude of natural origin
+    # @param longitude_nat_origin [Float] Longitude of natural origin
+    # @param ellipsoidal_height [Float] Ellipsoidal height
+    # @param geocentric_x_origin [Float] Geocentric X origin
+    # @param geocentric_y_origin [Float] Geocentric Y origin
+    # @param geocentric_z_origin [Float] Geocentric Z origin
+    # @param angular_unit_name [String] Name of the angular units. Default is Degree.
+    # @param angular_unit_conversion_factor [Float] Conversion factor from angular unit to radians. Default is 0.0174532925199433.
+    # @param linear_unit_name [String] Name of the linear units. Default is Metre
+    # @param linear_unit_conversion_factor [Float] Conversion factor from linear unit to meters. Default is 1.
+    #
+    # @return [Crs]
+    def self.local_orthographic(context, latitude_nat_origin:, longitude_nat_origin:, ellipsoidal_height:, geocentric_x_origin:, geocentric_y_origin:, geocentric_z_origin:, angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433, linear_unit_name: "Metre", linear_unit_conversion_factor: 1)
+      ptr = Api.proj_create_conversion_local_orthographic(context, latitude_nat_origin, longitude_nat_origin, ellipsoidal_height, geocentric_x_origin, geocentric_y_origin, geocentric_z_origin, angular_unit_name, angular_unit_conversion_factor, linear_unit_name, linear_unit_conversion_factor)
+
+      if ptr.null?
+        Error.check_context(context)
+      end
+
+      Conversion.create_object(ptr, context)
+    end
   end
 end
