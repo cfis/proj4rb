@@ -465,7 +465,7 @@ module Proj
     #
     # @return [Boolean]
     def point_motion_operation?
-      result = Api.proj_crs_get_coordoperation(self.context, self)
+      result = Api.proj_crs_has_point_motion_operation(self.context, self)
       result == 1 ? true : false
     end
 
