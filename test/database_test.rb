@@ -232,7 +232,7 @@ class DatabaseTest < AbstractTest
   def test_crs_info_celestial_body
     database = Proj::Database.new(Proj::Context.current)
     params = Proj::Parameters.new
-      params.celestial_body_name = "Earth"
+    params.celestial_body_name = "Earth"
     crs_infos = database.crs_info("EPSG", params)
 
     minimum = case
@@ -247,6 +247,15 @@ class DatabaseTest < AbstractTest
               end
 
     assert_operator(crs_infos.count, :>=, minimum)
+  end
+
+  def test_crs_info_celestial_body_gc
+    database = Proj::Database.new(Proj::Context.current)
+    params = Proj::Parameters.new
+    params.celestial_body_name = "Earth"
+    GC.start
+    crs_infos = database.crs_info("EPSG", params)
+    assert_operator(crs_infos.count, :>, 0)
   end
 
   def test_unit

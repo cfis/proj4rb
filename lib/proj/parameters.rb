@@ -99,8 +99,8 @@ module Proj
     end
 
     def celestial_body_name=(value)
-      ptr = FFI::MemoryPointer.from_string(value)
-      @params.pointer.put_pointer(@params.offset_of(:celestial_body_name), ptr)
+      @celestial_body_name = FFI::MemoryPointer.from_string(value)
+      @params.pointer.put_pointer(@params.offset_of(:celestial_body_name), @celestial_body_name)
     end
   end
 end
