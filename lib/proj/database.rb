@@ -250,7 +250,7 @@ module Proj
       out_result_count = FFI::MemoryPointer.new(:int)
 
       # Result is an array of pointers to structures
-      pp_units = Api.proj_get_units_from_database(Context.current, auth_name, category, allow_deprecated ? 1 : 0, out_result_count)
+      pp_units = Api.proj_get_units_from_database(self.context, auth_name, category, allow_deprecated ? 1 : 0, out_result_count)
       count = out_result_count.read(:int)
       array_p_units = pp_units.read_array_of_pointer(count)
 

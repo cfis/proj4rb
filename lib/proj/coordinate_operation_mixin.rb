@@ -276,7 +276,7 @@ module Proj
     #
     # @return [Boolean]
     def ballpark_transformation?
-      result = Api.proj_coordoperation_has_ballpark_transformation(Context.current, self)
+      result = Api.proj_coordoperation_has_ballpark_transformation(self.context, self)
       result == 1 ? true : false
     end
 
