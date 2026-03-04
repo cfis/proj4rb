@@ -232,6 +232,33 @@ module Proj
       Conversion.create_object(ptr, context)
     end
 
+    # Create a new lambert_conic_conformal_1sp_variant_b projection
+    #
+    # @see https://proj.org/operations/projections/index.html
+    #
+    # @param context [Context] Proj Context
+    # @param latitude_nat_origin [Float] Latitude of natural origin
+    # @param scale [Float] Scale factor
+    # @param latitude_false_origin [Float] Latitude of false origin
+    # @param longitude_false_origin [Float] Longitude of false origin
+    # @param easting_false_origin [Float] Easting of false origin
+    # @param northing_false_origin [Float] Northing of false origin
+    # @param angular_unit_name [String] Name of the angular units. Default is Degree.
+    # @param angular_unit_conversion_factor [Float] Conversion factor from angular unit to radians. Default is 0.0174532925199433.
+    # @param linear_unit_name [String] Name of the linear units. Default is Metre
+    # @param linear_unit_conversion_factor [Float] Conversion factor from linear unit to meters. Default is 1.
+    #
+    # @return [Crs]
+    def self.lambert_conic_conformal_1sp_variant_b(context, latitude_nat_origin:, scale:, latitude_false_origin:, longitude_false_origin:, easting_false_origin:, northing_false_origin:, angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433, linear_unit_name: "Metre", linear_unit_conversion_factor: 1)
+      ptr = Api.proj_create_conversion_lambert_conic_conformal_1sp_variant_b(context, latitude_nat_origin, scale, latitude_false_origin, longitude_false_origin, easting_false_origin, northing_false_origin, angular_unit_name, angular_unit_conversion_factor, linear_unit_name, linear_unit_conversion_factor)
+
+      if ptr.null?
+        Error.check_context(context)
+      end
+
+      Conversion.create_object(ptr, context)
+    end
+
     # Create a new lambert_conic_conformal_2sp projection
     # 
     # @see https://proj.org/operations/projections/index.html

@@ -78,6 +78,55 @@ class ProjectionTest < AbstractTest
     assert(proj)
   end
 
+  if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.4.0')
+    def test_lambert_conic_conformal_1sp_variant_b_argument_order
+      context = Proj::Context.new
+      captured_args = nil
+      api_singleton = Proj::Api.singleton_class
+      conversion_singleton = Proj::Conversion.singleton_class
+
+      api_singleton.class_eval do
+        alias_method :__orig_proj_create_conversion_lambert_conic_conformal_1sp_variant_b, :proj_create_conversion_lambert_conic_conformal_1sp_variant_b
+        define_method(:proj_create_conversion_lambert_conic_conformal_1sp_variant_b) do |*args|
+          captured_args = args
+          FFI::MemoryPointer.new(:char, 1)
+        end
+      end
+
+      conversion_singleton.class_eval do
+        alias_method :__orig_create_object, :create_object
+        define_method(:create_object) do |_ptr, _context|
+          :ok
+        end
+      end
+
+      result = Proj::Projection.lambert_conic_conformal_1sp_variant_b(context,
+                                                                       latitude_nat_origin: 11,
+                                                                       scale: 22,
+                                                                       latitude_false_origin: 33,
+                                                                       longitude_false_origin: 44,
+                                                                       easting_false_origin: 55,
+                                                                       northing_false_origin: 66,
+                                                                       angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433,
+                                                                       linear_unit_name: "Metre", linear_unit_conversion_factor: 1.0)
+
+      assert_equal(:ok, result)
+      assert_equal([context, 11, 22, 33, 44, 55, 66, "Degree", 0.0174532925199433, "Metre", 1.0], captured_args)
+    ensure
+      conversion_singleton.class_eval do
+        remove_method :create_object
+        alias_method :create_object, :__orig_create_object
+        remove_method :__orig_create_object
+      end
+
+      api_singleton.class_eval do
+        remove_method :proj_create_conversion_lambert_conic_conformal_1sp_variant_b
+        alias_method :proj_create_conversion_lambert_conic_conformal_1sp_variant_b, :__orig_proj_create_conversion_lambert_conic_conformal_1sp_variant_b
+        remove_method :__orig_proj_create_conversion_lambert_conic_conformal_1sp_variant_b
+      end
+    end
+  end
+
   def test_lambert_conic_conformal_2sp
     context = Proj::Context.new
     proj = Proj::Projection.lambert_conic_conformal_2sp(context, latitude_false_origin: 0, longitude_false_origin: 0,
