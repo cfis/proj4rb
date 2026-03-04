@@ -339,7 +339,7 @@ symbols:
 
   overrides:
     # Output buffer: char *s is caller-allocated, function writes into it and returns same pointer
-    proj_rtodms2: "[:pointer, :ulong, :double, :int, :int], :pointer"
+    proj_rtodms2: "[:pointer, :size_t, :double, :int, :int], :pointer"
     # Return must be :pointer so caller can free via proj_string_destroy
     proj_suggests_code_for: "[:pointer, :pointer, :string, :int, :pointer], :pointer"
     # Takes a pointer to free, not an input string
