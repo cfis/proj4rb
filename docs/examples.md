@@ -1,105 +1,38 @@
-# Examples
+# How-To Guides
 
-## Conversion from Geodetic to Projected Coordinates
+Below is a list of guides that will show you how to achieve common tasks to get your day to day work done.
 
-This example is ported from Proj's quickstart guide. See [proj.org/development/quickstart](https://proj.org/development/quickstart.html).
+### Transformations
 
-```ruby
-require 'bundler/setup'
-require 'proj'
+- [Geodetic to Projected Coordinates](examples/geodetic_to_projected.md) — transform lon/lat to easting/northing
+- [Axis Order Normalization](examples/axis_order_normalization.md) — you'll hit this immediately
+- [Transformation With Area Of Interest](examples/transformation_with_area.md) — refining operation selection
+- [Operation Factory Context](examples/operation_factory_context.md) — advanced operation selection
+- [Pipeline Operator](examples/pipeline_operator.md) — chaining steps
+- [Batch Transformation](examples/batch_transformation.md) — doing it at scale
 
-# Create a context
-context = Proj::Context.new
+### Distance & Bounds
 
-# Create a projection
-crs = Proj::Crs.new("+proj=utm +zone=32 +datum=WGS84 +type=crs", context)
+- [Geodesic Distance & Azimuth](examples/geodetic_distance.md) — distance and bearing between two points
+- [Transforming Bounds](examples/transform_bounds.md) — transform a bounding box between CRS
 
-# Get the geodetic CRS for that projection
-geodetic_crs = crs.geodetic_crs
-puts geodetic_crs.to_proj_string
-# +proj=longlat +datum=WGS84 +no_defs +type=crs
+### CRS & Database
 
-# Create a transformation from the geodetic to projected coordinates
-transformation = Proj::Transformation.new(geodetic_crs, crs, context)
-puts transformation.to_proj_string
-# +proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=utm +zone=32 +ellps=WGS84
+- [CRS Identification](examples/crs_identification.md) — identify an unknown CRS against the database
+- [Promote & Demote CRS to 3D](examples/promote_demote_3d.md) — add or remove a height axis
+- [Database Querying](examples/database_query.md) — enumerate CRS entries from the PROJ database
+- [Serialization Formats](examples/serialization_formats.md) — export CRS as WKT, PROJJSON, or PROJ string
 
-# Create a coordinate for Copenhagen in degrees
-coordinate_geodetic = Proj::Coordinate.new(lon: 12.0, lat: 55.0)
-puts "lon: #{coordinate_geodetic.lon}, lat:  #{coordinate_geodetic.lat}"
+### Debugging
 
-# Transform the coordinate
-coordinate_projected = transformation.forward(coordinate_geodetic)
-# lon: 12.0, lat:  55.0
+- [Context Logging](examples/context_logging.md) — capture PROJ diagnostic messages
 
-puts "east: #{coordinate_projected.e}, north: #{coordinate_projected.n}"
-# east: 691875.632137542, north: 6098907.825129169
+## Running
 
-puts "x: #{coordinate_projected.x}, y: #{coordinate_projected.y}"
-# x: 691875.632137542, y: 6098907.825129169
+From the project root:
 
-# Apply the inverse transform
-coordinate_inverse = transformation.inverse(coordinate_projected)
-
-puts "lon: #{coordinate_inverse.lon}, lat:  #{coordinate_inverse.lat}"
-# lon: 12.0, lat:  55.0
-
-puts coordinate_geodetic == coordinate_inverse
-# true
+```console
+ruby -Ilib lib/examples/geodetic_distance.rb
 ```
 
-## Pipeline Operator
-
-This example is ported from the [Rust Proj documentation](https://github.com/georust/proj#convert-from-nad-83-us-survey-feet-to-nad-83-meters-using-the-pipeline-operator).
-
-The pipeline operator makes it easy to create complex operations by daisy-chaining operations together. For more information refer to [proj.org/operations/pipeline](https://proj.org/operations/pipeline.html).
-
-In this example, a coordinate is converted from NAD 83 US Survey Feet to NAD 83 Meters in two steps:
-
-- Step 1: inverse transform yielding geodetic coordinates
-- Step 2: forward transform to projected coordinates yielding metres
-
-```ruby
-conversion = Proj::Conversion.new(<<~EOS)
-  +proj=pipeline
-  +step +inv +proj=lcc +lat_1=33.88333333333333
-  +lat_2=32.78333333333333 +lat_0=32.16666666666666
-  +lon_0=-116.25 +x_0=2000000.0001016 +y_0=500000.0001016001 +ellps=GRS80
-  +towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs
-  +step +proj=lcc +lat_1=33.88333333333333 +lat_2=32.78333333333333 +lat_0=32.16666666666666
-  +lon_0=-116.25 +x_0=2000000 +y_0=500000
-  +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
-EOS
-
-# The Presidio, approximately
-coordinate_1 = Proj::Coordinate.new(x: 4760096.421921, y: 3744293.729449)
-coordinate_2 = conversion.forward(coordinate_1)
-
-assert_in_delta(1450880.2910605003, coordinate_2.x)
-assert_in_delta(1141263.01116045, coordinate_2.y)
-```
-
-## Operation Factory Context
-
-Operation Factory contexts are used to build coordinate operations between two CRS objects. This example finds the best available operation between EPSG 4267 and 4269.
-
-```ruby
-source = Proj::Crs.create_from_database("EPSG", "4267", :PJ_CATEGORY_CRS)
-target = Proj::Crs.create_from_database("EPSG", "4269", :PJ_CATEGORY_CRS)
-context = Proj::Context.new
-
-factory_context = Proj::OperationFactoryContext.new(context)
-factory_context.spatial_criterion = :PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION
-factory_context.grid_availability = :PROJ_GRID_AVAILABILITY_IGNORED
-
-operations = factory_context.create_operations(source, target)
-
-coord = Proj::Coordinate.new(x: 40, y: -100)
-index = operations.suggested_operation(:PJ_FWD, coord)
-assert_equal(2, index)
-
-operation = operations[index]
-assert_equal("NAD27 to NAD83 (1)", operation.name)
-```
-
-Operation Factory Contexts have many additional attributes that can be set to control how conversions should be constructed.
+If PROJ data files are not discoverable in your environment, see [Configuration](configuration.md).

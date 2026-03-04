@@ -4,7 +4,7 @@ All proj4rb objects that inherit from `PjObject` can be serialized to multiple f
 
 ## WKT (Well-Known Text)
 
-WKT is the standard text representation for coordinate reference systems and operations:
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_coordinate_reference_systems) is the standard text representation for coordinate reference systems and operations:
 
 ```ruby
 crs = Proj::Crs.new('EPSG:4326')
@@ -41,7 +41,7 @@ dialect = Proj::Context.current.wkt_dialect(wkt)
 
 ## PROJJSON
 
-PROJJSON is a JSON encoding of WKT2:
+[PROJJSON](https://proj.org/en/stable/specifications/projjson.html) is a JSON encoding of WKT2:
 
 ```ruby
 crs = Proj::Crs.new('EPSG:4326')
@@ -53,7 +53,7 @@ puts crs.to_json(indentation_width: 4)
 
 ## Proj Strings
 
-The classic Proj string format (e.g., `+proj=longlat +datum=WGS84`):
+The classic [Proj string](https://proj.org/en/stable/usage/quickstart.html) format (e.g., `+proj=longlat +datum=WGS84`):
 
 ```ruby
 crs = Proj::Crs.new('EPSG:4326')
@@ -66,26 +66,4 @@ Options:
 ```ruby
 puts crs.to_proj_string(:PJ_PROJ_5, multiline: true)
 puts crs.to_proj_string(:PJ_PROJ_5, use_approx_tmerc: true)
-```
-
-## Object Inspection
-
-All PjObject instances expose metadata:
-
-```ruby
-crs = Proj::Crs.new('EPSG:4326')
-
-puts crs.name          # "WGS 84"
-puts crs.auth_name     # "EPSG"
-puts crs.id_code       # "4326"
-puts crs.auth          # "EPSG:4326"
-puts crs.proj_type     # :PJ_TYPE_GEOGRAPHIC_2D_CRS
-puts crs.remarks
-puts crs.scope
-puts crs.deprecated?   # false
-
-area = crs.area_of_use
-puts area.name
-puts "#{area.west_lon_degree}, #{area.south_lat_degree}"
-puts "#{area.east_lon_degree}, #{area.north_lat_degree}"
 ```

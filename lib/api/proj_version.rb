@@ -18,6 +18,7 @@ module Proj
       info[:major] * 10000 + info[:minor] * 100 + info[:patch]
     end
 
-    Proj::Api::PROJ_VERSION = Gem::Version.new(proj_version.to_s)
+    info = proj_info
+    Proj::Api::PROJ_VERSION = Gem::Version.new("#{info[:major]}.#{info[:minor]}.#{info[:patch]}")
   end
 end

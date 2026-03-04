@@ -1,6 +1,8 @@
 # Contexts
 
-Contexts support multi-threaded programs. The bindings expose this via `Context.current`, stored in thread-local storage. Use the context to access error codes, set proj4 compatibility settings, set logging level, and install custom logging code.
+A `Context` holds the runtime state for PROJ operations — database connections, error state, logging, and network settings. Most PROJ objects are tied to a context.
+
+By default, proj4rb provides a thread-local context via `Context.current`, so you don't need to manage contexts explicitly in single-threaded programs. In multi-threaded programs, each thread automatically gets its own context. You can also create contexts explicitly to isolate error state or configure independent settings.
 
 Both `Crs` and `Transformation` objects accept a context in their constructors. If none is passed, they default to `Context.current`.
 

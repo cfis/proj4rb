@@ -9,16 +9,38 @@ repo_url = "https://github.com/cfis/proj4rb"
 
 nav = [
   { "Home" = "index.md" },
-  { "CRS" = "crs.md" },
-  { "Coordinate Operations" = "coordinate_operations.md" },
-  { "Geodetic Objects" = "geodetic_objects.md" },
-  { "Database" = "database.md" },
-  { "Grids" = "grids.md" },
-  { "Contexts" = "contexts.md" },
-  { "Serialization" = "serialization.md" },
-  { "ruby-bindgen / FFI" = "ruby_bindgen.md" },
-  { "Examples" = "examples.md" },
-  { "Configuration" = "configuration.md" },
+  { "Concepts" = [
+    { "CRS" = "crs.md" },
+    { "Coordinate Operations" = "coordinate_operations.md" },
+    { "Geodetic Objects" = "geodetic_objects.md" },
+    { "Grids" = "grids.md" },
+  ] },
+  { "Library" = [
+    { "Configuration" = "configuration.md" },
+    { "Contexts" = "contexts.md" },
+    { "Database" = "database.md" },
+    { "Serialization" = "serialization.md" },
+    { "Class Hierarchy" = "class_hierarchy.md" },
+  ] },
+  { "How-To Guides" = [
+    { "Overview" = "examples.md" },
+    { "Geodetic to Projected" = "examples/geodetic_to_projected.md" },
+    { "Axis Order" = "examples/axis_order_normalization.md" },
+    { "Area of Interest" = "examples/transformation_with_area.md" },
+    { "Operation Factory" = "examples/operation_factory_context.md" },
+    { "Pipeline Operator" = "examples/pipeline_operator.md" },
+    { "Batch Transformation" = "examples/batch_transformation.md" },
+    { "Geodesic Distance" = "examples/geodetic_distance.md" },
+    { "Transform Bounds" = "examples/transform_bounds.md" },
+    { "CRS Identification" = "examples/crs_identification.md" },
+    { "Promote & Demote 3D" = "examples/promote_demote_3d.md" },
+    { "Database Querying" = "examples/database_query.md" },
+    { "Serialization" = "examples/serialization_formats.md" },
+    { "Context Logging" = "examples/context_logging.md" },
+  ] },
+  { "Development" = [
+    { "ruby-bindgen / FFI" = "ruby_bindgen.md" },
+  ] },
   { "API Reference" = "reference/" },
 ]
 

@@ -1,6 +1,8 @@
 # Geodetic Objects
 
-proj4rb provides classes for the fundamental geodetic objects that define coordinate reference systems: datums, ellipsoids, and prime meridians.
+Geodetic objects are the building blocks of coordinate reference systems. An ellipsoid models the Earth's shape, a datum ties that model to the real Earth, and a prime meridian defines where longitude starts. For background on how these fit together, see [Geodetic Coordinate Systems](https://cfis.savagexi.com/2006/04/29/geodetic-coordinate-systems/).
+
+proj4rb provides classes for each: `Ellipsoid`, `Datum`, `DatumEnsemble`, and `PrimeMeridian`.
 
 ## Ellipsoid
 

@@ -2,7 +2,7 @@
 
 Starting with version 6, Proj stores its reference data (datums, ellipsoids, prime meridians, coordinate systems, units, etc.) in a SQLite file called `proj.db`. The `Database` class provides access to this data.
 
-Every `Context` has an associated database accessible via `Context#database`.
+Every [Context](contexts.md) has an associated database accessible via `Context#database`.
 
 ## Querying
 

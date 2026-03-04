@@ -1,5 +1,7 @@
 # Coordinate Operations
 
+Coordinate operations convert coordinates from one coordinate reference system to another. You need them whenever your data is in a different CRS than your target — for example, converting GPS coordinates (WGS 84) to a local projected grid for distance calculations.
+
 PROJ divides coordinate operations into three groups:
 
 - **Conversions** - coordinate operations that do not exert a change in reference frame. See the `Conversion` class and [proj.org/operations/conversions](https://proj.org/operations/conversions/index.html).

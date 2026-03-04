@@ -2,25 +2,6 @@
 
 Ruby bindings for the [Proj](https://proj.org) coordinate transformation library. The Proj library supports converting coordinates between a number of different coordinate systems and projections.
 
-## Documentation
-
-Reference documentation is available at [API Reference](reference/).
-
-Guides:
-
-- [Configuration](configuration.md)
-- [Contexts](contexts.md)
-- [Coordinate Operations](coordinate_operations.md)
-- [Coordinate Reference Systems](crs.md)
-- [Database](database.md)
-- [Examples](examples.md)
-- [Geodetic Objects](geodetic_objects.md)
-- [Grids](grids.md)
-- [Serialization](serialization.md)
-- [ruby-bindgen / FFI bindings](ruby_bindgen.md)
-
-In addition, the test suite has examples of calling almost every API so when in doubt take a look at them.
-
 ## Installation
 
 First install the gem:
@@ -31,85 +12,76 @@ gem install proj4rb
 
 Next install the Proj library. This varies per system, but you want to install the latest version possible. Once installed, you'll need to make sure that libproj is on your operating system's load path.
 
-## Quick Start
+## Getting Started
+
+Load the library:
 
 ```ruby
 require 'proj'
+```
 
-# Create a transformation
+If you are migrating from the old Proj4 namespace, `require 'proj4'` still works.
+
+### Create a CRS
+
+A coordinate reference system (CRS) defines how coordinates map to locations on the Earth. Create one from an EPSG code:
+
+```ruby
+crs = Proj::Crs.new('EPSG:4326')
+puts crs.name       #=> "WGS 84"
+puts crs.proj_type  #=> :PJ_TYPE_GEOGRAPHIC_2D_CRS
+```
+
+### Transform Coordinates
+
+To convert coordinates between two CRS, create a `Transformation`:
+
+```ruby
 transform = Proj::Transformation.new('EPSG:31467', 'EPSG:4326')
 
-# Transform a coordinate
 from = Proj::Coordinate.new(x: 5428192.0, y: 3458305.0, z: -5.1790915237)
 to = transform.forward(from)
 
 puts "lat: #{to.x}, lon: #{to.y}"
 ```
 
-If you are using the old Proj4 namespace:
+Use `forward` to go from source to target CRS, and `inverse` for the reverse direction:
 
 ```ruby
-require 'proj4'
+back = transform.inverse(to)
 ```
 
-## Class Hierarchy
+### Calculate Distance
 
-The proj4rb class hierarchy is based on Proj's class hierarchy, which is derived from the [OGC Abstract Specification](http://docs.opengeospatial.org/as/18-005r5/18-005r5.html):
+Compute the geodesic distance between two points on the ellipsoid:
 
-```
-PjObject
-  CoordinateOperationMixin
-    Conversion
-    Transformation
-  CoordinateSystem
-  Crs
-  Datum
-  Ellipsoid
-  PrimeMeridian
-```
+```ruby
+crs = Proj::Crs.new('EPSG:4326')
 
-Additional supporting classes:
+paris  = Proj::Coordinate.new(x: Proj.degrees_to_radians(2.3522),
+                               y: Proj.degrees_to_radians(48.8566))
+berlin = Proj::Coordinate.new(x: Proj.degrees_to_radians(13.4050),
+                               y: Proj.degrees_to_radians(52.5200))
 
-```
-Area
-Bounds
-Bounds3d
-Coordinate
-Context
-Database
-GridCache
-Operation
-OperationFactoryContext
-Parameter
-Session
-Unit
+distance = crs.lp_distance(paris, berlin)
+puts "#{(distance / 1000).round(1)} km"  #=> "879.7 km"
 ```
 
-The `PjObject` class defines several methods to create new objects:
+### Query the Database
 
-- `PjObject.create`
-- `PjObject.create_from_database`
-- `PjObject.create_from_name`
-- `PjObject.create_from_wkt`
+The PROJ database contains thousands of CRS definitions:
 
-These methods return instances of the correct subclass.
+```ruby
+database = Proj::Database.new(Proj::Context.current)
+crs_infos = database.crs_info('EPSG')
+puts "#{crs_infos.count} EPSG entries"
+```
 
-## What Is New By PROJ Version
+### Next Steps
 
-- **PROJ 9.4**
-  - `Crs#point_motion_operation?` uses `proj_crs_has_point_motion_operation`.
-  - Added `Projection.lambert_conic_conformal_1sp_variant_b`.
-- **PROJ 9.5**
-  - Added `Context#set_user_writable_directory`.
-  - Added `CoordinateOperationMixin#requires_per_coordinate_input_time?`.
-  - Added `Projection.local_orthographic`.
-- **PROJ 9.6**
-  - Added `Bounds3d`.
-  - Added `CoordinateOperationMixin#transform_bounds_3d`.
-- **PROJ 9.7**
-  - Added `PjObject#geod_direct`.
+See the [How-To Guides](examples.md) for more task-oriented examples, or the [API Reference](reference/) for full documentation.
 
-Some APIs are version-gated. See [Configuration](configuration.md#version-gated-apis).
+For changes by version, see the [Changelog](https://github.com/cfis/proj4rb/blob/master/CHANGELOG.md). Some APIs are version-gated; see [Configuration](configuration.md#version-gated-apis).
 
 ## License
 
@@ -117,4 +89,4 @@ proj4rb is released under the MIT license.
 
 ## Authors
 
-The proj4rb Ruby bindings were started by Guilhem Vellut with most of the code written by Jochen Topf. Charlie Savage ported the code to Windows, added the Windows build infrastructure, rewrote the code to support Proj version 5 and 6, and ported it to use FFI.
+The proj4rb Ruby bindings were started by Guilhem Vellut with most of the code written by Jochen Topf. Charlie Savage ported the code to Windows, added the Windows build infrastructure, rewrote the code to use FFI and then ruby-bindgen, and updated it to support Proj version 5 through 9.

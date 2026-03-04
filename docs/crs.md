@@ -1,6 +1,24 @@
 # Coordinate Reference Systems
 
-To create a coordinate reference system, you can use CRS codes, well-known text (WKT) strings or old-style Proj strings (which are deprecated):
+A coordinate reference system (CRS) defines how coordinates relate to locations on the Earth. It combines a datum (which models the Earth's shape using an ellipsoid), a coordinate system (which defines the axes), and often a projection (which maps the curved surface onto a flat plane).
+
+There are two main types:
+
+- **Geographic CRS** — positions on the ellipsoid expressed as latitude and longitude (degrees)
+- **Projected CRS** — positions on a flat map expressed as easting and northing (meters, feet, etc.)
+
+For background on coordinate systems, datums, and projections:
+
+- [On Coordinate Systems](https://cfis.savagexi.com/2006/04/20/on-coordinate-systems/)
+- [Geocentric Coordinate Systems](https://cfis.savagexi.com/2006/04/23/geocentric-coordinate-systems/)
+- [Geodetic Coordinate Systems](https://cfis.savagexi.com/2006/04/29/geodetic-coordinate-systems/)
+- [Projections](https://cfis.savagexi.com/2006/04/30/projections/)
+- [Putting Everything Together](https://cfis.savagexi.com/2006/05/02/coordinate-systems-putting-everything-together/)
+- [PROJ: Coordinate Reference Systems](https://proj.org/en/stable/usage/transformation.html)
+
+## Creating a CRS
+
+To create a coordinate reference system, you can use CRS codes, [Well-Known Text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_coordinate_reference_systems) strings, or old-style Proj strings (which are deprecated):
 
 ```ruby
 crs1 = Proj::Crs.new('EPSG:4326')
