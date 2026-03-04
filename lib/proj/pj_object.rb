@@ -221,6 +221,9 @@ module Proj
     # @param value [Context] The context to assign to this object
     def context=(value)
       Api.proj_assign_context(self, value)
+      @context = value
+      ObjectSpace.undefine_finalizer(self)
+      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer, @context))
     end
 
     def to_ptr

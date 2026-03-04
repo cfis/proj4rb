@@ -187,6 +187,19 @@ class PjObjectTest < AbstractTest
     refute(crs.deprecated?)
   end
 
+  def test_assign_context
+    GC.stress = true
+    context1 = Proj::Context.new
+    object = Proj::PjObject.create("+proj=longlat", context1)
+    assert_equal(context1, object.context)
+
+    context2 = Proj::Context.new
+    object.context = context2
+    assert_equal(context2, object.context)
+  ensure
+    GC.stress = false
+  end
+
   def test_destroy
     object = Proj::PjObject.create("+proj=longlat")
     refute(object.to_ptr.null?)
