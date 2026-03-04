@@ -16,6 +16,7 @@ nav = [
   { "Grids" = "grids.md" },
   { "Contexts" = "contexts.md" },
   { "Serialization" = "serialization.md" },
+  { "ruby-bindgen / FFI" = "ruby_bindgen.md" },
   { "Examples" = "examples.md" },
   { "Configuration" = "configuration.md" },
   { "API Reference" = "reference/" },
