@@ -125,6 +125,16 @@ class CoordinateSystemTest < AbstractTest
     assert_equal("degree", description[:unit_name].read_string_to_null)
   end
 
+  def test_axis_description_retains_string_pointers
+    description = Proj::Api::PjAxisDescription.create(name: "Latitude", abbreviation: "lat",
+                                                      direction: "north", unit_name: "degree",
+                                                      unit_conv_factor: 0.017453292519943295,
+                                                      unit_type: :PJ_UT_ANGULAR)
+    retained_ptrs = description.instance_variable_get(:@retained_ptrs)
+    assert_instance_of(Array, retained_ptrs)
+    assert_equal(4, retained_ptrs.size)
+  end
+
   def test_axes
     crs = Proj::Crs.new('EPSG:4326')
     cs = crs.coordinate_system
