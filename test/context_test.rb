@@ -115,6 +115,17 @@ class ContextTest < AbstractTest
     assert(called)
   end
 
+  def test_set_log_function_retains_callback_and_data_pointer
+    context = Proj::Context.new
+    data = FFI::MemoryPointer.new(:int)
+    callback = proc { |_pointer, _int, _message| }
+
+    context.set_log_function(data, &callback)
+
+    assert_same(callback, context.instance_variable_get(:@log_function))
+    assert_same(data, context.instance_variable_get(:@log_data_pointer))
+  end
+
   def test_use_proj4_init_rules
     context = Proj::Context.new
     refute(context.use_proj4_init_rules)

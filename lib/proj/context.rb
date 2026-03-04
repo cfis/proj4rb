@@ -81,6 +81,8 @@ module Proj
     #
     # @return [nil]
     def set_log_function(pointer = nil, &proc)
+      @log_data_pointer = pointer
+      @log_function = proc
       Api.proj_log_func(self, pointer, proc)
     end
 
