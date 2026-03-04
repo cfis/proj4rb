@@ -280,6 +280,16 @@ module Proj
       result == 1 ? true : false
     end
 
+    # Return whether a coordinate operation requires time as an input for each coordinate.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_requires_per_coordinate_input_time
+    #
+    # @return [Boolean]
+    def requires_per_coordinate_input_time?
+      result = Api.proj_coordoperation_requires_per_coordinate_input_time(self.context, self)
+      result == 1 ? true : false
+    end
+
     # Returns the accuracy (in meters) of a coordinate operation.
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_get_accuracy

@@ -91,6 +91,29 @@ class ConversionTest < AbstractTest
     refute(operation.ballpark_transformation?)
   end
 
+  if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.5.0')
+    def test_requires_per_coordinate_input_time_uses_api
+      crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
+      operation = crs.coordinate_operation
+      singleton = Proj::Api.singleton_class
+
+      singleton.class_eval do
+        alias_method :__orig_proj_coordoperation_requires_per_coordinate_input_time, :proj_coordoperation_requires_per_coordinate_input_time
+        define_method(:proj_coordoperation_requires_per_coordinate_input_time) do |_context, _operation|
+          1
+        end
+      end
+
+      assert(operation.requires_per_coordinate_input_time?)
+    ensure
+      singleton.class_eval do
+        remove_method :proj_coordoperation_requires_per_coordinate_input_time
+        alias_method :proj_coordoperation_requires_per_coordinate_input_time, :__orig_proj_coordoperation_requires_per_coordinate_input_time
+        remove_method :__orig_proj_coordoperation_requires_per_coordinate_input_time
+      end
+    end
+  end
+
   def test_param_count
     crs = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
     operation = crs.coordinate_operation
