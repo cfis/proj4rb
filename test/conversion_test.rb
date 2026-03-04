@@ -17,7 +17,7 @@ class ConversionTest < AbstractTest
     assert_equal("conv auth:conv code", conversion.auth)
     assert_equal(:PJ_TYPE_CONVERSION, conversion.proj_type)
   end
-
+  
   def test_inverse_operation
     operation = Proj::Conversion.new(<<~EOS)
                   +proj=pipeline +step +proj=axisswap +order=2,1 +step 
@@ -32,7 +32,7 @@ class ConversionTest < AbstractTest
     inverse = operation.create_inverse
     proj_string = inverse.to_proj_string(:PJ_PROJ_5, multiline: true, indentation_width: 4, max_line_length: 40)
 
-    expected = if Proj::Api::PROJ_VERSION >= '7.0.0'
+    expected = if Proj::Api::PROJ_VERSION >= Gem::Version.new('7.0.0')
                  <<~EOS
                   +proj=pipeline
                       +step +proj=axisswap +order=2,1

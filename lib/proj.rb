@@ -2,13 +2,6 @@
 
 require_relative 'api/proj_ffi'
 
-module Proj
-  # Compatibility constant used by wrapper classes
-  info = Api.proj_info
-  PROJ_VERSION = Gem::Version.new("#{info[:major]}.#{info[:minor]}.#{info[:patch]}")
-  Api::PROJ_VERSION = PROJ_VERSION
-end
-
 require_relative 'proj/pj_axis_description'
 require_relative 'proj/pj_param_description'
 require_relative 'proj/pj_object'
