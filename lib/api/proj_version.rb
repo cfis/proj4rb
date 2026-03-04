@@ -8,7 +8,7 @@ module Proj
              :version, :string,
              :searchpath, :string,
              :paths, :pointer,
-             :path_count, :ulong
+             :path_count, :size_t
     end
 
     attach_function :proj_info, :proj_info, [], PjInfo.by_value
