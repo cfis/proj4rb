@@ -30,11 +30,11 @@ module Proj
     end
 
     def types=(values)
-      ptr = FFI::MemoryPointer.new(:int, values.size)
+      @types_ptr = FFI::MemoryPointer.new(:int, values.size)
       ints = values.map {|symbol| Api::PjType[symbol]}
-      ptr.write_array_of_int(ints)
+      @types_ptr.write_array_of_int(ints)
 
-      @params[:types] = ptr
+      @params[:types] = @types_ptr
       @params[:types_count] = values.size
     end
 

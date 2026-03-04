@@ -22,6 +22,15 @@ class ParametersTest < AbstractTest
     assert_equal(types, params.types)
   end
 
+  def test_types_buffer_is_retained
+    params = Proj::Parameters.new
+    params.types = [:PJ_TYPE_GEODETIC_CRS]
+
+    # The buffer assigned into the native struct must be strongly referenced
+    # on the Ruby side to avoid dangling pointers after GC.
+    assert_instance_of(FFI::MemoryPointer, params.instance_variable_get(:@types_ptr))
+  end
+
   def test_bbox_valid
     params = Proj::Parameters.new
 
