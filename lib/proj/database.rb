@@ -231,6 +231,7 @@ module Proj
     # @return [String] The suggested code
     def suggest_code_for(object, authority, numeric_code)
       ptr = Api.proj_suggests_code_for(self.context, object, authority, numeric_code ? 1 : 0, nil)
+      return nil if ptr.null?
       result = ptr.read_string_to_null
       Api.proj_string_destroy(ptr)
       result
