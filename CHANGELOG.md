@@ -2,8 +2,16 @@
 
 ## 5.0.0 - March 2026
 * Switch to auto-generated FFI bindings via [ruby-bindgen](https://github.com/cfis/ruby-bindgen)
-* Support PROJ 9.6
-* Add support for new PROJ APIs: `proj_trans_bounds_3D` (9.6), `proj_geod_direct` (9.7)
+* Add support for PROJ 9.4 API `proj_crs_has_point_motion_operation`
+* Add support for PROJ 9.5 APIs: `proj_context_set_user_writable_directory`, `proj_coordoperation_requires_per_coordinate_input_time`, and `proj_create_conversion_local_orthographic`
+* Add support for PROJ 9.6 APIs: `proj_trans_bounds_3D`
+* Add support for PROJ 9.7 APIs: `proj_geod_direct`
+* Add 3D bounds support (`Bounds3d` + `transform_bounds_3d`) for PROJ 9.6 `proj_trans_bounds_3D`
+* Fix manual wrapper argument order for `proj_create_conversion_lambert_conic_conformal_1sp_variant_b` (9.4)
+* Fix `Parameter#to_description` passing parameter name instead of unit name
+* Fix pointer lifetime issues in `Parameters#types=`, `PjAxisDescription`, and `PjParamDescription`
+* Fix context/state lifetime issues in `OperationFactoryContext` and `Context#set_log_function`
+* Expand regression tests for lifecycle safety and new PROJ 9.4/9.5/9.6 wrappers
 * `Unit.built_in` now returns all unit types (91 units) instead of only linear units (24 units)
 * Internal: struct and enum types use Ruby naming conventions (e.g., `PjCoord` instead of `PJ_COORD`)
 * Internal: method names use Ruby naming conventions (e.g., `proj_create_ellipsoidal_2d_cs` instead of `proj_create_ellipsoidal_2D_cs`)
