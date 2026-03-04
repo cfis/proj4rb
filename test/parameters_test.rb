@@ -22,6 +22,16 @@ class ParametersTest < AbstractTest
     assert_equal(types, params.types)
   end
 
+  def test_to_description_unit_name
+    param = Proj::Parameter.new(name: "Latitude of natural origin",
+                                value: 0.0,
+                                unit_conv_factor: 0.0174532925199433,
+                                unit_name: "degree",
+                                unit_type: :PJ_UT_ANGULAR)
+    desc = param.to_description
+    assert_equal("degree", desc[:unit_name])
+  end
+
   def test_types_buffer_is_retained
     params = Proj::Parameters.new
     params.types = [:PJ_TYPE_GEODETIC_CRS]

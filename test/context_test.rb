@@ -54,7 +54,7 @@ class ContextTest < AbstractTest
 
       # Try to use the pipeline, an error will occur since it is not on the path
       error = assert_raises(Proj::Error) do
-        Proj::Conversion.new("+init=temp_proj_dic2:MY_PIPELINE")
+        Proj::Conversion.new("+init=temp_proj_dic2:MY_PIPELINE", context)
       end
       assert_equal("Invalid value for an argument", error.to_s)
 

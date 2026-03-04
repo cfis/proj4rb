@@ -32,7 +32,7 @@ module Proj
     # @return [PjParamDescription]
     def to_description
       Api::PjParamDescription.create(name: name, auth_name: auth_name, code: code, value: value,
-                                       unit_conv_factor: unit_conv_factor, unit_name: name, unit_type: unit_type)
+                                     unit_conv_factor: unit_conv_factor, unit_name: unit_name, unit_type: unit_type)
     end
   end
 end
