@@ -9,6 +9,12 @@ class OperationFactoryContextTest < AbstractTest
     assert(context.to_ptr)
   end
 
+  def test_retains_passed_context
+    context = Proj::Context.new
+    factory_context = Proj::OperationFactoryContext.new(context)
+    assert_same(context, factory_context.context)
+  end
+
   def test_finalize
     100.times do
       context = Proj::Context.new

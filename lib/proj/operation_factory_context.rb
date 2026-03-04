@@ -21,7 +21,8 @@ module Proj
     #                    If authority is a non-empty string different of "any", then coordinate
     #                    operations will be searched only in that authority namespace.
     def initialize(context, authority: nil)
-      @pointer = Api.proj_create_operation_factory_context(context, authority)
+      @context = context || Context.current
+      @pointer = Api.proj_create_operation_factory_context(@context, authority)
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
     end
 
