@@ -17,7 +17,7 @@ module Proj
     attr_reader :name, :abbreviation, :direction,
                 :unit_name, :unit_auth_name, :unit_code, :unit_conv_factor
 
-      def initialize(name:, abbreviation:, direction:, unit_conv_factor:, unit_name:, unit_auth_name:, unit_code:)
+    def initialize(name:, abbreviation:, direction:, unit_conv_factor:, unit_name:, unit_auth_name:, unit_code:)
       @name = name
       @abbreviation = abbreviation
       @direction = direction
