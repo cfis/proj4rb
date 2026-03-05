@@ -29,7 +29,6 @@ module Proj
     # raise an exception.
     def self.check_context(context)
       unless context.errno == 0
-        # raise(self, "#{self.category(context.errno)}: #{self.message(context)}")
         raise(self, self.message(context, context.errno))
       end
     end
@@ -61,11 +60,5 @@ module Proj
       end
     end
 
-    # Converts an errno to a error category
-    def self.category(errno)
-      self.constants.find do |constant|
-        self.const_get(constant) == errno
-      end
-    end
   end
 end
