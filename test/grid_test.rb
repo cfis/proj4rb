@@ -123,14 +123,4 @@ class GridTest < AbstractTest
       grid.delete
     end
   end
-
-  def test_grid_invalid
-    skip "This test sometimes raises an error and sometimes doesn't."
-    database = Proj::Database.new(Proj::Context.current)
-
-    error = assert_raises(Proj::Error) do
-      database.grid("invalid")
-    end
-    assert_equal("Unknown error (code 4096)", error.to_s)
-  end
 end
