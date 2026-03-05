@@ -193,23 +193,21 @@ class ConversionTest < AbstractTest
   end
 
   def test_degree_input
-    skip "Unsure why these test fail"
     conversion = Proj::Conversion.new(<<~EOS)
-                    +proj=pipeline
-                    +step +inv +proj=utm +zone=32 +ellps=GRS80
-                    "+step +proj=unitconvert +xy_in=rad +xy_out=deg
-                  EOS
+      +proj=pipeline
+      +step +inv +proj=utm +zone=32 +ellps=GRS80
+      +step +proj=unitconvert +xy_in=rad +xy_out=deg
+    EOS
 
     refute(conversion.degree_input?(:PJ_FWD))
     assert(conversion.degree_input?(:PJ_INV))
   end
 
   def test_degree_output
-    skip "Unsure why these test fail"
     conversion = Proj::Conversion.new(<<~EOS)
-                    +proj=pipeline
-                    +step +inv +proj=utm +zone=32 +ellps=GRS80
-                    "+step +proj=unitconvert +xy_in=rad +xy_out=deg
+      +proj=pipeline
+      +step +inv +proj=utm +zone=32 +ellps=GRS80
+      +step +proj=unitconvert +xy_in=rad +xy_out=deg
     EOS
 
     assert(conversion.degree_output?(:PJ_FWD))
