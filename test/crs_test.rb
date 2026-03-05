@@ -932,21 +932,18 @@ class CrsTest < AbstractTest
   end
 
   def test_create_engineering
-    context = Proj::Context.new
     crs = Proj::Crs.create_engineering("EPSG", name: "4807")
     assert_equal("4807", crs.name)
     assert_equal(:PJ_TYPE_ENGINEERING_CRS, crs.proj_type)
 
     expected = <<~EOS
-        LOCAL_CS["name",
+        LOCAL_CS["4807",
             UNIT["metre",1,
                 AUTHORITY["EPSG","9001"]],
             AXIS["Easting",EAST],
             AXIS["Northing",NORTH]]
     EOS
-
-    # This crashes proj
-    #assert_equal(expected, crs.to_wkt(:PJ_WKT1_GDAL))
+    assert_equal(expected.strip, crs.to_wkt(:PJ_WKT1_GDAL))
   end
 
   def test_query_geodetic_from_datum
@@ -1085,7 +1082,6 @@ class CrsTest < AbstractTest
   end
 
   def test_projected_3d_without_base
-    context = Proj::Context.new
     projected = Proj::Crs.new('EPSG:32631')
 
     crs_3d = projected.projected_3d
