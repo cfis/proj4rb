@@ -212,39 +212,16 @@ class TransformationTest < AbstractTest
     def test_transform_bounds_3d
       transform = Proj::Transformation.new("EPSG:4326",
                                            "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
-      start_bounds = Proj::Bounds3d.new(-120, 40, 10, -80, 64, 20)
 
-      captured_args = nil
-      singleton = Proj::Api.singleton_class
+      start_bounds = Proj::Bounds3d.new(40, -120, 100, 64, -80, 500)
+      end_bounds = transform.transform_bounds_3d(start_bounds, :PJ_FWD, 21)
 
-      singleton.class_eval do
-        alias_method :__orig_proj_trans_bounds_3d, :proj_trans_bounds_3d
-        define_method(:proj_trans_bounds_3d) do |*args|
-          captured_args = args
-          args[9].write_double(-1.0)
-          args[10].write_double(-2.0)
-          args[11].write_double(-3.0)
-          args[12].write_double(4.0)
-          args[13].write_double(5.0)
-          args[14].write_double(6.0)
-          0
-        end
-      end
-
-      end_bounds = transform.transform_bounds_3d(start_bounds, :PJ_FWD, 7)
-      assert_equal([transform.context, transform, :PJ_FWD, -120, 40, 10, -80, 64, 20, 7], [captured_args[0], captured_args[1], captured_args[2], captured_args[3], captured_args[4], captured_args[5], captured_args[6], captured_args[7], captured_args[8], captured_args[15]])
-      assert_equal(-1.0, end_bounds.xmin)
-      assert_equal(-2.0, end_bounds.ymin)
-      assert_equal(-3.0, end_bounds.zmin)
-      assert_equal(4.0, end_bounds.xmax)
-      assert_equal(5.0, end_bounds.ymax)
-      assert_equal(6.0, end_bounds.zmax)
-    ensure
-      singleton.class_eval do
-        remove_method :proj_trans_bounds_3d
-        alias_method :proj_trans_bounds_3d, :__orig_proj_trans_bounds_3d
-        remove_method :__orig_proj_trans_bounds_3d
-      end
+      assert_in_delta(-1684649.4133828662, end_bounds.xmin, 1e-3)
+      assert_in_delta(-555797.9720927872, end_bounds.ymin, 1e-3)
+      assert_in_delta(100.0, end_bounds.zmin, 1e-3)
+      assert_in_delta(1684649.4133828674, end_bounds.xmax, 1e-3)
+      assert_in_delta(2234551.1855909275, end_bounds.ymax, 1e-3)
+      assert_in_delta(500.0, end_bounds.zmax, 1e-3)
     end
   end
 end
