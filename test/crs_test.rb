@@ -750,6 +750,7 @@ class CrsTest < AbstractTest
     coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LONGITUDE_LATITUDE, context)
     datum = Proj::PjObject.create_from_database("EPSG", "1061", :PJ_CATEGORY_DATUM)
     crs = Proj::Crs.create_geographic_from_datum(context, name: "WGS 84", datum: datum, coordinate_system: coordinate_system)
+    assert_equal(:PJ_TYPE_GEOGRAPHIC_2D_CRS, crs.proj_type)
   end
 
   def test_geocentric
@@ -793,9 +794,6 @@ class CrsTest < AbstractTest
 
   def test_vertical_crs_ex_with_geog_crs
     context = Proj::Context.new
-    # NAD83(2011) / UTM zone 11N
-    horizontal_crs = Proj::Crs.create_from_database("EPSG", "6340", :PJ_CATEGORY_CRS)
-
     # WGS84
     wgs84 = Proj::Crs.new("EPSG:4979", context)
 
@@ -1015,7 +1013,6 @@ class CrsTest < AbstractTest
   end
 
   def test_alter_cs_angular_unit
-    context = Proj::Context.new
     crs = Proj::Crs.new('EPSG:4326')
     altered = crs.alter_cs_angular_unit(angular_units: "my unit", angular_units_conv: 2,
                                         unit_auth_name: "my auth", unit_code: "my code")
@@ -1031,7 +1028,6 @@ class CrsTest < AbstractTest
   end
 
   def test_alter_alter_cs_linear_unit
-    context = Proj::Context.new
     projected = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
     altered = projected.alter_cs_linear_unit(linear_units: "my unit", linear_units_conv: 2,
                                              unit_auth_name: "my auth", unit_code: "my code")
@@ -1047,7 +1043,6 @@ class CrsTest < AbstractTest
   end
 
   def test_alter_parameters_linear_unit
-    context = Proj::Context.new
     projected = Proj::Crs.create_from_database("EPSG", "32631", :PJ_CATEGORY_CRS)
     altered = projected.alter_parameters_linear_unit(linear_units: "my unit", linear_units_conv: 2,
                                                      convert_to_new_unit: false)
@@ -1058,7 +1053,6 @@ class CrsTest < AbstractTest
   end
 
   def test_promote_to_3d
-    context = Proj::Context.new
     crs = Proj::Crs.new('EPSG:4326')
 
     crs_3d = crs.promote_to_3d
@@ -1069,7 +1063,6 @@ class CrsTest < AbstractTest
   end
 
   def test_demote_to_3d
-    context = Proj::Context.new
     crs = Proj::Crs.new('EPSG:4979')
 
     crs_2d = crs.demote_to_2d
@@ -1080,7 +1073,6 @@ class CrsTest < AbstractTest
   end
 
   def test_projected_3d_with_base
-    context = Proj::Context.new
     projected = Proj::Crs.new('EPSG:32631')
     base_crs_3d = Proj::Crs.create_from_database("EPSG", "4979", :PJ_CATEGORY_CRS)
 
