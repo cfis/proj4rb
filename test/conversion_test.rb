@@ -319,10 +319,7 @@ class ConversionTest < AbstractTest
       EOS
 
       operation = Proj::Conversion.create_from_wkt(wkt)
-      puts operation.to_wkt
-
       operation = Proj::Conversion.create_from_database("EPSG", "16031", :PJ_CATEGORY_COORDINATE_OPERATION)
-      puts operation.to_wkt
 
       last = operation.last_used_operation
       refute(last)
