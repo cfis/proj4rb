@@ -48,14 +48,15 @@ class ProjectionTest < AbstractTest
     assert(proj)
   end
 
+  if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.2.0')
   def test_tunisia_mining_grid
-    skip "This test only work on Proj 9.2 and up"
     context = Proj::Context.new
     proj = Proj::Projection.tunisia_mining_grid(context, center_latitude: 0, center_longitude: 0,
                                                 false_easting: 0, false_northing: 0,
                                                 angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433,
                                                 linear_unit_name: "Metre", linear_unit_conversion_factor: 1.0)
     assert(proj)
+  end
   end
 
   def test_albers_equal_area
