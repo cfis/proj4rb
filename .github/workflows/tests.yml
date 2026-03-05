@@ -7,14 +7,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         ruby: ['3.2', '3.3', '3.4', '4.0']
     runs-on: ${{matrix.os}}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
       - name: CPU architecture
+        if: "!startsWith(matrix.os, 'windows')"
         run: uname -p
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby}}
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: Install Proj (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
@@ -25,10 +31,9 @@ jobs:
         run: |
           brew update
           brew install proj
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{matrix.ruby}}
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Install Proj (Windows)
+        if: startsWith(matrix.os, 'windows')
+        shell: cmd
+        run: ridk exec sh -c "pacman --sync --refresh --needed --noconfirm ${MINGW_PACKAGE_PREFIX}-proj"
       - name: Test
         run: bundle exec rake test
