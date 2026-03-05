@@ -445,7 +445,11 @@ module Proj
     #
     # @return [Boolean]
     def derived?
-      result = Api.proj_crs_is_derived(self.context, self)
+      if Api.respond_to?(:proj_crs_is_derived)
+        result = Api.proj_crs_is_derived(self.context, self)
+      else
+        result = Api.proj_is_derived_crs(self.context, self)
+      end
       result == 1 ? true : false
     end
 
@@ -495,14 +499,6 @@ module Proj
       Api.proj_int_list_destroy(confidences_ptr)
 
       return objects, confidences
-    end
-
-    # Returns whether a CRS is a Derived CRS
-    #
-    # @return [Boolean] - True if the CRS is derived
-    def derived?
-      result = Api.proj_is_derived_crs(self.context, self)
-      result == 1 ? true : false
     end
 
     # Return a copy of the CRS with its name changed
