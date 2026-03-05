@@ -170,6 +170,11 @@ class ContextTest < AbstractTest
     assert_equal("https://cdn.proj.org", context.url)
   end
 
+  def test_ca_bundle_path
+    context = Proj::Context.new
+    context.ca_bundle_path = "/some/path/to/ca-bundle.crt"
+  end
+
   def test_user_directory
     context = Proj::Context.new
     assert_match(/proj$/, context.user_directory)

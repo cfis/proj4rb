@@ -137,7 +137,7 @@ module Proj
     #
     # @return [nil]
     def ca_bundle_path=(path)
-      Api.proj_context_set_ca_bundle_path(self, path.encode(:utf8))
+      Api.proj_context_set_ca_bundle_path(self, path.encode('utf-8'))
     end
 
     # Returns the cache used to store grid files locally
