@@ -4,15 +4,15 @@ proj4rb needs to locate both the PROJ shared library and its data files. In most
 
 ## Finding the Proj Library (PROJ_LIB_PATH)
 
-proj4rb searches well-known locations for the `libproj` shared library. Override this by setting the `PROJ_LIB_PATH` environment variable to the full path to the library.
+proj4rb searches well-known locations for the `libproj` shared library. Override this by setting the [`PROJ_LIB_PATH`](https://proj.org/en/stable/usage/environmentvars.html#envvar-PROJ_LIB_PATH) environment variable to the full path to the library.
 
 ## Finding Proj Data Files (PROJ_DATA)
 
-Starting with version 6, Proj stores its information (datums, ellipsoids, prime meridians, coordinate systems, units, etc.) in a sqlite file called `proj.db`. If Proj cannot find its database, an exception is raised. Set the `PROJ_DATA` environment variable to the folder containing `proj.db`.
+Starting with version 6, Proj stores its information (datums, ellipsoids, prime meridians, coordinate systems, units, etc.) in a sqlite file called `proj.db`. If Proj cannot find its database, an exception is raised. Set the [`PROJ_DATA`](https://proj.org/en/stable/usage/environmentvars.html#envvar-PROJ_DATA) environment variable to the folder containing `proj.db`.
 
 Note: `PROJ_DATA` must be set before Ruby launches.
 
-For more information see [proj.org/resource_files](https://proj.org/resource_files.html).
+For more information see the PROJ [environment variables](https://proj.org/en/stable/usage/environmentvars.html) documentation.
 
 ## Version-Gated APIs
 

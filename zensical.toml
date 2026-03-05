@@ -69,6 +69,8 @@ accent = "indigo"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
 
+[project.markdown_extensions.admonition]
+
 [project.markdown_extensions.tables]
 
 [project.markdown_extensions.pymdownx.highlight]

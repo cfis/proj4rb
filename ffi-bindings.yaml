@@ -10,6 +10,8 @@ match:
 library_names:
   - proj
 
+library_search_path: PROJ_LIB_PATH
+
 version_check: proj_version
 
 library_versions:

@@ -12,6 +12,10 @@ gem install proj4rb
 
 Next install the Proj library. This varies per system, but you want to install the latest version possible. Once installed, you'll need to make sure that libproj is on your operating system's load path.
 
+!!! warning "Apple Silicon (ARM64)"
+
+    There is a [known bug](https://github.com/ffi/ffi/pull/1178) in ruby-ffi on Apple Silicon (M-series) Macs that causes incorrect results from coordinate transformations. The issue is an ABI mismatch where libffi uses integer registers instead of floating-point registers for unions of doubles. Symptoms include coordinate values returned as near-zero garbage (e.g. `2.48e-314`). This will be resolved once the fix is merged into ruby-ffi.
+
 ## Getting Started
 
 Load the library:

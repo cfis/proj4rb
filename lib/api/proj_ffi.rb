@@ -33,7 +33,11 @@ module Proj
       result
     end
 
-    ffi_lib self.search_names
+    if ENV['PROJ_LIB_PATH']
+      ffi_lib self.search_names.map { |name| File.join(ENV['PROJ_LIB_PATH'], name) } + self.search_names
+    else
+      ffi_lib self.search_names
+    end
   end
 end
 
