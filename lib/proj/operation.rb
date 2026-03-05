@@ -52,10 +52,6 @@ module Proj
       @description = description
     end
 
-    def <=>(other)
-      self.id <=> other.id
-    end
-
     def ==(other)
       self.id == other.id
     end

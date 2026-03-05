@@ -26,4 +26,15 @@ class OperationTest < AbstractTest
     operation = Proj::Operation.get('foo')
     assert_nil(operation)
   end
+
+  def test_to_s
+    operation = Proj::Operation.get('aea')
+    assert_equal('aea', operation.to_s)
+  end
+
+  def test_inspect
+    operation = Proj::Operation.get('aea')
+    assert_match(/id="aea"/, operation.inspect)
+    assert_match(/description=/, operation.inspect)
+  end
 end
