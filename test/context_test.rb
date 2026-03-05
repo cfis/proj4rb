@@ -61,6 +61,7 @@ class ContextTest < AbstractTest
       # Set the path and try again
       context.search_paths = [File.dirname(path)]
       conversion = Proj::Conversion.new("+init=temp_proj_dic2:MY_PIPELINE", context)
+      assert(conversion)
     ensure
       File.delete(path)
     end
