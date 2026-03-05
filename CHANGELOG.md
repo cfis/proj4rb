@@ -10,6 +10,7 @@
 * Fix manual wrapper argument order for `proj_create_conversion_lambert_conic_conformal_1sp_variant_b` (9.4)
 * Fix `Parameter#to_description` passing parameter name instead of unit name
 * Fix pointer lifetime issues in `Parameters#types=`, `PjAxisDescription`, and `PjParamDescription`
+* Fix GC lifetime bugs: option string pointers, `CoordinateSystem.create` axis descriptions, and missing `require 'uri'`
 * Fix context/state lifetime issues in `OperationFactoryContext` and `Context#set_log_function`
 * Expand regression tests for lifecycle safety and new PROJ 9.4/9.5/9.6 wrappers
 * `Unit.built_in` now returns all unit types (91 units) instead of only linear units (24 units)
