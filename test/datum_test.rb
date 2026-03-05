@@ -52,4 +52,11 @@ class DatumTest < AbstractTest
 
     assert(ellipsoid_from_datum.equivalent_to?(ellipsoid, :PJ_COMP_STRICT))
   end
+
+  def test_prime_meridian
+    datum = Proj::PjObject.create_from_database("EPSG", "6326", :PJ_CATEGORY_DATUM)
+    pm = datum.prime_meridian
+    assert_equal("Greenwich", pm.name)
+    assert_equal(:PJ_TYPE_PRIME_MERIDIAN, pm.proj_type)
+  end
 end
