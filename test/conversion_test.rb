@@ -57,6 +57,13 @@ class ConversionTest < AbstractTest
     assert_equal(expected.strip, proj_string)
   end
 
+  def test_create_from_crs_string
+    error = assert_raises(Proj::Error) do
+      Proj::Conversion.new("EPSG:4326")
+    end
+    assert_match(/Invalid conversion/, error.message)
+  end
+
   def test_accuracy_coordinate_operation
     object = Proj::Conversion.create_from_database("EPSG", "1170", :PJ_CATEGORY_COORDINATE_OPERATION)
     assert_equal(16.0, object.accuracy)

@@ -60,7 +60,9 @@ module Proj
       end
 
       if Api.method_defined?(:proj_is_crs) && Api.proj_is_crs(ptr)
-        raise(Error, "Invalid conversion. Proj created an instance of: #{self.proj_type}.")
+        pj_type = Api.proj_get_type(ptr)
+        Api.proj_destroy(ptr)
+        raise(Error, "Invalid conversion. Proj created an instance of: #{pj_type}.")
       end
 
       super(ptr, context)
