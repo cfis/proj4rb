@@ -86,7 +86,7 @@ class CrsTest < AbstractTest
             PARAMETER["latitude_of_origi",31],
             UNIT["metre",1]]"
           EOS
-    wkt.strip!
+    wkt = wkt.strip
 
     crs = nil
     _, err = capture_io do
@@ -111,7 +111,7 @@ class CrsTest < AbstractTest
           PRIMEM[Greenwich,0],
           UNIT[degree,0.0174532925199433]]
     EOS
-    wkt.strip!
+    wkt = wkt.strip
 
     error = assert_raises(RuntimeError) do
       Proj::Crs.create_from_wkt(wkt)
