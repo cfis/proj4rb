@@ -18,7 +18,7 @@ module Proj
     # @param epoch [Double]. Epoch at wich the CRS is valid
     #
     # @return [CoordinateMetadata]
-    def initialize(crs, context=nil, epoch=nil)
+    def initialize(crs, context=nil, epoch=0)
       ptr = Api.proj_coordinate_metadata_create(context || Context.current, crs, epoch)
 
       if ptr.null?
