@@ -168,7 +168,7 @@ class ConversionTest < AbstractTest
     coord2 = conversion.forward(coord1)
     coord1 = conversion.forward(coord1)
 
-    dist = conversion.xy_distance(coord1, coord2)
+    dist = Proj::Coordinate.xy_distance(coord1, coord2)
     assert(dist < 2e-9)
   end
 

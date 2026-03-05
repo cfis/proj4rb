@@ -17,4 +17,4 @@ to = transform.forward(from)
 puts "Transformed: x=#{to.x}, y=#{to.y}"
 ```
 
-See [lib/example/transformation_with_area.rb](https://github.com/cfis/proj4rb/blob/master/lib/example/transformation_with_area.rb)
+See [lib/examples/transformation_with_area.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/transformation_with_area.rb)

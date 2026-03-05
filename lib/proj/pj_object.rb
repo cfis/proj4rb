@@ -233,10 +233,6 @@ module Proj
       @context || Context.current
     end
 
-    def errno
-      Api.proj_errno(self)
-    end
-
     # Returns whether an object is deprecated
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_is_deprecated
@@ -505,31 +501,6 @@ module Proj
       Api.proj_lpz_dist(self, coord1, coord2)
     end
 
-    # Calculate the 2-dimensional euclidean between two projected coordinates
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_xy_dist
-    #
-    # @param coord1 [Coordinate] Coordinate of first point
-    # @param coord2 [Coordinate] Coordinate of second point
-    #
-    # @return [Float] Distance between the coordinates in meters
-    def xy_distance(coord1, coord2)
-      Api.proj_xy_dist(coord1, coord2)
-    end
-
-    # Calculate the 2-dimensional euclidean between two projected coordinates. Similar to
-    # PjObject#xy_distance but also takes height into account.
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_xyz_dist
-    #
-    # @param coord1 [Coordinate] Coordinate of first point
-    # @param coord2 [Coordinate] Coordinate of second point
-    #
-    # @return [Float] Distance between the coordinates in meters
-    def xyz_distance(coord1, coord2)
-      Api.proj_xyz_dist(coord1, coord2)
-    end
-
     # Calculate the geodesic distance as well as forward and reverse azimuth between two points on the ellipsoid.
     #
     # Note that the axis order of the transformation object is not taken into account, so even though
@@ -539,7 +510,7 @@ module Proj
     # @see https://proj.org/development/reference/functions.html#c.proj_geod
     #
     # @param coord1 [Coordinate] Coordinate of first point. Must be lat/long in radians
-    # @param coord2 [Coordinate] Coordinate of first point. Must be lat/long in radians
+    # @param coord2 [Coordinate] Coordinate of second point. Must be lat/long in radians
     #
     # @return [Coordinate] The first value is the distance between coord1 and coord2 in meters,
     # the second is the forward azimuth, the third value the reverse azimuth and the fourth value is unused.
@@ -560,46 +531,6 @@ module Proj
     def geod_direct(coord, azi1, s12)
       ptr = Api.proj_geod_direct(self, coord, azi1, s12)
       Coordinate.from_coord(ptr)
-    end
-
-    # Returns if an operation expects input in radians
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_angular_input
-    #
-    # @param direction [PjDirection] Direction of transformation
-    def angular_input?(direction)
-      result = Api.proj_angular_input(self, direction)
-      result == 1 ? true : false
-    end
-
-    # Check if an operation returns output in radians
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_angular_output
-    #
-    # @param direction [PjDirection] Direction of transformation
-    def angular_output?(direction)
-      result = Api.proj_angular_output(self, direction)
-      result == 1 ? true : false
-    end
-
-    # Returns if an operation expects input in degrees
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_degree_input
-    #
-    # @param direction [PjDirection] Direction of transformation
-    def degree_input?(direction)
-      result = Api.proj_degree_input(self, direction)
-      result == 1 ? true : false
-    end
-
-    # Check if an operation returns output in degrees
-    #
-    # @see https://proj.org/development/reference/functions.html#c.proj_degree_output
-    #
-    # @param direction [PjDirection] Direction of transformation
-    def degree_output?(direction)
-      result = Api.proj_degree_output(self, direction)
-      result == 1 ? true : false
     end
 
     # Returns the proj representation string for this object

@@ -16,4 +16,4 @@ puts crs.to_json(multiline: false)
 puts crs.to_proj_string
 ```
 
-See [lib/example/serialization_formats.rb](https://github.com/cfis/proj4rb/blob/master/lib/example/serialization_formats.rb)
+See [lib/examples/serialization_formats.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/serialization_formats.rb)

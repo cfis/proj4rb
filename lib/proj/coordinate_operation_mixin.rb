@@ -10,6 +10,46 @@ module Proj
   # can either by {Conversion conversions} that do not exert a change in reference frame
   # or {Transformation transformations} which do.
   module CoordinateOperationMixin
+    # Returns if an operation expects input in radians
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_angular_input
+    #
+    # @param direction [PjDirection] Direction of transformation
+    def angular_input?(direction)
+      result = Api.proj_angular_input(self, direction)
+      result == 1 ? true : false
+    end
+
+    # Check if an operation returns output in radians
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_angular_output
+    #
+    # @param direction [PjDirection] Direction of transformation
+    def angular_output?(direction)
+      result = Api.proj_angular_output(self, direction)
+      result == 1 ? true : false
+    end
+
+    # Returns if an operation expects input in degrees
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_degree_input
+    #
+    # @param direction [PjDirection] Direction of transformation
+    def degree_input?(direction)
+      result = Api.proj_degree_input(self, direction)
+      result == 1 ? true : false
+    end
+
+    # Check if an operation returns output in degrees
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_degree_output
+    #
+    # @param direction [PjDirection] Direction of transformation
+    def degree_output?(direction)
+      result = Api.proj_degree_output(self, direction)
+      result == 1 ? true : false
+    end
+
     # Return whether a coordinate operation can be instantiated as a PROJ pipeline, checking in particular that referenced grids are available.
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_coordoperation_is_instantiable

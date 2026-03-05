@@ -11,6 +11,30 @@ module Proj
       result
     end
 
+    # Calculate the 2-dimensional euclidean distance between two projected coordinates.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_xy_dist
+    #
+    # @param coord1 [Coordinate] Coordinate of first point
+    # @param coord2 [Coordinate] Coordinate of second point
+    #
+    # @return [Float] Distance between the coordinates
+    def self.xy_distance(coord1, coord2)
+      Api.proj_xy_dist(coord1, coord2)
+    end
+
+    # Calculate the 3-dimensional euclidean distance between two projected coordinates.
+    #
+    # @see https://proj.org/development/reference/functions.html#c.proj_xyz_dist
+    #
+    # @param coord1 [Coordinate] Coordinate of first point
+    # @param coord2 [Coordinate] Coordinate of second point
+    #
+    # @return [Float] Distance between the coordinates
+    def self.xyz_distance(coord1, coord2)
+      Api.proj_xyz_dist(coord1, coord2)
+    end
+
     # Creates a new coordinate.
     #
     # @example

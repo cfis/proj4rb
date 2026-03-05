@@ -73,4 +73,24 @@ class UnitsTest < AbstractTest
       refute_empty(units)
     end
   end
+
+  def test_unit_type
+    database = Proj::Database.new(Proj::Context.current)
+
+    expected = {
+      "linear" => :PJ_UT_LINEAR,
+      "linear_per_time" => :PJ_UT_LINEAR,
+      "angular" => :PJ_UT_ANGULAR,
+      "angular_per_time" => :PJ_UT_ANGULAR,
+      "scale" => :PJ_UT_SCALE,
+      "scale_per_time" => :PJ_UT_SCALE,
+      "time" => :PJ_UT_TIME
+    }
+
+    expected.each do |category, unit_type|
+      units = database.units(category: category)
+      refute_empty(units, "No units found for category: #{category}")
+      assert_equal(unit_type, units.first.unit_type)
+    end
+  end
 end

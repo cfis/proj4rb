@@ -20,4 +20,4 @@ back = transform.inverse(to)
 puts "Back to geodetic: lon=#{back.lon}, lat=#{back.lat}"
 ```
 
-See [lib/example/geodetic_to_projected.rb](https://github.com/cfis/proj4rb/blob/master/lib/example/geodetic_to_projected.rb)
+See [lib/examples/geodetic_to_projected.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/geodetic_to_projected.rb)
