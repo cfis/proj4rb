@@ -275,12 +275,18 @@ module Proj
       @network_api = network_api_klass.new(self)
     end
 
-    # ---  Deprecated -------
+    # Returns the path to the Proj database.
+    #
+    # @deprecated Use {Database#path} instead via {#database}. Will be removed in a future version.
+    # @return [String] The database path
     def database_path
       self.database.path
     end
 
-    # Sets the path to the Proj database
+    # Sets the path to the Proj database.
+    #
+    # @deprecated Use {Database#path=} instead via {#database}. Will be removed in a future version.
+    # @param value [String] The new database path
     def database_path=(value)
       self.database.path = value
     end
