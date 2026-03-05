@@ -82,12 +82,11 @@ module Proj
     end
 
     def eql?(other)
-      @coord == other.instance_variable_get(:@coord)
+      other.is_a?(Coordinate) &&
+        self.x == other.x && self.y == other.y && self.z == other.z && self.t == other.t
     end
 
-    def ==(other)
-      @coord.eql?(other.instance_variable_get(:@coord))
-    end
+    alias == eql?
 
     def enu
       @coord[:enu]
@@ -233,7 +232,7 @@ module Proj
     #
     # @return [Float]
     def k
-      @coord[:v][3]
+      @coord[:v][2]
     end
 
     # Returns e coordinate
