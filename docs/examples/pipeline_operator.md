@@ -25,4 +25,4 @@ to = conversion.forward(from)
 puts "Converted: x=#{to.x}, y=#{to.y}"
 ```
 
-See `lib/example/pipeline_operator.rb`
+See [lib/example/pipeline_operator.rb](https://github.com/cfis/proj4rb/blob/master/lib/example/pipeline_operator.rb)

@@ -17,4 +17,4 @@ puts crs_back.proj_type  #=> PJ_TYPE_GEOGRAPHIC_2D_CRS
 
 The promoted CRS adds an ellipsoidal height axis oriented upwards with metre units.
 
-See `lib/examples/promote_demote_3d.rb`
+See [lib/examples/promote_demote_3d.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/promote_demote_3d.rb)

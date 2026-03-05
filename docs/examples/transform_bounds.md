@@ -22,4 +22,4 @@ bounds = Proj::Bounds3d.new(10.0, 50.0, 0.0, 20.0, 60.0, 1000.0)
 result = transform.transform_bounds_3d(bounds, :PJ_FWD)
 ```
 
-See `lib/examples/transform_bounds.rb`
+See [lib/examples/transform_bounds.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/transform_bounds.rb)

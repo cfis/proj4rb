@@ -20,4 +20,4 @@ end
 
 Individual points that fail to transform will have their components set to `Infinity` rather than raising an exception immediately.
 
-See `lib/examples/batch_transformation.rb`
+See [lib/examples/batch_transformation.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/batch_transformation.rb)

@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = 'proj4rb'
-  spec.version = '4.1.1'
+  spec.version = '5.0.0'
   spec.summary = 'Ruby bindings for the Proj coordinate transformation library'
   spec.description = <<-EOF
     Ruby bindings for the Proj coordinate transformation library
@@ -13,16 +13,21 @@ Gem::Specification.new do |spec|
 
   spec.requirements << 'Proj Library'
   spec.require_path = 'lib'
-  spec.files = Dir['ChangeLog',
+  spec.files = Dir['CHANGELOG.md',
                    'Gemfile',
                    'MIT-LICENSE',
                    'proj4rb.gemspec',
                    'Rakefile',
-                   'README.rdoc',
+                   'README.md',
                    'lib/**/*.rb',
                    'test/*.rb']
 
-  spec.test_files = Dir["test/test_*.rb"]
+  spec.metadata = {
+    'homepage_uri' => spec.homepage,
+    'source_code_uri' => 'https://github.com/cfis/proj4rb',
+    'changelog_uri' => 'https://github.com/cfis/proj4rb/blob/master/CHANGELOG.md',
+    'documentation_uri' => 'https://cfis.github.io/proj4rb/'
+  }
 
   spec.add_dependency "ffi"
 

@@ -18,4 +18,4 @@ puts "Best operation index: #{index}"
 puts "Operation name: #{operations[index].name}"
 ```
 
-See `lib/example/operation_factory_context.rb`
+See [lib/example/operation_factory_context.rb](https://github.com/cfis/proj4rb/blob/master/lib/example/operation_factory_context.rb)

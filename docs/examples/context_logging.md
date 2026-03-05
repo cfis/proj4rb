@@ -23,4 +23,4 @@ To increase verbosity:
 context.log_level = :PJ_LOG_DEBUG
 ```
 
-See `lib/examples/context_logging.rb`
+See [lib/examples/context_logging.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/context_logging.rb)

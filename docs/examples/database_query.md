@@ -30,4 +30,4 @@ puts "Bounds: W=#{info.west_lon_degree}, S=#{info.south_lat_degree}, E=#{info.ea
 
 You can also pass a `Parameters` object to filter by geographic area, CRS type, or other criteria. See the `Parameters` class in the [API Reference](../reference/) for available filters.
 
-See `lib/examples/database_query.rb`
+See [lib/examples/database_query.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/database_query.rb)

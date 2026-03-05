@@ -13,4 +13,4 @@ end
 
 A confidence of 100 means an exact match. Lower values indicate approximate matches. Pass `nil` as the authority to search all authorities.
 
-See `lib/examples/crs_identification.rb`
+See [lib/examples/crs_identification.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/crs_identification.rb)

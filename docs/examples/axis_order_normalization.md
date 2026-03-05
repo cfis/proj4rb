@@ -25,4 +25,4 @@ result = normalized.forward(coord)
 puts "Web Mercator: x=#{result.x}, y=#{result.y}"
 ```
 
-See `lib/example/axis_order_normalization.rb`
+See [lib/example/axis_order_normalization.rb](https://github.com/cfis/proj4rb/blob/master/lib/example/axis_order_normalization.rb)

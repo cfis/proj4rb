@@ -46,4 +46,4 @@ puts "lat=#{Proj.radians_to_degrees(endpoint.y).round(4)}"
 
 Note: input coordinates must use longitude/latitude ordering in radians, regardless of the CRS axis order.
 
-See `lib/examples/geodetic_distance.rb`
+See [lib/examples/geodetic_distance.rb](https://github.com/cfis/proj4rb/blob/master/lib/examples/geodetic_distance.rb)

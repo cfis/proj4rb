@@ -41,6 +41,7 @@ nav = [
   { "Development" = [
     { "ruby-bindgen / FFI" = "ruby_bindgen.md" },
   ] },
+  { "Changelog" = "changelog.md" },
   { "API Reference" = "reference/" },
 ]
 

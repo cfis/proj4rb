@@ -44,6 +44,9 @@ jobs:
       - name: Install YARD
         run: gem install yard
 
+      - name: Copy changelog to docs
+        run: cp CHANGELOG.md docs/changelog.md
+
       - name: Build guide docs
         run: zensical build --clean
 
