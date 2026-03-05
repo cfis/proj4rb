@@ -129,31 +129,6 @@ module Proj
       Conversion.create_object(ptr, context)
     end
 
-    # Create a new tunisia_mapping_grid projection
-    # 
-    # @see https://proj.org/operations/projections/index.html
-    # 
-    # @param context [Context] Proj Context
-    # @param center_latitude [Float] Latitude of natural origin/Center Latitude
-    # @param center_longitude [Float] Longitude of natural origin/Central Meridian
-    # @param false_easting [Float] False Easting. Default is 0.
-    # @param false_northing [Float] False Northing. Default is 0.
-    # @param angular_unit_name [String] Name of the angular units. Default is Degree.
-    # @param angular_unit_conversion_factor [Float] Conversion factor from angular unit to radians. Default is 0.0174532925199433.
-    # @param linear_unit_name [String] Name of the linear units. Default is Metre
-    # @param linear_unit_conversion_factor [Float] Conversion factor from linear unit to meters. Default is 1.
-    # 
-    # @return [Crs]
-    def self.tunisia_mapping_grid(context, center_latitude:, center_longitude:, false_easting: 0, false_northing: 0, angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433, linear_unit_name: "Metre", linear_unit_conversion_factor: 1)
-      ptr = Api.proj_create_conversion_tunisia_mapping_grid(context, center_latitude, center_longitude, false_easting, false_northing, angular_unit_name, angular_unit_conversion_factor, linear_unit_name, linear_unit_conversion_factor)
-
-      if ptr.null?
-        Error.check_context(context)
-      end
-
-      Conversion.create_object(ptr, context)
-    end
-
     # Create a new tunisia_mining_grid projection
     # 
     # @see https://proj.org/operations/projections/index.html
