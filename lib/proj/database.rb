@@ -1,3 +1,5 @@
+require 'uri'
+
 module Proj
   CelestialBody = Struct.new(:auth_name, :name)
 

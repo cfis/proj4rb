@@ -55,10 +55,9 @@ module Proj
     #
     # @return [Crs]
     def self.create_bound_to_wgs84(context, crs:, allow_intermediate_crs: "NEVER")
-      options = {"ALLOW_INTERMEDIATE_CRS": allow_intermediate_crs}
-      options_ptr = create_options_pointer(options)
+      options = Options.new("ALLOW_INTERMEDIATE_CRS": allow_intermediate_crs)
 
-      pointer = Api.proj_crs_create_bound_crs_to_wgs84(context, crs, options_ptr)
+      pointer = Api.proj_crs_create_bound_crs_to_wgs84(context, crs, options)
 
       if pointer.null?
         Error.check_context(context)
@@ -143,10 +142,9 @@ module Proj
                                 geoid_model_name: nil, geoid_model_auth_name: nil, geoid_model_code: nil,
                                 geoid_geog_crs: nil, accuracy: nil)
 
-      options = {"ACCURACY": accuracy.nil? ? nil : accuracy.to_s}
-      options_ptr = create_options_pointer(options)
+      options = Options.new("ACCURACY": accuracy.nil? ? nil : accuracy.to_s)
 
-      pointer = Api.proj_create_vertical_crs_ex(context, name, datum_name, datum_auth_name, datum_code, linear_units, linear_units_conv, geoid_model_name, geoid_model_auth_name, geoid_model_code, geoid_geog_crs, options_ptr)
+      pointer = Api.proj_create_vertical_crs_ex(context, name, datum_name, datum_auth_name, datum_code, linear_units, linear_units_conv, geoid_model_name, geoid_model_auth_name, geoid_model_code, geoid_geog_crs, options)
 
       if pointer.null?
         Error.check_context(context)

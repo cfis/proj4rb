@@ -12,9 +12,11 @@ module Proj
     # @return [CoordinateSystem]
     def self.create(cs_type, axes, context)
       axes_ptr = FFI::MemoryPointer.new(Api::PjAxisDescription, axes.size)
-      axes.each_with_index do |axis, i|
+      # Keep source descriptions alive so their retained string pointers
+      # are not GC'd before proj_create_cs reads them.
+      descriptions = axes.map { |axis| axis.to_description }
+      descriptions.each_with_index do |axis_description_source, i|
         axis_description_target = Api::PjAxisDescription.new(axes_ptr[i])
-        axis_description_source = axis.to_description
         axis_description_target.to_ptr.__copy_from__(axis_description_source.to_ptr, Api::PjAxisDescription.size)
       end
 

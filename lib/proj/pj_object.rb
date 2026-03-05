@@ -153,16 +153,16 @@ module Proj
       # @return [String] wkt
 
       # Unset
-      options = {"STRICT": strict ? "YES" : "NO"}
+      options_hash = {"STRICT": strict ? "YES" : "NO"}
       case unset_identifiers
       when TrueClass
-        options["UNSET_IDENTIFIERS_IF_INCOMPATIBLE_DEF"] = "YES"
+        options_hash["UNSET_IDENTIFIERS_IF_INCOMPATIBLE_DEF"] = "YES"
       when FalseClass
-        options["UNSET_IDENTIFIERS_IF_INCOMPATIBLE_DEF"] = "NO"
+        options_hash["UNSET_IDENTIFIERS_IF_INCOMPATIBLE_DEF"] = "NO"
       end
-      options_ptr = create_options_pointer(options)
+      options = Options.new(options_hash)
 
-      ptr = Api.proj_create_from_wkt(context, wkt, options_ptr, out_warnings, out_grammar_errors)
+      ptr = Api.proj_create_from_wkt(context, wkt, options, out_warnings, out_grammar_errors)
 
       warnings = Strings.new(out_warnings.read_pointer)
       errors = Strings.new(out_grammar_errors.read_pointer)
@@ -547,13 +547,12 @@ module Proj
     def to_proj_string(proj_version=:PJ_PROJ_5, use_approx_tmerc: false, multiline: false,
                                                 indentation_width: 2, max_line_length: 80)
 
-      options = {"USE_APPROX_TMERC": use_approx_tmerc ? "YES" : "NO",
-                 "MULTILINE": multiline ? "YES" : "NO",
-                 "INDENTATION_WIDTH": indentation_width,
-                 "MAX_LINE_LENGTH": max_line_length}
+      options = Options.new("USE_APPROX_TMERC": use_approx_tmerc ? "YES" : "NO",
+                            "MULTILINE": multiline ? "YES" : "NO",
+                            "INDENTATION_WIDTH": indentation_width,
+                            "MAX_LINE_LENGTH": max_line_length)
 
-      options_ptr = create_options_pointer(options)
-      Api.proj_as_proj_string(self.context, self, proj_version, options_ptr).force_encoding('UTF-8')
+      Api.proj_as_proj_string(self.context, self, proj_version, options).force_encoding('UTF-8')
     end
 
     # Returns the json representation for this object
@@ -565,11 +564,10 @@ module Proj
     #
     # @return [String]
     def to_json(multiline: true, indentation_width: 2)
-      options = {"MULTILINE": multiline ? "YES" : "NO",
-                 "INDENTATION_WIDTH": indentation_width}
+      options = Options.new("MULTILINE": multiline ? "YES" : "NO",
+                            "INDENTATION_WIDTH": indentation_width)
 
-      options_ptr = create_options_pointer(options)
-      Api.proj_as_projjson(self.context, self, options_ptr).force_encoding('UTF-8')
+      Api.proj_as_projjson(self.context, self, options).force_encoding('UTF-8')
     end
 
     # Returns the wkt representation for this object
@@ -582,14 +580,13 @@ module Proj
     #
     # @return [String] wkt
     def to_wkt(wkt_type=:PJ_WKT2_2019, multiline: true, indentation_width: 4)
-      options = {"MULTILINE": multiline ? "YES" : "NO",
-                 "INDENTATION_WIDTH": indentation_width,
-                 "OUTPUT_AXIS": "AUTO",
-                 "STRICT": "YES",
-                 "ALLOW_ELLIPSOIDAL_HEIGHT_AS_VERTICAL_CRS": "NO"}
+      options = Options.new("MULTILINE": multiline ? "YES" : "NO",
+                            "INDENTATION_WIDTH": indentation_width,
+                            "OUTPUT_AXIS": "AUTO",
+                            "STRICT": "YES",
+                            "ALLOW_ELLIPSOIDAL_HEIGHT_AS_VERTICAL_CRS": "NO")
 
-      options_ptr = create_options_pointer(options)
-      result = Api.proj_as_wkt(self.context, self, wkt_type, options_ptr)
+      result = Api.proj_as_wkt(self.context, self, wkt_type, options)
 
       if result.nil?
         Error.check_object(self)
@@ -607,24 +604,5 @@ module Proj
 
     private
 
-    def self.create_options_pointer(options)
-      options = options.compact
-      options_ptr_array = options.map do |key, value|
-        FFI::MemoryPointer.from_string("#{key}=#{value}")
-      end
-
-      if options_ptr_array.empty?
-        nil
-      else
-        # Add extra item at end for null pointer
-        options_ptr = FFI::MemoryPointer.new(:pointer, options.size + 1)
-        options_ptr.write_array_of_pointer(options_ptr_array)
-        options_ptr
-      end
-    end
-
-    def create_options_pointer(options)
-      self.class.create_options_pointer(options)
-    end
   end
 end

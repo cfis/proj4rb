@@ -73,16 +73,15 @@ module Proj
 
       context ||= Context.current
 
-      options = {"AUTHORITY": authority,
-                 "ACCURACY": accuracy.nil? ? nil : accuracy.to_s,
-                 "ALLOW_BALLPARK": allow_ballpark.nil? ? nil : (allow_ballpark ? "YES" : "NO"),
-                 "ONLY_BEST": only_best.nil? ? nil : (only_best ? "YES" : "NO"),
-                 "FORCE_OVER": force_over.nil? ? nil : (force_over ? "YES" : "NO")}
-      options_ptr = create_options_pointer(options)
+      options = Options.new("AUTHORITY": authority,
+                            "ACCURACY": accuracy.nil? ? nil : accuracy.to_s,
+                            "ALLOW_BALLPARK": allow_ballpark.nil? ? nil : (allow_ballpark ? "YES" : "NO"),
+                            "ONLY_BEST": only_best.nil? ? nil : (only_best ? "YES" : "NO"),
+                            "FORCE_OVER": force_over.nil? ? nil : (force_over ? "YES" : "NO"))
 
       ptr = if source.is_a?(Crs) && target.is_a?(Crs)
               if Api.method_defined?(:proj_create_crs_to_crs_from_pj)
-                Api.proj_create_crs_to_crs_from_pj(context, source, target, area, options_ptr)
+                Api.proj_create_crs_to_crs_from_pj(context, source, target, area, options)
               else
                 Api.proj_create_crs_to_crs(context, source.definition, target.definition, area)
               end

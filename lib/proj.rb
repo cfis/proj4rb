@@ -4,6 +4,7 @@ require_relative 'api/proj_ffi'
 
 require_relative 'proj/pj_axis_description'
 require_relative 'proj/pj_param_description'
+require_relative 'proj/options'
 require_relative 'proj/pj_object'
 require_relative 'proj/pj_objects'
 require_relative 'proj/coordinate_operation_mixin'
