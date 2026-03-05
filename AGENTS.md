@@ -110,3 +110,4 @@ PROJ version numbers are computed as `major * 10000 + minor * 100 + patch`. Exam
 - License: MIT
 - Ruby version: >= 2.7
 - Commits must not include a co-author or author line (no `Co-Authored-By`)
+- Tests must not use mocks or stubs. Always call the real PROJ C API.

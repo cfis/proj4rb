@@ -210,39 +210,12 @@ class PjObjectTest < AbstractTest
 
   if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.7.0')
     def test_geod_direct
-      object = Proj::PjObject.create("+proj=longlat +datum=WGS84 +type=crs")
+      crs = Proj::Crs.new("EPSG:4326")
+      # Start at equator/prime meridian, go due east 111319.49 meters (approx 1 degree at equator)
       coord = Proj::Coordinate.new(lam: 0.0, phi: 0.0)
-      api_singleton = Proj::Api.singleton_class
-      had_original = Proj::Api.respond_to?(:proj_geod_direct)
-
-      if had_original
-        api_singleton.class_eval do
-          alias_method :__orig_proj_geod_direct, :proj_geod_direct
-        end
-      end
-
-      api_singleton.class_eval do
-        define_method(:proj_geod_direct) do |_object, _coord, _azi1, _s12|
-          Proj::Api.proj_coord(1.0, 2.0, 3.0, 4.0)
-        end
-      end
-
-      result = object.geod_direct(coord, 5.0, 6.0)
-      assert_equal(1.0, result.x)
-      assert_equal(2.0, result.y)
-      assert_equal(3.0, result.z)
-      assert_equal(4.0, result.t)
-    ensure
-      api_singleton.class_eval do
-        remove_method :proj_geod_direct
-      end
-
-      if had_original
-        api_singleton.class_eval do
-          alias_method :proj_geod_direct, :__orig_proj_geod_direct
-          remove_method :__orig_proj_geod_direct
-        end
-      end
+      result = crs.geod_direct(coord, Proj.degrees_to_radians(90), 111319.49)
+      assert_in_delta(Proj.degrees_to_radians(1.0), result.lam, 1e-4)
+      assert_in_delta(0.0, result.phi, 1e-4)
     end
   end
 end

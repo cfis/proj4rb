@@ -80,51 +80,18 @@ class ProjectionTest < AbstractTest
   end
 
   if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.4.0')
-    def test_lambert_conic_conformal_1sp_variant_b_argument_order
+    def test_lambert_conic_conformal_1sp_variant_b
       context = Proj::Context.new
-      captured_args = nil
-      api_singleton = Proj::Api.singleton_class
-      conversion_singleton = Proj::Conversion.singleton_class
-
-      api_singleton.class_eval do
-        alias_method :__orig_proj_create_conversion_lambert_conic_conformal_1sp_variant_b, :proj_create_conversion_lambert_conic_conformal_1sp_variant_b
-        define_method(:proj_create_conversion_lambert_conic_conformal_1sp_variant_b) do |*args|
-          captured_args = args
-          FFI::MemoryPointer.new(:char, 1)
-        end
-      end
-
-      conversion_singleton.class_eval do
-        alias_method :__orig_create_object, :create_object
-        define_method(:create_object) do |_ptr, _context|
-          :ok
-        end
-      end
-
-      result = Proj::Projection.lambert_conic_conformal_1sp_variant_b(context,
-                                                                       latitude_nat_origin: 11,
-                                                                       scale: 22,
-                                                                       latitude_false_origin: 33,
-                                                                       longitude_false_origin: 44,
-                                                                       easting_false_origin: 55,
-                                                                       northing_false_origin: 66,
-                                                                       angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433,
-                                                                       linear_unit_name: "Metre", linear_unit_conversion_factor: 1.0)
-
-      assert_equal(:ok, result)
-      assert_equal([context, 11, 22, 33, 44, 55, 66, "Degree", 0.0174532925199433, "Metre", 1.0], captured_args)
-    ensure
-      conversion_singleton.class_eval do
-        remove_method :create_object
-        alias_method :create_object, :__orig_create_object
-        remove_method :__orig_create_object
-      end
-
-      api_singleton.class_eval do
-        remove_method :proj_create_conversion_lambert_conic_conformal_1sp_variant_b
-        alias_method :proj_create_conversion_lambert_conic_conformal_1sp_variant_b, :__orig_proj_create_conversion_lambert_conic_conformal_1sp_variant_b
-        remove_method :__orig_proj_create_conversion_lambert_conic_conformal_1sp_variant_b
-      end
+      proj = Proj::Projection.lambert_conic_conformal_1sp_variant_b(context,
+                                                                     latitude_nat_origin: 46.5,
+                                                                     scale: 0.99987742,
+                                                                     latitude_false_origin: 46.5,
+                                                                     longitude_false_origin: 3,
+                                                                     easting_false_origin: 700000,
+                                                                     northing_false_origin: 6600000,
+                                                                     angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433,
+                                                                     linear_unit_name: "Metre", linear_unit_conversion_factor: 1.0)
+      assert(proj)
     end
   end
 
@@ -701,46 +668,13 @@ class ProjectionTest < AbstractTest
   if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.5.0')
     def test_local_orthographic
       context = Proj::Context.new
-      captured_args = nil
-      api_singleton = Proj::Api.singleton_class
-      conversion_singleton = Proj::Conversion.singleton_class
-
-      api_singleton.class_eval do
-        alias_method :__orig_proj_create_conversion_local_orthographic, :proj_create_conversion_local_orthographic
-        define_method(:proj_create_conversion_local_orthographic) do |*args|
-          captured_args = args
-          FFI::MemoryPointer.new(:char, 1)
-        end
-      end
-
-      conversion_singleton.class_eval do
-        alias_method :__orig_create_object, :create_object
-        define_method(:create_object) do |_ptr, _context|
-          :ok
-        end
-      end
-
-      result = Proj::Projection.local_orthographic(context,
-                                                   latitude_nat_origin: 11, longitude_nat_origin: 22,
-                                                   ellipsoidal_height: 33, geocentric_x_origin: 44,
-                                                   geocentric_y_origin: 55, geocentric_z_origin: 66,
-                                                   angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433,
-                                                   linear_unit_name: "Metre", linear_unit_conversion_factor: 1.0)
-
-      assert_equal(:ok, result)
-      assert_equal([context, 11, 22, 33, 44, 55, 66, "Degree", 0.0174532925199433, "Metre", 1.0], captured_args)
-    ensure
-      conversion_singleton.class_eval do
-        remove_method :create_object
-        alias_method :create_object, :__orig_create_object
-        remove_method :__orig_create_object
-      end
-
-      api_singleton.class_eval do
-        remove_method :proj_create_conversion_local_orthographic
-        alias_method :proj_create_conversion_local_orthographic, :__orig_proj_create_conversion_local_orthographic
-        remove_method :__orig_proj_create_conversion_local_orthographic
-      end
+      proj = Proj::Projection.local_orthographic(context,
+                                                 latitude_nat_origin: 48.8566, longitude_nat_origin: 2.3522,
+                                                 ellipsoidal_height: 0, geocentric_x_origin: 0,
+                                                 geocentric_y_origin: 0, geocentric_z_origin: 0,
+                                                 angular_unit_name: "Degree", angular_unit_conversion_factor: 0.0174532925199433,
+                                                 linear_unit_name: "Metre", linear_unit_conversion_factor: 1.0)
+      assert(proj)
     end
   end
 end

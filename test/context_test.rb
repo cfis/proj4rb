@@ -183,24 +183,12 @@ class ContextTest < AbstractTest
   if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.5.0')
     def test_set_user_writable_directory
       context = Proj::Context.new
-      captured_args = nil
-      singleton = Proj::Api.singleton_class
-
-      singleton.class_eval do
-        alias_method :__orig_proj_context_set_user_writable_directory, :proj_context_set_user_writable_directory
-        define_method(:proj_context_set_user_writable_directory) do |*args|
-          captured_args = args
-          nil
-        end
-      end
-
-      context.set_user_writable_directory("/tmp/proj4rb-test", create: false)
-      assert_equal([context, "/tmp/proj4rb-test", 0], captured_args)
-    ensure
-      singleton.class_eval do
-        remove_method :proj_context_set_user_writable_directory
-        alias_method :proj_context_set_user_writable_directory, :__orig_proj_context_set_user_writable_directory
-        remove_method :__orig_proj_context_set_user_writable_directory
+      dir = File.join(Dir.tmpdir, "proj4rb-test-#{$$}")
+      begin
+        context.set_user_writable_directory(dir, create: true)
+        assert(Dir.exist?(dir))
+      ensure
+        Dir.rmdir(dir) if Dir.exist?(dir)
       end
     end
   end

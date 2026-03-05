@@ -1100,24 +1100,10 @@ class CrsTest < AbstractTest
   end
 
   if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.4.0')
-    def test_point_motion_operation_uses_proj_crs_has_point_motion_operation
+    def test_point_motion_operation
+      # Static CRS — no point motion
       crs = Proj::Crs.new('EPSG:4326')
-      singleton = Proj::Api.singleton_class
-
-      singleton.class_eval do
-        alias_method :__orig_proj_crs_has_point_motion_operation, :proj_crs_has_point_motion_operation
-        define_method(:proj_crs_has_point_motion_operation) do |_context, _crs|
-          1
-        end
-      end
-
-      assert(crs.point_motion_operation?)
-    ensure
-      singleton.class_eval do
-        remove_method :proj_crs_has_point_motion_operation
-        alias_method :proj_crs_has_point_motion_operation, :__orig_proj_crs_has_point_motion_operation
-        remove_method :__orig_proj_crs_has_point_motion_operation
-      end
+      refute(crs.point_motion_operation?)
     end
   end
 end
