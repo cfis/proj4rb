@@ -741,5 +741,8 @@ module Proj
     if proj_version >= 90600
       attach_function :proj_trans_bounds_3d, :proj_trans_bounds_3D, [:pointer, :pointer, PjDirection, :double, :double, :double, :double, :double, :double, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :int], :int
     end
+    if proj_version >= 90700
+      attach_function :proj_geod_direct, :proj_geod_direct, [:pointer, PjCoord.by_value, :double, :double], PjCoord.by_value
+    end
   end
 end
