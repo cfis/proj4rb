@@ -179,12 +179,11 @@ module Proj
     end
 
     # @!visibility private
-    # @!visibility private
     def self.finalize(pointer, context)
       proc do
         # Keep context alive until the PJ object is destroyed. With custom file/network
         # callbacks, proj_destroy() may re-enter callbacks tied to the context.
-        context
+        _ = context
         Api.proj_destroy(pointer)
       end
     end
@@ -659,7 +658,7 @@ module Proj
                  "ALLOW_ELLIPSOIDAL_HEIGHT_AS_VERTICAL_CRS": "NO"}
 
       options_ptr = create_options_pointer(options)
-      result = Api.proj_as_wkt(self.context, self, wkt_type, nil)
+      result = Api.proj_as_wkt(self.context, self, wkt_type, options_ptr)
 
       if result.nil?
         Error.check_object(self)

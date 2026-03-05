@@ -521,6 +521,12 @@ class CrsTest < AbstractTest
     assert_equal(expected.strip, crs.to_wkt)
   end
 
+  def test_to_wkt_single_line
+    crs = Proj::Crs.new('EPSG:4326')
+    wkt = crs.to_wkt(multiline: false)
+    refute_includes(wkt, "\n")
+  end
+
   def test_to_json
     crs = Proj::Crs.new('EPSG:26915')
 
