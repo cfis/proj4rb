@@ -223,5 +223,16 @@ class TransformationTest < AbstractTest
       assert_in_delta(2234551.1855909275, end_bounds.ymax, 1e-3)
       assert_in_delta(500.0, end_bounds.zmax, 1e-3)
     end
+
+    def test_transform_bounds_3d_error
+      context = Proj::Context.new
+      conv = Proj::Conversion.new("+proj=cart +ellps=GRS80", context)
+      bounds = Proj::Bounds3d.new(40, -120, 100, 64, -80, 500)
+
+      error = assert_raises(Proj::Error) do
+        conv.transform_bounds_3d(bounds, :PJ_FWD, 0)
+      end
+      assert_equal("Invalid coordinate", error.message)
+    end
   end
 end
