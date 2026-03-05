@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.0.0 - March 2026
+## 5.0.0 - March 4, 2026
 * Switch to auto-generated FFI bindings via [ruby-bindgen](https://github.com/cfis/ruby-bindgen)
 * Add support for PROJ 9.4 API `proj_crs_has_point_motion_operation`
 * Add support for PROJ 9.5 APIs: `proj_context_set_user_writable_directory`, `proj_coordoperation_requires_per_coordinate_input_time`, and `proj_create_conversion_local_orthographic`
