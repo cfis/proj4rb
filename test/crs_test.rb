@@ -280,6 +280,13 @@ class CrsTest < AbstractTest
     assert_in_delta(90.0, crs.area_of_use.north_lat_degree, 0.1)
   end
 
+  def test_area_of_use_to_s
+    crs = Proj::Crs.new('EPSG:4326')
+    area = crs.area_of_use
+    expected = "Area west_lon_degree: -180.0, south_lat_degree: -90.0, east_lon_degree: 180.0, north_lat_degree: 90.0"
+    assert_equal(expected, area.to_s)
+  end
+
   def test_area_of_use_stale_errno
     # Leave stale errno on the context via a failed operation.
     # proj_get_area_of_use returns :bool, so the check must use `unless result`
