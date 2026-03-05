@@ -821,7 +821,7 @@ class CrsTest < AbstractTest
     assert_equal("myVertCRS", bound.name)
   end
 
-  def test_compound
+  def test_create_compound
     context = Proj::Context.new
     coordinate_system = Proj::CoordinateSystem.create_ellipsoidal_2d(:PJ_ELLPS2D_LONGITUDE_LATITUDE, context)
 
