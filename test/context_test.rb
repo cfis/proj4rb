@@ -68,7 +68,7 @@ class ContextTest < AbstractTest
   end
 
   def test_database_path
-    refute_nil(Proj::Context.current.database_path)
+    refute_nil(Proj::Context.current.database.path)
   end
 
   def test_log_level

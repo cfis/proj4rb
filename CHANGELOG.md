@@ -14,6 +14,7 @@
 * Expand regression tests for lifecycle safety and new PROJ 9.4/9.5/9.6 wrappers
 * `Unit.built_in` now returns all unit types (91 units) instead of only linear units (24 units)
 * Internal: struct and enum types use Ruby naming conventions (e.g., `PjCoord` instead of `PJ_COORD`)
+* Remove deprecated `Context#database_path` and `Context#database_path=` (use `context.database.path` instead)
 * Internal: method names use Ruby naming conventions (e.g., `proj_create_ellipsoidal_2d_cs` instead of `proj_create_ellipsoidal_2D_cs`)
 
 ## 4.1.1 - January 30, 2024
