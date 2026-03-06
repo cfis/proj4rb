@@ -23,6 +23,7 @@ module Proj
     #
     # @return [Conversion]
     def self.create_conversion(context, name:, auth_name:, code:, method_name:, method_auth_name:, method_code:, params:)
+      Error.validate_context!(context)
       params_ptr = FFI::MemoryPointer.new(Api::PjParamDescription, params.size)
       params.each_with_index do |param, i|
         param_description_target = Api::PjParamDescription.new(params_ptr[i])

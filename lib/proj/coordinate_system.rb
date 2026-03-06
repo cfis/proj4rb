@@ -11,6 +11,7 @@ module Proj
     #
     # @return [CoordinateSystem]
     def self.create(cs_type, axes, context)
+      Error.validate_context!(context)
       axes_ptr = FFI::MemoryPointer.new(Api::PjAxisDescription, axes.size)
       # Keep source descriptions alive so their retained string pointers
       # are not GC'd before proj_create_cs reads them.
@@ -34,6 +35,7 @@ module Proj
     #
     # @return [CoordinateSystem]
     def self.create_ellipsoidal_2d(cs_type, context, unit_name: nil, unit_conv_factor: 0)
+      Error.validate_context!(context)
       pointer = Api.proj_create_ellipsoidal_2d_cs(context, cs_type, unit_name, unit_conv_factor)
       Error.check_context(context)
       self.create_object(pointer, context)
@@ -50,6 +52,7 @@ module Proj
     #
     # @return [CoordinateSystem]
     def self.create_ellipsoidal_3d(cs_type, context, horizontal_angular_unit_name: nil, horizontal_angular_unit_conv_factor: 0, vertical_linear_unit_name: nil, vertical_linear_unit_conv_factor: 0)
+      Error.validate_context!(context)
       pointer = Api.proj_create_ellipsoidal_3d_cs(context, cs_type, horizontal_angular_unit_name, horizontal_angular_unit_conv_factor, vertical_linear_unit_name, vertical_linear_unit_conv_factor)
       Error.check_context(context)
       self.create_object(pointer, context)
@@ -64,6 +67,7 @@ module Proj
     #
     # @return [CoordinateSystem]
     def self.create_cartesian_2d(context, cs_type, unit_name: nil, unit_conv_factor: 0)
+      Error.validate_context!(context)
       pointer = Api.proj_create_cartesian_2d_cs(context, cs_type, unit_name, unit_conv_factor)
       Error.check_context(context)
       self.create_object(pointer, context)

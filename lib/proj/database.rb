@@ -16,6 +16,7 @@ module Proj
     #
     # @return [Database]
     def initialize(context)
+      Error.validate_context!(context)
       @context = context
     end
 

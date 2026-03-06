@@ -25,6 +25,12 @@ module Proj
     PROJ_ERR_OTHER_NO_INVERSE_OP = PROJ_ERR_OTHER + 2 # No inverse method available
     PROJ_ERR_OTHER_NETWORK_ERROR = PROJ_ERR_OTHER + 3 # Failure when accessing a network resource
 
+    def self.validate_context!(context)
+      return if context.is_a?(Context)
+
+      raise(TypeError, "expected Proj::Context, got #{context.class}")
+    end
+
     # Check the context to see if an error occurred. If an error has happened will
     # raise an exception.
     def self.check_context(context)

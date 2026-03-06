@@ -14,6 +14,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_projected(context, name: nil, geodetic_crs:, conversion:, coordinate_system:)
+      Error.validate_context!(context)
       pointer = Api.proj_create_projected_crs(context, name, geodetic_crs, conversion, coordinate_system)
 
       if pointer.null?
@@ -32,6 +33,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_bound(context, base_crs:, hub_crs:, transformation:)
+      Error.validate_context!(context)
       pointer = Api.proj_crs_create_bound_crs(context, base_crs, hub_crs, transformation)
 
       if pointer.null?
@@ -55,6 +57,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_bound_to_wgs84(context, crs:, allow_intermediate_crs: "NEVER")
+      Error.validate_context!(context)
       options = Options.new("ALLOW_INTERMEDIATE_CRS": allow_intermediate_crs)
 
       pointer = Api.proj_crs_create_bound_crs_to_wgs84(context, crs, options)
@@ -73,6 +76,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_engineering(context, name:)
+      Error.validate_context!(context)
       pointer = Api.proj_create_engineering_crs(context, name)
 
       if pointer.null?
@@ -92,6 +96,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_vertical(context, name:, datum_name:, linear_units:, linear_units_conv:)
+      Error.validate_context!(context)
       pointer = Api.proj_create_vertical_crs(context, name, datum_name, linear_units, linear_units_conv)
 
       if pointer.null?
@@ -111,6 +116,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_bound_vertical(context, vertical_crs:, hub_crs:, grid_name:)
+      Error.validate_context!(context)
       pointer = Api.proj_crs_create_bound_vertical_crs(context, vertical_crs, hub_crs, grid_name)
 
       if pointer.null?
@@ -141,6 +147,7 @@ module Proj
                                 linear_units: nil, linear_units_conv: 0,
                                 geoid_model_name: nil, geoid_model_auth_name: nil, geoid_model_code: nil,
                                 geoid_geog_crs: nil, accuracy: nil)
+      Error.validate_context!(context)
 
       options = Options.new("ACCURACY": accuracy.nil? ? nil : accuracy.to_s)
 
@@ -162,6 +169,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_compound(context, name:, horizontal_crs:, vertical_crs:)
+      Error.validate_context!(context)
       pointer = Api.proj_create_compound_crs(context, name, horizontal_crs, vertical_crs)
 
       if pointer.null?
@@ -187,6 +195,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_geographic(context, name:, datum_name:, ellipsoid_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, pm_angular_units:, pm_angular_units_conv:, coordinate_system:)
+      Error.validate_context!(context)
       pointer = Api.proj_create_geographic_crs(context, name, datum_name, ellipsoid_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, pm_angular_units, pm_angular_units_conv, coordinate_system)
 
       if pointer.null?
@@ -205,6 +214,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_geographic_from_datum(context, name:, datum:, coordinate_system:)
+      Error.validate_context!(context)
       pointer = Api.proj_create_geographic_crs_from_datum(context, name, datum, coordinate_system)
 
       if pointer.null?
@@ -231,6 +241,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_geocentric(context, name:, datum_name:, ellipsoid_name:, semi_major_meter:, inv_flattening:, prime_meridian_name:, prime_meridian_offset:, angular_units:, angular_units_conv:, linear_units:, linear_units_conv:)
+      Error.validate_context!(context)
       pointer = Api.proj_create_geocentric_crs(context, name, datum_name, ellipsoid_name, semi_major_meter, inv_flattening, prime_meridian_name, prime_meridian_offset, angular_units, angular_units_conv, linear_units, linear_units_conv)
 
       if pointer.null?
@@ -250,6 +261,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_geocentric_from_datum(context, name:, datum:, linear_units:, linear_units_conv:)
+      Error.validate_context!(context)
       pointer = Api.proj_create_geocentric_crs_from_datum(context, name, datum, linear_units, linear_units_conv)
 
       if pointer.null?
@@ -269,6 +281,7 @@ module Proj
     #
     # @return [Crs]
     def self.create_derived_geographic(context, name: nil, base_geographic_crs:, conversion:, coordinate_system:)
+      Error.validate_context!(context)
       pointer = Api.proj_create_derived_geographic_crs(context, name, base_geographic_crs, conversion, coordinate_system)
 
       if pointer.null?
@@ -291,6 +304,7 @@ module Proj
     #
     # @return [PjObjects] - A list of CRSes
     def self.query_geodetic_from_datum(context, auth_name: nil, datum_auth_name:, datum_code:, crs_type: nil)
+      Error.validate_context!(context)
       pointer = Api.proj_query_geodetic_crs_from_datum(context, auth_name, datum_auth_name, datum_code, crs_type)
 
       if pointer.null?

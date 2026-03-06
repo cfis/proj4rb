@@ -22,6 +22,7 @@ module Proj
     #                    operations will be searched only in that authority namespace.
     def initialize(context, authority: nil)
       @context = context || Context.current
+      Error.validate_context!(@context)
       @pointer = Api.proj_create_operation_factory_context(@context, authority)
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
     end

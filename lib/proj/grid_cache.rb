@@ -11,6 +11,7 @@ module Proj
     attr_reader :context
 
     def initialize(context)
+      Error.validate_context!(context)
       @context = context
     end
 

@@ -26,6 +26,7 @@ module Proj
                     source_crs:, target_crs:, interpolation_crs: nil,
                     method_name: nil, method_auth_name: nil, method_code: nil,
                     params:, accuracy:)
+      Error.validate_context!(context)
 
       params_ptr = FFI::MemoryPointer.new(Api::PjParamDescription, params.size)
       params.each_with_index do |param, i|
