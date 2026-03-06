@@ -939,7 +939,8 @@ class CrsTest < AbstractTest
   end
 
   def test_create_engineering
-    crs = Proj::Crs.create_engineering("EPSG", name: "4807")
+    context = Proj::Context.new
+    crs = Proj::Crs.create_engineering(context, name: "4807")
     assert_equal("4807", crs.name)
     assert_equal(:PJ_TYPE_ENGINEERING_CRS, crs.proj_type)
 
