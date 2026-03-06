@@ -25,7 +25,8 @@ module Proj
         @pointer = nil
       else
         @pointer = FFI::MemoryPointer.new(:pointer, options.size + 1)
-        @pointer.write_array_of_pointer(@string_ptrs)
+        # PROJ expects a NULL-terminated char* array.
+        @pointer.write_array_of_pointer(@string_ptrs + [FFI::Pointer::NULL])
       end
     end
 
