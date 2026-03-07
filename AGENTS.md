@@ -111,3 +111,4 @@ PROJ version numbers are computed as `major * 10000 + minor * 100 + patch`. Exam
 - Ruby version: >= 2.7
 - Commits must not include a co-author or author line (no `Co-Authored-By`)
 - Tests must not use mocks or stubs. Always call the real PROJ C API.
+- **Never manually edit auto-generated files** (`lib/api/proj.rb`, `lib/api/proj_experimental.rb`). Fix issues in `ffi-bindings.yaml` and regenerate instead.

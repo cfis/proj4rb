@@ -375,13 +375,13 @@ module Proj
       Api.proj_get_remarks(self)
     end
 
-    # Get the scope of an object
+    # Get the scope of an object.
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_get_scope
     #
     # @return [String] Scope or nil in case of error or a missing scope
     def scope
-      Api.proj_get_scope(self)
+      domains.first&.scope
     end
 
     def auth(index=0)
@@ -397,31 +397,23 @@ module Proj
       end
     end
 
-    # Return the area of use of an object
+    # Returns all usage domains for this object. Each domain has a scope
+    # and geographic area of use.
+    #
+    # @see Domain.domains
+    #
+    # @return [Array<Domain>]
+    def domains
+      Domain.domains(self)
+    end
+
+    # Return the area of use of an object.
     #
     # @see https://proj.org/development/reference/functions.html#c.proj_get_area_of_use
     #
     # @return [Area] In case of multiple usages, this will be the one of first usage.
     def area_of_use
-      p_name = FFI::MemoryPointer.new(:pointer)
-      p_west_lon_degree = FFI::MemoryPointer.new(:double)
-      p_south_lat_degree = FFI::MemoryPointer.new(:double)
-      p_east_lon_degree = FFI::MemoryPointer.new(:double)
-      p_north_lat_degree = FFI::MemoryPointer.new(:double)
-
-      result = Api.proj_get_area_of_use(self.context, self,
-                                        p_west_lon_degree, p_south_lat_degree, p_east_lon_degree, p_north_lat_degree,
-                                        p_name)
-      unless result
-        Error.check_object(self)
-      end
-
-      name = p_name.read_pointer.read_string_to_null.force_encoding('utf-8')
-      Area.new(west_lon_degree: p_west_lon_degree.read_double,
-               south_lat_degree: p_south_lat_degree.read_double,
-               east_lon_degree: p_east_lon_degree.read_double,
-               north_lat_degree: p_north_lat_degree.read_double,
-               name: name)
+      domains.first&.area_of_use
     end
 
     # Return the base CRS of a BoundCRS or a DerivedCRS/ProjectedCRS, or the source CRS of a
