@@ -1,11 +1,12 @@
 # Changelog
 
-## 5.0.0 - March 4, 2026
+## 5.0.0 - March 6, 2026
 * Switch to auto-generated FFI bindings via [ruby-bindgen](https://github.com/cfis/ruby-bindgen)
 * Add support for PROJ 9.4 API `proj_crs_has_point_motion_operation`
 * Add support for PROJ 9.5 APIs: `proj_context_set_user_writable_directory`, `proj_coordoperation_requires_per_coordinate_input_time`, and `proj_create_conversion_local_orthographic`
 * Add support for PROJ 9.6 APIs: `proj_trans_bounds_3D`
 * Add support for PROJ 9.7 APIs: `proj_geod_direct`
+* Add `Domain` class to support multiple usage domains per object (PROJ 9.2+ via `proj_get_domain_count`, `proj_get_scope_ex`, `proj_get_area_of_use_ex`; falls back to legacy APIs on older versions)
 * Add 3D bounds support (`Bounds3d` + `transform_bounds_3d`) for PROJ 9.6 `proj_trans_bounds_3D`
 * Fix manual wrapper argument order for `proj_create_conversion_lambert_conic_conformal_1sp_variant_b` (9.4)
 * Fix `Parameter#to_description` passing parameter name instead of unit name
