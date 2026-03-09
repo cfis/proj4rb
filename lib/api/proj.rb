@@ -253,7 +253,6 @@ module Proj
     attach_function :proj_torad, :proj_torad, [:double], :double
     attach_function :proj_todeg, :proj_todeg, [:double], :double
     attach_function :proj_dmstor, :proj_dmstor, [:string, :pointer], :double
-    attach_function :proj_rtodms2, :proj_rtodms2, [:pointer, :size_t, :double, :int, :int], :pointer
     typedef :pointer, :proj_string_list
 
     PjGuessedWktDialect = enum(
@@ -412,14 +411,8 @@ module Proj
     end
 
     typedef :pointer, :PjObjList
-    attach_function :proj_is_crs, :proj_is_crs, [:pointer], :bool
-    attach_function :proj_get_area_of_use, :proj_get_area_of_use, [:pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
-    attach_function :proj_get_area_of_use_ex, :proj_get_area_of_use_ex, [:pointer, :pointer, :int, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
     typedef :pointer, :PjInsertSession
-    attach_function :proj_suggests_code_for, :proj_suggests_code_for, [:pointer, :pointer, :string, :int, :pointer], :pointer
-    attach_function :proj_string_destroy, :proj_string_destroy, [:pointer], :void
     typedef :pointer, :PjOperationFactoryContext
-    attach_function :proj_cs_get_axis_info, :proj_cs_get_axis_info, [:pointer, :pointer, :int, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
 
     PjUnitType = enum(
       :PJ_UT_ANGULAR, 0,
@@ -466,9 +459,6 @@ module Proj
              :unit_type, PjUnitType
     end
 
-    attach_function :proj_create_cs, :proj_create_cs, [:pointer, PjCoordinateSystemType, :int, :pointer], :pointer
-    attach_function :proj_create_conversion, :proj_create_conversion, [:pointer, :string, :string, :string, :string, :string, :string, :int, :pointer], :pointer
-    attach_function :proj_create_transformation, :proj_create_transformation, [:pointer, :string, :string, :string, :pointer, :pointer, :pointer, :string, :string, :string, :int, :pointer, :double], :pointer
     if proj_version >= 50100
       attach_function :proj_errno_string, :proj_errno_string, [:int], :string
       attach_function :proj_log_level, :proj_log_level, [:pointer, PjLogLevel], PjLogLevel
@@ -497,9 +487,11 @@ module Proj
       attach_function :proj_is_deprecated, :proj_is_deprecated, [:pointer], :int
       attach_function :proj_get_non_deprecated, :proj_get_non_deprecated, [:pointer, :pointer], :pointer
       attach_function :proj_is_equivalent_to, :proj_is_equivalent_to, [:pointer, :pointer, PjComparisonCriterion], :int
+      attach_function :proj_is_crs, :proj_is_crs, [:pointer], :bool
       attach_function :proj_get_name, :proj_get_name, [:pointer], :string
       attach_function :proj_get_id_auth_name, :proj_get_id_auth_name, [:pointer, :int], :string
       attach_function :proj_get_id_code, :proj_get_id_code, [:pointer, :int], :string
+      attach_function :proj_get_area_of_use, :proj_get_area_of_use, [:pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
       attach_function :proj_as_wkt, :proj_as_wkt, [:pointer, :pointer, PjWktType, :pointer], :string
       attach_function :proj_as_proj_string, :proj_as_proj_string, [:pointer, :pointer, PjProjStringType, :pointer], :string
       attach_function :proj_get_source_crs, :proj_get_source_crs, [:pointer, :pointer], :pointer
@@ -533,6 +525,7 @@ module Proj
       attach_function :proj_crs_get_coordinate_system, :proj_crs_get_coordinate_system, [:pointer, :pointer], :pointer
       attach_function :proj_cs_get_type, :proj_cs_get_type, [:pointer, :pointer], PjCoordinateSystemType
       attach_function :proj_cs_get_axis_count, :proj_cs_get_axis_count, [:pointer, :pointer], :int
+      attach_function :proj_cs_get_axis_info, :proj_cs_get_axis_info, [:pointer, :pointer, :int, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
       attach_function :proj_get_ellipsoid, :proj_get_ellipsoid, [:pointer, :pointer], :pointer
       attach_function :proj_ellipsoid_get_parameters, :proj_ellipsoid_get_parameters, [:pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :int
       attach_function :proj_get_prime_meridian, :proj_get_prime_meridian, [:pointer, :pointer], :pointer
@@ -548,6 +541,7 @@ module Proj
       attach_function :proj_coordoperation_get_grid_used, :proj_coordoperation_get_grid_used, [:pointer, :pointer, :int, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :int
       attach_function :proj_coordoperation_get_accuracy, :proj_coordoperation_get_accuracy, [:pointer, :pointer], :double
       attach_function :proj_coordoperation_get_towgs84_values, :proj_coordoperation_get_towgs84_values, [:pointer, :pointer, :pointer, :int, :int], :int
+      attach_function :proj_create_cs, :proj_create_cs, [:pointer, PjCoordinateSystemType, :int, :pointer], :pointer
       attach_function :proj_create_cartesian_2d_cs, :proj_create_cartesian_2D_cs, [:pointer, PjCartesianCs2dType, :string, :double], :pointer
       attach_function :proj_create_ellipsoidal_2d_cs, :proj_create_ellipsoidal_2D_cs, [:pointer, PjEllipsoidalCs2dType, :string, :double], :pointer
       attach_function :proj_query_geodetic_crs_from_datum, :proj_query_geodetic_crs_from_datum, [:pointer, :string, :string, :string, :string], :pointer
@@ -564,6 +558,8 @@ module Proj
       attach_function :proj_create_engineering_crs, :proj_create_engineering_crs, [:pointer, :string], :pointer
       attach_function :proj_create_vertical_crs, :proj_create_vertical_crs, [:pointer, :string, :string, :string, :double], :pointer
       attach_function :proj_create_compound_crs, :proj_create_compound_crs, [:pointer, :string, :pointer, :pointer], :pointer
+      attach_function :proj_create_conversion, :proj_create_conversion, [:pointer, :string, :string, :string, :string, :string, :string, :int, :pointer], :pointer
+      attach_function :proj_create_transformation, :proj_create_transformation, [:pointer, :string, :string, :string, :pointer, :pointer, :pointer, :string, :string, :string, :int, :pointer, :double], :pointer
       attach_function :proj_convert_conversion_to_other_method, :proj_convert_conversion_to_other_method, [:pointer, :pointer, :int, :string], :pointer
       attach_function :proj_create_projected_crs, :proj_create_projected_crs, [:pointer, :string, :pointer, :pointer, :pointer], :pointer
       attach_function :proj_crs_create_bound_crs, :proj_crs_create_bound_crs, [:pointer, :pointer, :pointer, :pointer], :pointer
@@ -711,6 +707,8 @@ module Proj
       attach_function :proj_insert_object_session_create, :proj_insert_object_session_create, [:pointer], :pointer
       attach_function :proj_insert_object_session_destroy, :proj_insert_object_session_destroy, [:pointer, :pointer], :void
       attach_function :proj_get_insert_statements, :proj_get_insert_statements, [:pointer, :pointer, :pointer, :string, :string, :int, :pointer, :pointer], :pointer
+      attach_function :proj_suggests_code_for, :proj_suggests_code_for, [:pointer, :pointer, :string, :int, :pointer], :pointer
+      attach_function :proj_string_destroy, :proj_string_destroy, [:pointer], :void
       attach_function :proj_get_celestial_body_name, :proj_get_celestial_body_name, [:pointer, :pointer], :string
     end
     if proj_version >= 80200
@@ -723,8 +721,10 @@ module Proj
       attach_function :proj_operation_factory_context_set_area_of_interest_name, :proj_operation_factory_context_set_area_of_interest_name, [:pointer, :pointer, :string], :void
     end
     if proj_version >= 90200
+      attach_function :proj_rtodms2, :proj_rtodms2, [:pointer, :size_t, :double, :int, :int], :pointer
       attach_function :proj_get_domain_count, :proj_get_domain_count, [:pointer], :int
       attach_function :proj_get_scope_ex, :proj_get_scope_ex, [:pointer, :int], :string
+      attach_function :proj_get_area_of_use_ex, :proj_get_area_of_use_ex, [:pointer, :pointer, :int, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
       attach_function :proj_coordinate_metadata_get_epoch, :proj_coordinate_metadata_get_epoch, [:pointer, :pointer], :double
       attach_function :proj_create_conversion_tunisia_mining_grid, :proj_create_conversion_tunisia_mining_grid, [:pointer, :double, :double, :double, :double, :string, :double, :string, :double], :pointer
     end
