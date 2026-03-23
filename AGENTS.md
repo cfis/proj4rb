@@ -49,6 +49,10 @@ rake yard
 
 When a new PROJ version is released, update `ffi-bindings.yaml` to include any new API functions. Here's the process:
 
+### Header files
+
+The `input` field in `ffi-bindings.yaml` points to the directory containing `proj.h` and `proj_experimental.h`. On Windows (MSYS2 ucrt64), this is `/mnt/c/msys64/ucrt64/include`.
+
 ### 1. Identify new functions
 
 Compare `proj.h` between the last supported version and the new release on GitHub:
