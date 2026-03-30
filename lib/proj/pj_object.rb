@@ -180,7 +180,9 @@ module Proj
 
     # @!visibility private
     def self.finalize(pointer, context)
+      life_span = context.life_span
       proc do
+        next unless life_span.alive?
         # Keep context alive until the PJ object is destroyed. With custom file/network
         # callbacks, proj_destroy() may re-enter callbacks tied to the context.
         _ = context
@@ -193,7 +195,7 @@ module Proj
         raise(Error, "Cannot create a PjObject with a null pointer")
       end
       @pointer = pointer
-      @context = context
+      @context = context || Context.current
       ObjectSpace.define_finalizer(self, self.class.finalize(@pointer, @context))
     end
 

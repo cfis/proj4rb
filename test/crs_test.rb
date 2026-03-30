@@ -240,8 +240,10 @@ class CrsTest < AbstractTest
   def test_horizontal_datum
     crs = Proj::Crs.new('EPSG:4326')
     datum = crs.horizontal_datum
-    assert_equal(:PJ_TYPE_DATUM_ENSEMBLE, datum.proj_type)
-    assert_equal("World Geodetic System 1984 ensemble", datum.name)
+    # proj_crs_get_horizontal_datum may return either a datum ensemble or a
+    # geodetic reference frame depending on the PROJ/EPSG database version.
+    assert_includes([:PJ_TYPE_DATUM_ENSEMBLE, :PJ_TYPE_GEODETIC_REFERENCE_FRAME], datum.proj_type)
+    assert(datum.name.start_with?("World Geodetic System 1984"))
   end
 
   def test_coordinate_system
@@ -582,7 +584,7 @@ class CrsTest < AbstractTest
           "id": {
             "authority": "EPSG",
             "code": 4269
-          }
+          }#{Proj::Api::PROJ_VERSION >= Gem::Version.new('9.8.0') ? ",\n    \"remarks\": \"Longitude is POSITIVE EAST. The adjustment included connections to Greenland and Mexico but the system was not adopted there. For applications with an accuracy of better than 1m replaced by NAD83(HARN) in the US and PRVI and by NAD83(CSRS) in Canada.\"" : ''}
         },
         "conversion": {
           "name": "UTM zone 15N",

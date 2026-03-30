@@ -6,7 +6,13 @@ class UnitsTest < AbstractTest
   def test_get_all
     database = Proj::Database.new(Proj::Context.current)
     units = database.units
-    assert_equal(91, units.count)
+    expected = case
+                 when Proj::Api::PROJ_VERSION >= Gem::Version.new('9.8.0')
+                   106
+                 else
+                   91
+               end
+    assert_equal(expected, units.count)
 
     unit = units[0]
     assert_instance_of(Proj::Unit, unit)
@@ -14,7 +20,13 @@ class UnitsTest < AbstractTest
 
   def test_builtin
     units = Proj::Unit.built_in
-    assert_equal(91, units.count)
+    expected = case
+                 when Proj::Api::PROJ_VERSION >= Gem::Version.new('9.8.0')
+                   106
+                 else
+                   91
+               end
+    assert_equal(expected, units.count)
 
     unit = units[0]
     assert_instance_of(Proj::Unit, unit)
@@ -23,7 +35,13 @@ class UnitsTest < AbstractTest
   def test_linear_unit
     database = Proj::Database.new(Proj::Context.current)
     units = database.units(category: "linear")
-    assert_equal(52, units.count)
+    expected = case
+                 when Proj::Api::PROJ_VERSION >= Gem::Version.new('9.8.0')
+                   67
+                 else
+                   52
+               end
+    assert_equal(expected, units.count)
 
     unit = units[0]
     assert_instance_of(Proj::Unit, unit)

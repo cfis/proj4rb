@@ -151,7 +151,12 @@ class OperationFactoryContextTest < AbstractTest
     assert_equal(1, operations.count)
 
     operation = operations[0]
-    assert_equal("ED50 to ETRS89 (10) + Inverse of RGF93 v1 to ETRS89 (1)", operation.name)
+    expected_name = if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.8.0')
+                      "ED50 to ETRS89 (10) + ETRS89 to ETRS89-FRA [RGF93 v1]"
+                    else
+                      "ED50 to ETRS89 (10) + Inverse of RGF93 v1 to ETRS89 (1)"
+                    end
+    assert_equal(expected_name, operation.name)
     refute(operation.ballpark_transformation?)
 
     # Disallow pivots
@@ -160,7 +165,12 @@ class OperationFactoryContextTest < AbstractTest
     assert_equal(1, operations.count)
 
     operation = operations[0]
-    assert_equal("Ballpark geographic offset from ED50 to RGF93 v1", operation.name)
+    expected_name = if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.8.0')
+                      "Ballpark geographic offset from ED50 to ETRS89-FRA [RGF93 v1]"
+                    else
+                      "Ballpark geographic offset from ED50 to RGF93 v1"
+                    end
+    assert_equal(expected_name, operation.name)
     assert(operation.ballpark_transformation?)
   end
 
@@ -179,7 +189,12 @@ class OperationFactoryContextTest < AbstractTest
     assert_equal(1, operations.count)
 
     operation = operations[0]
-    assert_equal("ED50 to ETRS89 (10) + Inverse of RGF93 v1 to ETRS89 (1)", operation.name)
+    expected_name = if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.8.0')
+                      "Ballpark geographic offset from ED50 to ETRS89-FRA [RGF93 v1]"
+                    else
+                      "ED50 to ETRS89 (10) + Inverse of RGF93 v1 to ETRS89 (1)"
+                    end
+    assert_equal(expected_name, operation.name)
   end
 
   def test_discard_superseded

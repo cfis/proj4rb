@@ -49,6 +49,10 @@ class FileApiTest < AbstractTest
     assert_in_delta(12, new_coord.lon)
     assert_in_delta(56, new_coord.lat)
     assert_in_delta(36.5909996032715, new_coord.z, 1e-10)
+
+    # Release the grid file handle so teardown can delete the file (Windows)
+    conversion.destroy
+    context.destroy
   end
 
   def test_write
@@ -63,5 +67,8 @@ class FileApiTest < AbstractTest
     grid.download
 
     assert(grid.downloaded?)
+
+    # Release the grid file handle so teardown can delete the file (Windows)
+    context.destroy
   end
 end

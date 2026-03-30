@@ -4,7 +4,9 @@ module Proj
 
     # @!visibility private
     def self.finalize(context, pointer)
+      life_span = context.life_span
       proc do
+        next unless life_span.alive?
         Api.proj_insert_object_session_destroy(context, pointer)
       end
     end
