@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
     'documentation_uri' => 'https://cfis.github.io/proj4rb/'
   }
 
-  spec.add_dependency "ffi"
+  spec.add_dependency "ffi", ">=1.17.4"
 
   spec.add_development_dependency('bundler')
   spec.add_development_dependency('rake')
