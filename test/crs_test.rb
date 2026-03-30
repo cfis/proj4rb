@@ -240,8 +240,13 @@ class CrsTest < AbstractTest
   def test_horizontal_datum
     crs = Proj::Crs.new('EPSG:4326')
     datum = crs.horizontal_datum
-    assert_equal(:PJ_TYPE_DATUM_ENSEMBLE, datum.proj_type)
-    assert_equal("World Geodetic System 1984 ensemble", datum.name)
+    if Proj::Api::PROJ_VERSION >= Gem::Version.new('9.5.0')
+      assert_equal(:PJ_TYPE_DATUM_ENSEMBLE, datum.proj_type)
+      assert_equal("World Geodetic System 1984 ensemble", datum.name)
+    else
+      assert_equal(:PJ_TYPE_GEODETIC_REFERENCE_FRAME, datum.proj_type)
+      assert_equal("World Geodetic System 1984", datum.name)
+    end
   end
 
   def test_coordinate_system
