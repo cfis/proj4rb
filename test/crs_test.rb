@@ -582,7 +582,7 @@ class CrsTest < AbstractTest
           "id": {
             "authority": "EPSG",
             "code": 4269
-          }#{Proj::Api::PROJ_VERSION >= Gem::Version.new('9.8.0') ? ",\n      \"remarks\": \"Longitude is POSITIVE EAST. The adjustment included connections to Greenland and Mexico but the system was not adopted there. For applications with an accuracy of better than 1m replaced by NAD83(HARN) in the US and PRVI and by NAD83(CSRS) in Canada.\"" : ''}
+          }#{Proj::Api::PROJ_VERSION >= Gem::Version.new('9.8.0') ? ",\n    \"remarks\": \"Longitude is POSITIVE EAST. The adjustment included connections to Greenland and Mexico but the system was not adopted there. For applications with an accuracy of better than 1m replaced by NAD83(HARN) in the US and PRVI and by NAD83(CSRS) in Canada.\"" : ''}
         },
         "conversion": {
           "name": "UTM zone 15N",
