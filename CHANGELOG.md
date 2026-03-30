@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.0.0 - March 6, 2026
+## 5.0.0 - March 29, 2026
 * Switch to auto-generated FFI bindings via [ruby-bindgen](https://github.com/cfis/ruby-bindgen)
 * Add support for PROJ 9.4 API `proj_crs_has_point_motion_operation`
 * Add support for PROJ 9.5 APIs: `proj_context_set_user_writable_directory`, `proj_coordoperation_requires_per_coordinate_input_time`, and `proj_create_conversion_local_orthographic`
@@ -18,6 +18,7 @@
 * Internal: struct and enum types use Ruby naming conventions (e.g., `PjCoord` instead of `PJ_COORD`)
 * Remove deprecated `Context#database_path` and `Context#database_path=` (use `context.database.path` instead)
 * Internal: method names use Ruby naming conventions (e.g., `proj_create_ellipsoidal_2d_cs` instead of `proj_create_ellipsoidal_2D_cs`)
+* Update to FFI 1.17.4 to fix bug on Mac ARM64
 
 ## 4.1.1 - January 30, 2024
 * Update tests for Proj 9.3
