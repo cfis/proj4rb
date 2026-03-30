@@ -2,7 +2,7 @@ module Proj
   # Proj 4.8 introduced the concept of a thread context object to support multi-threaded programs. The bindings
   # automatically create one context per thread (its stored in local thread storage).
   class Context
-    attr_reader :database
+    attr_reader :database, :life_span
 
     # Returns the default Proj context. This context *must* only be used in the main thread
     # In general it is better to create new contexts
@@ -12,6 +12,7 @@ module Proj
       result = Context.allocate
       # The default Proj Context is represented by a null pointer
       result.instance_variable_set(:@pointer, FFI::Pointer::NULL)
+      result.instance_variable_set(:@life_span, LifeSpan.new)
       result
     end
 
@@ -24,15 +25,17 @@ module Proj
     end
 
     # @!visibility private
-    def self.finalize(pointer)
+    def self.finalize(pointer, life_span)
       proc do
+        life_span.ended!
         Api.proj_context_destroy(pointer)
       end
     end
 
     def initialize
       @pointer = Api.proj_context_create
-      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
+      @life_span = LifeSpan.new
+      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer, @life_span))
 
       @database = Database.new(self)
     end
@@ -43,13 +46,15 @@ module Proj
       super
 
       @pointer = Api.proj_context_clone(original)
+      @life_span = LifeSpan.new
       @database = Database.new(self)
 
-      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer))
+      ObjectSpace.define_finalizer(self, self.class.finalize(@pointer, @life_span))
     end
 
     # Explicitly free the underlying PROJ context.
     def destroy
+      @life_span.ended!
       Api.proj_context_destroy(@pointer)
       @pointer = FFI::Pointer::NULL
       ObjectSpace.undefine_finalizer(self)
