@@ -1,0 +1,10 @@
+/* The wordmark is wide, so give it more height than the default 1.2rem */
+.md-header__button.md-logo img {
+  height: 1.8rem;
+}
+
+/* The wordmark already says the name, so hide the site title next to it.
+   The page title that appears on scroll is a separate element and still shows. */
+.md-header__topic:first-child {
+  visibility: hidden;
+}

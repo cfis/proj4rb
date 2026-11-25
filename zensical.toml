@@ -7,6 +7,8 @@ site_url = "https://cfis.github.io/proj4rb/"
 repo_name = "cfis/proj4rb"
 repo_url = "https://github.com/cfis/proj4rb"
 
+extra_css = ["assets/extra.css"]
+
 nav = [
   { "Home" = "index.md" },
   { "Concepts" = [
@@ -48,6 +50,7 @@ nav = [
 [project.theme]
 
 variant = "classic"
+logo = "assets/logo.svg"
 
 features = [
   "navigation.top",
